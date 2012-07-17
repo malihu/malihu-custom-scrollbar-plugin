@@ -1,0 +1,45 @@
+html,body{
+	height:100%; 
+	overflow:hidden;
+}
+body{
+	margin:0; 
+	padding:0; 
+	color:#eee; 
+	background:#262626 url(../images/stripes_bg.png); 
+	font-family:arial,sans-serif; 
+	font-size:14px; 
+	line-height:20px;
+}
+p{
+	margin:0 0 20px 0;
+}
+hr{
+	height:0; 
+	border:none; 
+	border-bottom:1px solid rgba(255,255,255,0.2); 
+	border-top:1px solid rgba(0,0,0,0.9); 
+	margin:19px 0; 
+	clear:both;
+}
+#page{
+	height:100%;
+}
+.content{
+	width:100%; 
+	height:100%; 
+	-webkit-box-sizing:border-box; 
+	-moz-box-sizing:border-box; 
+	box-sizing:border-box; 
+	padding:20px; 
+	overflow:auto;
+}
+.content p:nth-child(even){
+	color:#ccc; 
+	font-family:Georgia,serif; 
+	font-size:17px; 
+	font-style:italic;
+}
+.content p:nth-child(3n+0){
+	color:#c96;
+}

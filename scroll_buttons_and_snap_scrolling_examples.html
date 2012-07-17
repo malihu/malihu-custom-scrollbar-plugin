@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>jQuery custom scrollbar demo</title>
+	<!-- stylesheet for demo and examples -->
+	<style type="text/css">
+	<!--
+		body{margin:0; padding:0; color:#eee; background:#222; font-family:Verdana,Geneva,sans-serif; font-size:13px; line-height:20px;}
+		a:link,a:visited,a:hover{color:#fff;}
+		h1{font-family:Georgia,serif; font-size:19px; font-style:italic; margin:20px 40px 0 40px; color:#09C;}
+		h1+p{margin:10px 40px 0 40px; color:#ccc;}
+		hr{height:0; border:none; border-bottom:1px solid rgba(255,255,255,0.2); border-top:1px solid rgba(0,0,0,0.9); margin:20px 10px; clear:both;}
+		.links{margin:10px 0 0 10px;}
+		.links a{display:inline-block; padding:2px 10px; margin:10px; background:#C30; text-decoration:none; -webkit-border-radius:15px; -moz-border-radius:15px; border-radius:15px;}
+		.links a:hover{background:#de4816;}
+		.content{margin:40px; width:580px; height:90px; padding:10px; overflow:auto; background:#444; clear:both;}
+		.content .images_container{overflow:hidden;}
+		.content .images_container img{display:block; float:left; margin:0 5px; border:5px solid #777;}
+		a[rel='toggle-buttons-scroll-type'].off{opacity:0.5;}
+	-->
+	</style>
+	<!-- Custom scrollbars CSS -->
+	<link href="jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="links">
+		<a href="http://manos.malihu.gr/jquery-custom-content-scroller">Plugin home</a>
+	</div>
+	<hr />
+	<div class="wrapper">
+		<h1>Buttons scroll by number of pixels</h1>
+		<!-- content block -->
+ 		<div id="content_1" class="content">
+			<div class="images_container">
+				<img src="demo_files/mcsThumb1.jpg" />
+				<img src="demo_files/mcsThumb2.jpg" />
+				<img src="demo_files/mcsThumb3.jpg" />
+				<img src="demo_files/mcsThumb4.jpg" />
+				<img src="demo_files/mcsThumb5.jpg" />
+				<img src="demo_files/mcsThumb6.jpg" />
+				<img src="demo_files/mcsThumb7.jpg" />
+				<img src="demo_files/mcsThumb8.jpg" />
+				<img src="demo_files/mcsThumb1.jpg" />
+				<img src="demo_files/mcsThumb2.jpg" />
+				<img src="demo_files/mcsThumb3.jpg" />
+				<img src="demo_files/mcsThumb4.jpg" />
+			</div>
+		</div>
+		<hr />
+		<h1>Buttons scroll by number of pixels &amp; snap scroll to images</h1>
+		<p><a href="#" rel="toggle-buttons-scroll-type">Toggle buttons scroll by number of pixels</a></p>
+		<!-- content block -->
+ 		<div id="content_2" class="content">
+			<div class="images_container">
+				<img src="demo_files/mcsThumb1.jpg" />
+				<img src="demo_files/mcsThumb2.jpg" />
+				<img src="demo_files/mcsThumb3.jpg" />
+				<img src="demo_files/mcsThumb4.jpg" />
+				<img src="demo_files/mcsThumb5.jpg" />
+				<img src="demo_files/mcsThumb6.jpg" />
+				<img src="demo_files/mcsThumb7.jpg" />
+				<img src="demo_files/mcsThumb8.jpg" />
+				<img src="demo_files/mcsThumb1.jpg" />
+				<img src="demo_files/mcsThumb2.jpg" />
+				<img src="demo_files/mcsThumb3.jpg" />
+				<img src="demo_files/mcsThumb4.jpg" />
+			</div>
+		</div>
+	</div>
+	<hr />
+	<p>&nbsp;</p>
+	<!-- Get Google CDN's jQuery and jQuery UI with fallback to local -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<script>!window.jQuery && document.write(unescape('%3Cscript src="jquery/jquery-1.7.2.min.js"%3E%3C/script%3E'))</script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<script>!window.jQuery.ui && document.write(unescape('%3Cscript src="jquery/jquery-ui-1.8.21.custom.min.js"%3E%3C/script%3E'))</script>
+	<!-- mousewheel plugin -->
+	<script src="jquery.mousewheel.min.js"></script>
+	<!-- custom scrollbars plugin -->
+	<script src="jquery.mCustomScrollbar.js"></script>
+	<script>
+		(function($){
+			$(window).load(function(){
+				$("#content_1").mCustomScrollbar({
+					horizontalScroll:true,
+					scrollButtons:{
+						enable:true,
+						scrollType:"pixels",
+						scrollAmount:116
+					}
+				});
+				$("#content_2").mCustomScrollbar({
+					horizontalScroll:true,
+					scrollButtons:{
+						enable:true,
+						scrollType:"pixels",
+						scrollAmount:116
+					},
+					callbacks:{
+						onScroll:function(){
+							snapScrollbar();
+						}
+					}
+				});
+				/* toggle buttons scroll type */
+				$("a[rel='toggle-buttons-scroll-type']").click(function(e){
+					e.preventDefault();
+					var $this=$(this);
+					var cont=$("#content_2");
+					var scrollType;
+					if(cont.data("scrollButtons-scrollType")==="pixels"){
+						scrollType="continuous";
+					}else{
+						scrollType="pixels";
+					}
+					cont.data({"scrollButtons-scrollType":scrollType}).mCustomScrollbar("update");
+					$this.toggleClass("off");
+				});
+				/* snap scrollbar fn */
+				var snapTo=[];
+				$("#content_2 .images_container img").each(function(){
+					var $this=$(this);
+					var thisX=$this.position().left;
+					snapTo.push(thisX);
+				});
+				function snapScrollbar(){
+					if(!$(document).data("mCS-is-touch-device")){ //no snapping for touch devices
+						var posX=$("#content_2 .mCSB_container").position().left;
+						var closestX=findClosest(Math.abs(posX),snapTo);
+						if(closestX===0){
+							$("#content_2").mCustomScrollbar("scrollTo","left",{
+								callback:false //scroll to is already a callback fn
+							});
+						}else{
+							$("#content_2").mCustomScrollbar("scrollTo",closestX,{
+								callback:false //scroll to is already a callback fn
+							});
+						}
+					}
+				}
+				function findClosest(num,arr){
+	                var curr=arr[0];
+    	            var diff=Math.abs(num-curr);
+        	        for(var val=0; val<arr.length; val++){
+            	        var newdiff=Math.abs(num-arr[val]);
+                	    if(newdiff<diff){
+                    	    diff=newdiff;
+                        	curr=arr[val];
+                    	}
+                	}
+                	return curr;
+            	}
+			});
+		})(jQuery);
+	</script>
+</body>
+</html>

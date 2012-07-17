@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>jQuery custom scrollbar demo</title>
+	<!-- stylesheet for demo and examples -->
+	<style type="text/css">
+	<!--
+		body{margin:0; padding:0; color:#eee; background:#222; font-family:Verdana,Geneva,sans-serif; font-size:13px; line-height:20px;}
+		a:link,a:visited,a:hover{color:#fff;}
+		h1{font-family:Georgia,serif; font-size:19px; font-style:italic; margin:20px 40px 0 40px; color:#09C;}
+		p{margin:0 0 20px 0;}
+		hr{height:0; border:none; border-bottom:1px solid rgba(255,255,255,0.2); border-top:1px solid rgba(0,0,0,0.9); margin:20px 10px; clear:both;}
+		.links{margin:10px 0 0 10px;}
+		.links a{display:inline-block; padding:2px 10px; margin:10px; background:#C30; text-decoration:none; -webkit-border-radius:15px; -moz-border-radius:15px; border-radius:15px;}
+		.links a:hover{background:#de4816;}
+		.content{margin:40px; width:260px; height:500px; padding:20px; overflow:auto; background:#333;}
+		.content p:nth-child(even){color:#999; font-family:Georgia,serif; font-size:17px; font-style:italic;}
+		.content p:nth-child(3n+0){color:#c96;}
+	-->
+	</style>
+	<!-- Custom scrollbars CSS -->
+	<link href="jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="links">
+		<a href="http://manos.malihu.gr/jquery-custom-content-scroller">Plugin home</a>
+	</div>
+	<hr />
+	<div class="wrapper">
+		<h1>Scrollbar with default option parameters</h1>
+		<!-- content block -->
+ 		<div id="content_1" class="content">
+			<p>Lorem ipsum dolor sit amet. Aliquam erat volutpat. Maecenas non tortor nulla, non malesuada velit.</p>
+       		<p>Aliquam erat volutpat. Maecenas non tortor nulla, non malesuada velit. Nullam felis tellus, tristique nec egestas in, luctus sed diam. Suspendisse potenti. </p>
+       		<p>Consectetur adipiscing elit. Nulla consectetur libero consectetur quam consequat nec tincidunt massa feugiat. Donec egestas mi turpis. Fusce adipiscing dui eu metus gravida vel facilisis ligula iaculis. Cras a rhoncus massa. Donec sed purus eget nunc placerat consequat.</p>
+       		<p>Cras venenatis condimentum nibh a mollis. Duis id sapien nibh. Vivamus porttitor, felis quis blandit tincidunt, erat magna scelerisque urna, a faucibus erat nisl eget nisl. Aliquam consequat turpis id velit egestas a posuere orci semper. Mauris suscipit erat quis urna adipiscing ultricies. In hac habitasse platea dictumst. Nulla scelerisque lorem quis dui sagittis egestas.</p> 
+			<p>Etiam sed massa felis, aliquam pellentesque est.</p>
+        	<p>Nam eu arcu at purus tincidunt pharetra ultrices at ipsum. Mauris urna nunc, vulputate quis gravida in, pharetra id mauris. Ut sit amet mi dictum nulla lobortis adipiscing quis a nulla. Etiam diam ante, imperdiet vel scelerisque eget, venenatis non eros. Praesent ipsum sem, eleifend ut gravida eget, tristique id orci. Nam adipiscing, sem in mattis vulputate, risus libero adipiscing risus, eu molestie mi justo eget nulla.</p> 
+			<p>Cras venenatis metus et urna egestas non laoreet orci rutrum. Pellentesque ullamcorper dictum nisl a tincidunt. Quisque et lacus quam, sed hendrerit mi. Mauris pretium, sapien et malesuada pulvinar, lorem leo viverra leo, et egestas mi nisl quis odio. </p>
+			<p>Aliquam erat volutpat. Sed urna arcu, tempus eu vulputate adipiscing, consectetur et orci. Vivamus congue, nunc vitae fringilla convallis, libero massa lacinia lorem, id convallis mauris elit ut leo. Nulla vel odio sem. Duis lorem urna, congue vitae rutrum sed, tincidunt vel tortor. In hac habitasse platea dictumst. Nunc vitae enim ante, vitae facilisis massa. Etiam sagittis sapien at nibh fermentum consectetur convallis lacus blandit.</p>
+        	<p>the end.</p>
+		</div>
+	</div>
+	<hr />
+	<p>&nbsp;</p>
+	<!-- Get Google CDN's jQuery and jQuery UI with fallback to local -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<script>!window.jQuery && document.write(unescape('%3Cscript src="jquery/jquery-1.7.2.min.js"%3E%3C/script%3E'))</script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<script>!window.jQuery.ui && document.write(unescape('%3Cscript src="jquery/jquery-ui-1.8.21.custom.min.js"%3E%3C/script%3E'))</script>
+	<!-- mousewheel plugin -->
+	<script src="jquery.mousewheel.min.js"></script>
+	<!-- custom scrollbars plugin -->
+	<script src="jquery.mCustomScrollbar.js"></script>
+	<script>
+		(function($){
+			$(window).load(function(){
+				$("#content_1").mCustomScrollbar({
+					set_width:false, /*optional element width: boolean, pixels, percentage*/
+					set_height:false, /*optional element height: boolean, pixels, percentage*/
+					horizontalScroll:false, /*scroll horizontally: boolean*/
+					scrollInertia:550, /*scrolling inertia: integer (milliseconds)*/
+					scrollEasing:"easeOutCirc", /*scrolling easing: string*/
+					mouseWheel:"auto", /*mousewheel support and velocity: boolean, "auto", integer*/
+					autoDraggerLength:true, /*auto-adjust scrollbar dragger length: boolean*/
+					scrollButtons:{ /*scroll buttons*/
+						enable:false, /*scroll buttons support: boolean*/
+						scrollType:"continuous", /*scroll buttons scrolling type: "continuous", "pixels"*/
+						scrollSpeed:20, /*scroll buttons continuous scrolling speed: integer*/
+						scrollAmount:40 /*scroll buttons pixels scroll amount: integer (pixels)*/
+					},
+					advanced:{
+						updateOnBrowserResize:true, /*update scrollbars on browser resize (for layouts based on percentages): boolean*/
+						updateOnContentResize:false, /*auto-update scrollbars on content resize (for dynamic content): boolean*/
+						autoExpandHorizontalScroll:false /*auto expand width for horizontal scrolling: boolean*/
+					},
+					callbacks:{
+						onScroll:function(){}, /*user custom callback function on scroll event*/
+						onTotalScroll:function(){}, /*user custom callback function on bottom reached event*/
+						onTotalScrollOffset:0 /*bottom reached offset: integer (pixels)*/
+					}
+				});
+			});
+		})(jQuery);
+	</script>
+</body>
+</html>
