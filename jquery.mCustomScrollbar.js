@@ -470,7 +470,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			mCustomScrollBox.unbind("focusin").bind("focusin",function(){
 				mCustomScrollBox.scrollTop(0).scrollLeft(0);
 				var focusedElem=$(document.activeElement);
-				if(focusedElem.is("input,textarea,select,button,a,area,object")){
+				if(focusedElem.is("input,textarea,select,button,a[tabindex],area,object")){
 					if($this.data("horizontalScroll")){
 						var mCSB_containerX=mCSB_container.position().left;
 						var focusedElemX=focusedElem.position().left;
