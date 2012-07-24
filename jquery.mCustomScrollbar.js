@@ -31,8 +31,8 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					onTotalScroll:function(){}, /*user custom callback function on scroll end reached event*/
 					onTotalScrollOffset:0 /*scroll end reached offset: integer (pixels)*/
 				}
-			};
-			var options=$.extend(true,defaults,options);
+			},
+			options=$.extend(true,defaults,options);
 			/*check for touch device*/
 			$(document).data("mCS-is-touch-device",false);
 			if(is_touch_device()){
@@ -56,7 +56,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					var mCustomScrollbarIndex=parseInt($(document).data("mCustomScrollbar-index"));
 					$(document).data("mCustomScrollbar-index",mCustomScrollbarIndex+1);
 				}
-				$this.wrapInner("<div class='mCustomScrollBox' style='position:relative; height:100%; overflow:hidden; max-width:100%;' />").addClass("mCustomScrollbar _mCS_"+$(document).data("mCustomScrollbar-index"));
+				$this.wrapInner("<div class='mCustomScrollBox' id='mCSB_"+$(document).data("mCustomScrollbar-index")+"' style='position:relative; height:100%; overflow:hidden; max-width:100%;' />").addClass("mCustomScrollbar _mCS_"+$(document).data("mCustomScrollbar-index"));
 				var mCustomScrollBox=$this.children(".mCustomScrollBox");
 				if(options.horizontalScroll){
 					mCustomScrollBox.addClass("mCSB_horizontal").wrapInner("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />");
@@ -68,9 +68,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				var mCSB_container=mCustomScrollBox.children(".mCSB_container");
 				if(!$(document).data("mCS-is-touch-device")){ /*not touch device - apply custom scrollbars functionality*/
 					mCSB_container.after("<div class='mCSB_scrollTools' style='position:absolute;'><div class='mCSB_draggerContainer' style='position:relative;'><div class='mCSB_dragger' style='position:absolute;'><div class='mCSB_dragger_bar' style='position:relative;'></div></div><div class='mCSB_draggerRail'></div></div></div>");
-					var mCSB_scrollTools=mCustomScrollBox.children(".mCSB_scrollTools");
-					var mCSB_draggerContainer=mCSB_scrollTools.children(".mCSB_draggerContainer");
-					var mCSB_dragger=mCSB_draggerContainer.children(".mCSB_dragger");
+					var mCSB_scrollTools=mCustomScrollBox.children(".mCSB_scrollTools"),
+						mCSB_draggerContainer=mCSB_scrollTools.children(".mCSB_draggerContainer"),
+						mCSB_dragger=mCSB_draggerContainer.children(".mCSB_dragger");
 					if(options.horizontalScroll){
 						mCSB_dragger.data("minDraggerWidth",mCSB_dragger.width());
 					}else{
@@ -116,7 +116,18 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						});
 					}
 				}else{ /*is touch device*/
-					mCustomScrollBox.css({"overflow":"auto","-webkit-overflow-scrolling":"touch"});
+					/*check for mobile os/browser not supporting overflow:auto (Android 2.xx)*/
+					var ua=navigator.userAgent;
+					if(ua.indexOf("Android")!=-1){ 
+						var androidversion=parseFloat(ua.slice(ua.indexOf("Android")+8));
+						if(androidversion<3){
+							touchScroll("mCSB_"+$(document).data("mCustomScrollbar-index")); /*non overflow:auto fn*/
+						}else{
+							mCustomScrollBox.css({"overflow":"auto","-webkit-overflow-scrolling":"touch"});
+						}
+					}else{
+						mCustomScrollBox.css({"overflow":"auto","-webkit-overflow-scrolling":"touch"});
+					}
 					mCSB_container.addClass("mCS_no_scrollbar mCS_touch");
 					$this.data({
 						"horizontalScroll":options.horizontalScroll,
@@ -130,6 +141,31 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					mCustomScrollBox.scroll(function(){
 						$this.mCustomScrollbar("callbacks",mCustomScrollBox,mCSB_container); /*user custom callback functions*/
 					});
+					/*non overflow:auto fn 
+					(source: http://chris-barr.com/index.php/entry/scrolling_a_overflowauto_element_on_a_touch_screen_device/)*/
+					function touchScroll(id){
+						var el=document.getElementById(id),
+							scrollStartPosY=0,
+							scrollStartPosX=0;
+						document.getElementById(id).addEventListener("touchstart",function(event){
+							scrollStartPosY=this.scrollTop+event.touches[0].pageY;
+							scrollStartPosX=this.scrollLeft+event.touches[0].pageX;
+							/*event.preventDefault(); // Keep this remarked so you can click on buttons and links in the div*/
+						},false);
+						document.getElementById(id).addEventListener("touchmove",function(event){
+							/*These if statements allow the full page to scroll (not just the div) if they are
+							at the top of the div scroll or the bottom of the div scroll
+							The -5 and +5 below are in case they are trying to scroll the page sideways
+							but their finger moves a few pixels down or up.  The event.preventDefault() function
+							will not be called in that case so that the whole page can scroll.*/
+							if((this.scrollTop<this.scrollHeight-this.offsetHeight && this.scrollTop+event.touches[0].pageY<scrollStartPosY-5) || (this.scrollTop!=0 && this.scrollTop+event.touches[0].pageY>scrollStartPosY+5))
+								event.preventDefault();	
+							if((this.scrollLeft<this.scrollWidth-this.offsetWidth && this.scrollLeft+event.touches[0].pageX < scrollStartPosX-5) || (this.scrollLeft!=0&&this.scrollLeft+event.touches[0].pageX>scrollStartPosX+5))
+								event.preventDefault();	
+							this.scrollTop=scrollStartPosY-event.touches[0].pageY;
+							this.scrollLeft=scrollStartPosX-event.touches[0].pageX;
+						},false);
+					}
 				}
 				/*content resize fn (for dynamically generated content)*/
 				if(options.advanced.updateOnContentResize){
@@ -161,36 +197,36 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			});
 		},
 		update:function(){
-			var $this=$(this);
-			var mCustomScrollBox=$this.children(".mCustomScrollBox");
-			var mCSB_container=mCustomScrollBox.children(".mCSB_container");
+			var $this=$(this),
+				mCustomScrollBox=$this.children(".mCustomScrollBox"),
+				mCSB_container=mCustomScrollBox.children(".mCSB_container");
 			if(!$(document).data("mCS-is-touch-device")){
 				mCSB_container.removeClass("mCS_no_scrollbar");
 			}
-			var mCSB_scrollTools=mCustomScrollBox.children(".mCSB_scrollTools");
-			var mCSB_draggerContainer=mCSB_scrollTools.children(".mCSB_draggerContainer");
-			var mCSB_dragger=mCSB_draggerContainer.children(".mCSB_dragger");
+			var mCSB_scrollTools=mCustomScrollBox.children(".mCSB_scrollTools"),
+				mCSB_draggerContainer=mCSB_scrollTools.children(".mCSB_draggerContainer"),
+				mCSB_dragger=mCSB_draggerContainer.children(".mCSB_dragger");
 			if($this.data("horizontalScroll")){
-				var mCSB_buttonLeft=mCSB_scrollTools.children(".mCSB_buttonLeft");
-				var mCSB_buttonRight=mCSB_scrollTools.children(".mCSB_buttonRight");
-				var mCustomScrollBoxW=mCustomScrollBox.width();
+				var mCSB_buttonLeft=mCSB_scrollTools.children(".mCSB_buttonLeft"),
+					mCSB_buttonRight=mCSB_scrollTools.children(".mCSB_buttonRight"),
+					mCustomScrollBoxW=mCustomScrollBox.width();
 				if($this.data("autoExpandHorizontalScroll")){
 					mCSB_container.css({"position":"absolute","width":"auto"}).wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />").css({"width":mCSB_container.outerWidth(),"position":"relative"}).unwrap();
 				}
 				var mCSB_containerW=mCSB_container.outerWidth();
 			}else{
-				var mCSB_buttonUp=mCSB_scrollTools.children(".mCSB_buttonUp");
-				var mCSB_buttonDown=mCSB_scrollTools.children(".mCSB_buttonDown");
-				var mCustomScrollBoxH=mCustomScrollBox.height();
-				var mCSB_containerH=mCSB_container.outerHeight();
+				var mCSB_buttonUp=mCSB_scrollTools.children(".mCSB_buttonUp"),
+					mCSB_buttonDown=mCSB_scrollTools.children(".mCSB_buttonDown"),
+					mCustomScrollBoxH=mCustomScrollBox.height(),
+					mCSB_containerH=mCSB_container.outerHeight();
 			}
 			if(mCSB_containerH>mCustomScrollBoxH && !$this.data("horizontalScroll") && !$(document).data("mCS-is-touch-device")){ /*content needs vertical scrolling*/
 				mCSB_scrollTools.css("display","block");
 				var mCSB_draggerContainerH=mCSB_draggerContainer.height();
 				/*auto adjust scrollbar dragger length analogous to content*/
 				if($this.data("autoDraggerLength")){
-					var draggerH=Math.round(mCSB_containerH-((mCSB_containerH-mCustomScrollBoxH)*1.3));
-					var minDraggerH=mCSB_dragger.data("minDraggerHeight");
+					var draggerH=Math.round(mCSB_containerH-((mCSB_containerH-mCustomScrollBoxH)*1.3)),
+						minDraggerH=mCSB_dragger.data("minDraggerHeight");
 					if(draggerH<=minDraggerH){ /*min dragger height*/
 						mCSB_dragger.css({"height":minDraggerH});
 					}else if(draggerH>=mCSB_draggerContainerH-10){ /*max dragger height*/
@@ -201,9 +237,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					}
 					mCSB_dragger.children(".mCSB_dragger_bar").css({"line-height":mCSB_dragger.height()+"px"});
 				}
-				var mCSB_draggerH=mCSB_dragger.height();
+				var mCSB_draggerH=mCSB_dragger.height(),
 				/*calculate and store scroll amount*/
-				var scrollAmount=(mCSB_containerH-mCustomScrollBoxH)/(mCSB_draggerContainerH-mCSB_draggerH);
+					scrollAmount=(mCSB_containerH-mCustomScrollBoxH)/(mCSB_draggerContainerH-mCSB_draggerH);
 				$this.data("scrollAmount",scrollAmount);
 				/*add scrolling*/
 				$this.mCustomScrollbar("scrolling",mCustomScrollBox,mCSB_container,mCSB_draggerContainer,mCSB_dragger,mCSB_buttonUp,mCSB_buttonDown,mCSB_buttonLeft,mCSB_buttonRight);
@@ -217,8 +253,8 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				var mCSB_draggerContainerW=mCSB_draggerContainer.width();
 				/*auto adjust scrollbar dragger length analogous to content*/
 				if($this.data("autoDraggerLength")){
-					var draggerW=Math.round(mCSB_containerW-((mCSB_containerW-mCustomScrollBoxW)*1.3));
-					var minDraggerW=mCSB_dragger.data("minDraggerWidth");
+					var draggerW=Math.round(mCSB_containerW-((mCSB_containerW-mCustomScrollBoxW)*1.3)),
+						minDraggerW=mCSB_dragger.data("minDraggerWidth");
 					if(draggerW<=minDraggerW){ /*min dragger height*/
 						mCSB_dragger.css({"width":minDraggerW});
 					}else if(draggerW>=mCSB_draggerContainerW-10){ /*max dragger height*/
@@ -228,9 +264,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						mCSB_dragger.css({"width":draggerW});
 					}
 				}
-				var mCSB_draggerW=mCSB_dragger.width();
+				var mCSB_draggerW=mCSB_dragger.width(),
 				/*calculate and store scroll amount*/
-				var scrollAmount=(mCSB_containerW-mCustomScrollBoxW)/(mCSB_draggerContainerW-mCSB_draggerW);
+					scrollAmount=(mCSB_containerW-mCustomScrollBoxW)/(mCSB_draggerContainerW-mCSB_draggerW);
 				$this.data("scrollAmount",scrollAmount);
 				/*add scrolling*/
 				$this.mCustomScrollbar("scrolling",mCustomScrollBox,mCSB_container,mCSB_draggerContainer,mCSB_dragger,mCSB_buttonUp,mCSB_buttonDown,mCSB_buttonLeft,mCSB_buttonRight);
@@ -316,8 +352,8 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						if(mCSB_dragger.position().left<0){
 							mCSB_dragger.css("left",0);
 						}
-						var mCSB_draggerContainerW=mCSB_draggerContainer.width();
-						var mCSB_draggerW=mCSB_dragger.width();
+						var mCSB_draggerContainerW=mCSB_draggerContainer.width(),
+							mCSB_draggerW=mCSB_dragger.width();
 						if(mCSB_dragger.position().left>mCSB_draggerContainerW-mCSB_draggerW){
 							mCSB_dragger.css("left",mCSB_draggerContainerW-mCSB_draggerW);
 						}
@@ -327,8 +363,8 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						if(mCSB_dragger.position().top<0){
 							mCSB_dragger.css("top",0);
 						}
-						var mCSB_draggerContainerH=mCSB_draggerContainer.height();
-						var mCSB_draggerH=mCSB_dragger.height();
+						var mCSB_draggerContainerH=mCSB_draggerContainer.height(),
+							mCSB_draggerH=mCSB_dragger.height();
 						if(mCSB_dragger.position().top>mCSB_draggerContainerH-mCSB_draggerH){
 							mCSB_dragger.css("top",mCSB_draggerContainerH-mCSB_draggerH);
 						}
@@ -390,9 +426,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					if($this.data("horizontalScroll")){
 						mCSB_buttonRight.add(mCSB_buttonLeft).unbind("click mousedown mouseup mouseout",mCSB_buttonRight_stop,mCSB_buttonLeft_stop);
 						/*scroll right*/
-						var mCSB_buttonScrollRight;
-						var mCSB_draggerContainerW=mCSB_draggerContainer.width();
-						var mCSB_draggerW=mCSB_dragger.width();
+						var mCSB_buttonScrollRight,
+							mCSB_draggerContainerW=mCSB_draggerContainer.width(),
+							mCSB_draggerW=mCSB_dragger.width();
 						mCSB_buttonRight.bind("mousedown",function(e){
 							e.preventDefault();
 							var draggerScrollTo=mCSB_draggerContainerW-mCSB_draggerW;
@@ -428,9 +464,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					}else{
 						mCSB_buttonDown.add(mCSB_buttonUp).unbind("click mousedown mouseup mouseout",mCSB_buttonDown_stop,mCSB_buttonUp_stop);
 						/*scroll down*/
-						var mCSB_buttonScrollDown;
-						var mCSB_draggerContainerH=mCSB_draggerContainer.height();
-						var mCSB_draggerH=mCSB_dragger.height();
+						var mCSB_buttonScrollDown,
+							mCSB_draggerContainerH=mCSB_draggerContainer.height(),
+							mCSB_draggerH=mCSB_dragger.height();
 						mCSB_buttonDown.bind("mousedown",function(e){
 							e.preventDefault();
 							var draggerScrollTo=mCSB_draggerContainerH-mCSB_draggerH;
@@ -472,10 +508,10 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				var focusedElem=$(document.activeElement);
 				if(focusedElem.is("input,textarea,select,button,a[tabindex],area,object")){
 					if($this.data("horizontalScroll")){
-						var mCSB_containerX=mCSB_container.position().left;
-						var focusedElemX=focusedElem.position().left;
-						var mCustomScrollBoxW=mCustomScrollBox.width();
-						var focusedElemW=focusedElem.outerWidth();
+						var mCSB_containerX=mCSB_container.position().left,
+							focusedElemX=focusedElem.position().left,
+							mCustomScrollBoxW=mCustomScrollBox.width(),
+							focusedElemW=focusedElem.outerWidth();
 						if(mCSB_containerX+focusedElemX>=0 && mCSB_containerX+focusedElemX<=mCustomScrollBoxW-focusedElemW){
 							/*just focus...*/
 						}else{ /*scroll, then focus*/
@@ -487,10 +523,10 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 							$this.mCustomScrollbar("scroll");
 						}
 					}else{
-						var mCSB_containerY=mCSB_container.position().top;
-						var focusedElemY=focusedElem.position().top;
-						var mCustomScrollBoxH=mCustomScrollBox.height();
-						var focusedElemH=focusedElem.outerHeight();
+						var mCSB_containerY=mCSB_container.position().top,
+							focusedElemY=focusedElem.position().top,
+							mCustomScrollBoxH=mCustomScrollBox.height(),
+							focusedElemH=focusedElem.outerHeight();
 						if(mCSB_containerY+focusedElemY>=0 && mCSB_containerY+focusedElemY<=mCustomScrollBoxH-focusedElemH){
 							/*just focus...*/
 						}else{ /*scroll, then focus*/
@@ -506,24 +542,24 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			});
 		},
 		scroll:function(updated){
-			var $this=$(this);
-			var mCSB_dragger=$this.find(".mCSB_dragger");
-			var mCSB_container=$this.find(".mCSB_container");
-			var mCustomScrollBox=$this.find(".mCustomScrollBox");
+			var $this=$(this),
+				mCSB_dragger=$this.find(".mCSB_dragger"),
+				mCSB_container=$this.find(".mCSB_container"),
+				mCustomScrollBox=$this.find(".mCustomScrollBox");
 			if($this.data("horizontalScroll")){
-				var draggerX=mCSB_dragger.position().left;
-				var targX=-draggerX*$this.data("scrollAmount");
-				var thisX=mCSB_container.position().left;
-				var posX=Math.round(thisX-targX);
+				var draggerX=mCSB_dragger.position().left,
+					targX=-draggerX*$this.data("scrollAmount"),
+					thisX=mCSB_container.position().left,
+					posX=Math.round(thisX-targX);
 			}else{
-				var draggerY=mCSB_dragger.position().top;
-				var targY=-draggerY*$this.data("scrollAmount");
-				var thisY=mCSB_container.position().top;
-				var posY=Math.round(thisY-targY);
+				var draggerY=mCSB_dragger.position().top,
+					targY=-draggerY*$this.data("scrollAmount"),
+					thisY=mCSB_container.position().top,
+					posY=Math.round(thisY-targY);
 			}
 			if($.browser.webkit){ /*fix webkit zoom and jquery animate*/
-				var screenCssPixelRatio=(window.outerWidth-8)/window.innerWidth;
-				var isZoomed=(screenCssPixelRatio<.98 || screenCssPixelRatio>1.02);
+				var screenCssPixelRatio=(window.outerWidth-8)/window.innerWidth,
+					isZoomed=(screenCssPixelRatio<.98 || screenCssPixelRatio>1.02);
 			}
 			if($this.data("scrollInertia")===0 || isZoomed){
 				if($this.data("horizontalScroll")){
@@ -554,15 +590,15 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			var defaults={
 				moveDragger:false,
 				callback:true
-			};
-			var options=$.extend(defaults,options);
-			var $this=$(this);
-			var scrollToPos;
-			var mCustomScrollBox=$this.find(".mCustomScrollBox");
-			var mCSB_container=mCustomScrollBox.children(".mCSB_container");
+			},
+				options=$.extend(defaults,options),
+				$this=$(this),
+				scrollToPos,
+				mCustomScrollBox=$this.find(".mCustomScrollBox"),
+				mCSB_container=mCustomScrollBox.children(".mCSB_container");
 			if(!$(document).data("mCS-is-touch-device")){
-				var mCSB_draggerContainer=$this.find(".mCSB_draggerContainer");
-				var mCSB_dragger=mCSB_draggerContainer.children(".mCSB_dragger");
+				var mCSB_draggerContainer=$this.find(".mCSB_draggerContainer"),
+					mCSB_dragger=mCSB_draggerContainer.children(".mCSB_dragger");
 			}
 			var targetPos;
 			if(scrollTo){
