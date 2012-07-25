@@ -225,7 +225,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				var mCSB_draggerContainerH=mCSB_draggerContainer.height();
 				/*auto adjust scrollbar dragger length analogous to content*/
 				if($this.data("autoDraggerLength")){
-					var draggerH=Math.round(mCSB_containerH-((mCSB_containerH-mCustomScrollBoxH)*1.3)),
+					var draggerH = Math.round(mCustomScrollBoxH/mCSB_containerH*mCSB_draggerContainerH),
 						minDraggerH=mCSB_dragger.data("minDraggerHeight");
 					if(draggerH<=minDraggerH){ /*min dragger height*/
 						mCSB_dragger.css({"height":minDraggerH});
@@ -247,7 +247,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				if(mCSB_dragger.position().top>mCSB_draggerContainerH-mCSB_draggerH){
 					mCSB_dragger.css("top",mCSB_draggerContainerH-mCSB_draggerH);
 				}
-				$this.mCustomScrollbar("scroll",true);
+				//$this.mCustomScrollbar("scroll",true);
 			}else if(mCSB_containerW>mCustomScrollBoxW && $this.data("horizontalScroll") && !$(document).data("mCS-is-touch-device")){ /*content needs horizontal scrolling*/
 				mCSB_scrollTools.css("display","block");
 				var mCSB_draggerContainerW=mCSB_draggerContainer.width();
