@@ -32,6 +32,7 @@ For implementation guides and tutorials please visit plugin home.
 
 == Changelog ==
 
+= Version 2.1 (JUL 27, 2012) =
 = Version 2.0 (JUL 12, 2012) =
 = Version 1.0 (AUG 1, 2010) =
 
