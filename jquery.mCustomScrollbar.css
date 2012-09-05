@@ -161,15 +161,27 @@
 }
 .mCSB_scrollTools .mCSB_buttonUp{
 	background-position:0 0;
+	/* 
+	sprites locations are 0 0/-16px 0/-32px 0/-48px 0 (light) and -80px 0/-96px 0/-112px 0/-128px 0 (dark) 
+	*/
 }
 .mCSB_scrollTools .mCSB_buttonDown{
 	background-position:0 -20px;
+	/* 
+	sprites locations are 0 -20px/-16px -20px/-32px -20px/-48px -20px (light) and -80px -20px/-96px -20px/-112px -20px/-128px -20px (dark) 
+	*/
 }
 .mCSB_scrollTools .mCSB_buttonLeft{
 	background-position:0 -40px;
+	/* 
+	sprites locations are 0 -40px/-20px -40px/-40px -40px/-60px -40px (light) and -80px -40px/-100px -40px/-120px -40px/-140px -40px (dark) 
+	*/
 }
 .mCSB_scrollTools .mCSB_buttonRight{
 	background-position:0 -56px;
+	/* 
+	sprites locations are 0 -56px/-20px -56px/-40px -56px/-60px -56px (light) and -80px -56px/-100px -56px/-120px -56px/-140px -56px (dark) 
+	*/
 }
 .mCSB_scrollTools .mCSB_buttonUp:hover,
 .mCSB_scrollTools .mCSB_buttonDown:hover,
