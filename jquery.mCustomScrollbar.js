@@ -674,16 +674,26 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			}
 		},
 		scrollByDirection:function(direction,options){
-			var alloweddirections = ['up', 'down', 'left', 'right'];
+			var defaults={
+				amount:40
+			};
+			options=$.extend(defaults,options);
+			var alloweddirections = ['up', 'down'];
 			var mCustomScrollBox=$(this).find(".mCustomScrollBox");
 			if ($.inArray(direction, alloweddirections) === -1) {
 				$.error('Please choose one of the following directions: "up", "down", "left", "right"');
 				return;
 			}
 			switch(direction) {
-				default:
-					console.log(mCustomScrollBox);
-					console.log(mCustomScrollBox.children(".mCSB_container"));
+				case 'down':
+					var top = Math.abs(mCustomScrollBox.children(".mCSB_container").position().top);
+					var scrollto = top + options.amount;
+					$(this).mCustomScrollbar('scrollTo', scrollto);
+					break;
+				case 'up':
+					var top = Math.abs(mCustomScrollBox.children(".mCSB_container").position().top);
+					var scrollto = top - options.amount;
+					$(this).mCustomScrollbar('scrollTo', scrollto);
 					break;
 			}
 		},
