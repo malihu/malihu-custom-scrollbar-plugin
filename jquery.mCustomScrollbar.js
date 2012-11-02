@@ -683,7 +683,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			switch(direction) {
 				default:
 					console.log(mCustomScrollBox);
-					console.log(mCustomScrollBox.children(".mCSB_container").css());
+					console.log(mCustomScrollBox.children(".mCSB_container"));
 					break;
 			}
 		},
