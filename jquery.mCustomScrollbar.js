@@ -675,7 +675,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 		},
 		scrollByDirection:function(direction,options){
 			var alloweddirections = ['up', 'down', 'left', 'right'];
-			var mCustomScrollBox=$this.find(".mCustomScrollBox");
+			var mCustomScrollBox=$(this).find(".mCustomScrollBox");
 			if ($.inArray(direction, alloweddirections) === -1) {
 				$.error('Please choose one of the following directions: "up", "down", "left", "right"');
 				return;
