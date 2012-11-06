@@ -674,27 +674,45 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			}
 		},
 		scrollByDirection:function(direction,options){
-			var defaults={
-				amount:40
-			};
-			options=$.extend(defaults,options);
-			var alloweddirections = ['up', 'down'];
-			var mCustomScrollBox=$(this).find(".mCustomScrollBox");
-			if ($.inArray(direction, alloweddirections) === -1) {
+			var defaults={amount:40}
+				options=$.extend(defaults,options),
+				alloweddirections=['up', 'down', 'left', 'right'],
+				mCustomScrollBox=$(this).find(".mCustomScrollBox");
+			if($.inArray(direction, alloweddirections)===-1){
 				$.error('Please choose one of the following directions: "up", "down", "left", "right"');
 				return;
 			}
-			switch(direction) {
+			var scrollto = null,
+				position = mCustomScrollBox.children(".mCSB_container").position();
+			switch(direction){
 				case 'down':
-					var top = Math.abs(mCustomScrollBox.children(".mCSB_container").position().top);
-					var scrollto = top + options.amount;
-					$(this).mCustomScrollbar('scrollTo', scrollto);
+					var top = Math.abs(position.top);
+					scrollto = top + options.amount;
 					break;
 				case 'up':
-					var top = Math.abs(mCustomScrollBox.children(".mCSB_container").position().top);
-					var scrollto = top - options.amount;
-					$(this).mCustomScrollbar('scrollTo', scrollto);
+					var top = Math.abs(position.top);
+					if (top < options.amount) {
+						scrollto = 0;
+					}
+					else {
+						scrollto = top - options.amount;
+					}
 					break;
+				case 'right':
+					scrollto = Math.abs(position.left) + options.amount;
+					break;
+				case 'left':
+					var left = Math.abs(position.left);
+					if (left < options.amount) {
+						scrollto = 0;
+					}
+					else {
+						scrollto = left - options.amount;
+					}
+					break;
+			}
+			if(scrollto!==null){
+				$(this).mCustomScrollbar('scrollTo', scrollto);
 			}
 		},
 		callbacks:function(mCustomScrollBox,mCSB_container){
