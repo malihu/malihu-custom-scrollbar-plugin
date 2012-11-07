@@ -653,6 +653,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						});
 					}
 				}else{ /*not touch device*/
+					if(scrollToPos<0){
+						scrollToPos=0;
+					}
 					if($this.data("horizontalScroll")){
 						if(scrollToPos>=mCSB_draggerContainer.width()-mCSB_dragger.width()){ /*max dragger position is bottom*/
 							scrollToPos=mCSB_draggerContainer.width()-mCSB_dragger.width();
