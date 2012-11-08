@@ -1,13 +1,13 @@
-/* 
-== malihu jquery custom scrollbars plugin == 
-version: 2.1 
-author: malihu (http://manos.malihu.gr) 
-plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
+/*
+== malihu jquery custom scrollbars plugin ==
+version: 2.1
+author: malihu (http://manos.malihu.gr)
+plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 */
 (function($){
 	var methods={
 		init:function(options){
-			var defaults={ 
+			var defaults={
 				set_width:false, /*optional element width: boolean, pixels, percentage*/
 				set_height:false, /*optional element height: boolean, pixels, percentage*/
 				horizontalScroll:false, /*scroll horizontally: boolean*/
@@ -21,6 +21,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					scrollSpeed:20, /*scroll buttons continuous scrolling speed: integer*/
 					scrollAmount:40 /*scroll buttons pixels scroll amount: integer (pixels)*/
 				},
+                preventInputBehavior : false,
 				advanced:{
 					updateOnBrowserResize:true, /*update scrollbars on browser resize (for layouts based on percentages): boolean*/
 					updateOnContentResize:false, /*auto-update scrollbars on content resize (for dynamic content): boolean*/
@@ -43,6 +44,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			}
 			return this.each(function(){
 				var $this=$(this);
+                 $this.data('preventInputBehavior',options.preventInputBehavior);
 				/*set element width/height, create markup for custom scrollbars, add classes*/
 				if(options.set_width){
 					$this.css("width",options.set_width);
@@ -118,7 +120,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				}else{ /*is touch device*/
 					/*check for mobile os/browser not supporting overflow:auto (Android 2.xx)*/
 					var ua=navigator.userAgent;
-					if(ua.indexOf("Android")!=-1){ 
+					if(ua.indexOf("Android")!=-1){
 						var androidversion=parseFloat(ua.slice(ua.indexOf("Android")+8));
 						if(androidversion<3){
 							touchScroll("mCSB_"+$(document).data("mCustomScrollbar-index")); /*non overflow:auto fn*/
@@ -141,7 +143,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					mCustomScrollBox.scroll(function(){
 						$this.mCustomScrollbar("callbacks",mCustomScrollBox,mCSB_container); /*user custom callback functions*/
 					});
-					/*non overflow:auto fn 
+					/*non overflow:auto fn
 					(source: http://chris-barr.com/index.php/entry/scrolling_a_overflowauto_element_on_a_touch_screen_device/)*/
 					function touchScroll(id){
 						var el=document.getElementById(id),
@@ -159,9 +161,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 							but their finger moves a few pixels down or up.  The event.preventDefault() function
 							will not be called in that case so that the whole page can scroll.*/
 							if((this.scrollTop<this.scrollHeight-this.offsetHeight && this.scrollTop+event.touches[0].pageY<scrollStartPosY-5) || (this.scrollTop!=0 && this.scrollTop+event.touches[0].pageY>scrollStartPosY+5))
-								event.preventDefault();	
+								event.preventDefault();
 							if((this.scrollLeft<this.scrollWidth-this.offsetWidth && this.scrollLeft+event.touches[0].pageX < scrollStartPosX-5) || (this.scrollLeft!=0&&this.scrollLeft+event.touches[0].pageX>scrollStartPosX+5))
-								event.preventDefault();	
+								event.preventDefault();
 							this.scrollTop=scrollStartPosY-event.touches[0].pageY;
 							this.scrollLeft=scrollStartPosX-event.touches[0].pageX;
 						},false);
@@ -293,7 +295,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				}else{
 					var draggableAxis="y";
 				}
-				mCSB_dragger.draggable({ 
+				mCSB_dragger.draggable({
 					axis:draggableAxis,
 					containment:"parent",
 					drag:function(event,ui){
@@ -301,7 +303,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						mCSB_dragger.addClass("mCSB_dragger_onDrag");
 					},
 					stop:function(event,ui){
-						mCSB_dragger.removeClass("mCSB_dragger_onDrag");	
+						mCSB_dragger.removeClass("mCSB_dragger_onDrag");
 					}
 				});
 			}
@@ -335,7 +337,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					mousewheelVel=8; /*default mousewheel velocity*/
 					/*check for safari browser on mac osx to lower mousewheel velocity*/
 					var os=navigator.userAgent;
-					if(os.indexOf("Mac")!=-1 && os.indexOf("Safari")!=-1 && os.indexOf("AppleWebKit")!=-1 && os.indexOf("Chrome")==-1){ 
+					if(os.indexOf("Mac")!=-1 && os.indexOf("Safari")!=-1 && os.indexOf("AppleWebKit")!=-1 && os.indexOf("Chrome")==-1){
 						mousewheelVel=1;
 					}
 				}
@@ -450,7 +452,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								mCSB_dragger.stop().animate({left:draggerScrollTo},scrollToSpeed,"linear");
 								$this.mCustomScrollbar("scroll");
 							},20);
-						});	
+						});
 						var mCSB_buttonLeft_stop=function(e){
 							e.preventDefault();
 							clearInterval(mCSB_buttonScrollLeft);
@@ -488,7 +490,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								mCSB_dragger.stop().animate({top:draggerScrollTo},scrollToSpeed,"linear");
 								$this.mCustomScrollbar("scroll");
 							},20);
-						});	
+						});
 						var mCSB_buttonUp_stop=function(e){
 							e.preventDefault();
 							clearInterval(mCSB_buttonScrollUp);
@@ -499,43 +501,45 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				}
 			}
 			/*scrolling on element focus (e.g. via TAB key)*/
-			mCustomScrollBox.unbind("focusin").bind("focusin",function(){
-				mCustomScrollBox.scrollTop(0).scrollLeft(0);
-				var focusedElem=$(document.activeElement);
-				if(focusedElem.is("input,textarea,select,button,a[tabindex],area,object")){
-					if($this.data("horizontalScroll")){
-						var mCSB_containerX=mCSB_container.position().left,
-							focusedElemX=focusedElem.position().left,
-							mCustomScrollBoxW=mCustomScrollBox.width(),
-							focusedElemW=focusedElem.outerWidth();
-						if(mCSB_containerX+focusedElemX>=0 && mCSB_containerX+focusedElemX<=mCustomScrollBoxW-focusedElemW){
-							/*just focus...*/
-						}else{ /*scroll, then focus*/
-							var moveDragger=focusedElemX/$this.data("scrollAmount");
-							if(moveDragger>=mCSB_draggerContainer.width()-mCSB_dragger.width()){ /*max dragger position is bottom*/
-								moveDragger=mCSB_draggerContainer.width()-mCSB_dragger.width();
-							}
-							mCSB_dragger.css("left",moveDragger);
-							$this.mCustomScrollbar("scroll");
-						}
-					}else{
-						var mCSB_containerY=mCSB_container.position().top,
-							focusedElemY=focusedElem.position().top,
-							mCustomScrollBoxH=mCustomScrollBox.height(),
-							focusedElemH=focusedElem.outerHeight();
-						if(mCSB_containerY+focusedElemY>=0 && mCSB_containerY+focusedElemY<=mCustomScrollBoxH-focusedElemH){
-							/*just focus...*/
-						}else{ /*scroll, then focus*/
-							var moveDragger=focusedElemY/$this.data("scrollAmount");
-							if(moveDragger>=mCSB_draggerContainer.height()-mCSB_dragger.height()){ /*max dragger position is bottom*/
-								moveDragger=mCSB_draggerContainer.height()-mCSB_dragger.height();
-							}
-							mCSB_dragger.css("top",moveDragger);
-							$this.mCustomScrollbar("scroll");
-						}
-					}
-				}
-			});
+            if(!$this.data('preventInputBehavior')) {
+                mCustomScrollBox.unbind("focusin").bind("focusin",function(){
+                    mCustomScrollBox.scrollTop(0).scrollLeft(0);
+                    var focusedElem=$(document.activeElement);
+                    if(focusedElem.is("input,textarea,select,button,a[tabindex],area,object")){
+                        if($this.data("horizontalScroll")){
+                            var mCSB_containerX=mCSB_container.position().left,
+                                focusedElemX=focusedElem.position().left,
+                                mCustomScrollBoxW=mCustomScrollBox.width(),
+                                focusedElemW=focusedElem.outerWidth();
+                            if(mCSB_containerX+focusedElemX>=0 && mCSB_containerX+focusedElemX<=mCustomScrollBoxW-focusedElemW){
+                                /*just focus...*/
+                            }else{ /*scroll, then focus*/
+                                var moveDragger=focusedElemX/$this.data("scrollAmount");
+                                if(moveDragger>=mCSB_draggerContainer.width()-mCSB_dragger.width()){ /*max dragger position is bottom*/
+                                    moveDragger=mCSB_draggerContainer.width()-mCSB_dragger.width();
+                                }
+                                mCSB_dragger.css("left",moveDragger);
+                                $this.mCustomScrollbar("scroll");
+                            }
+                        }else{
+                            var mCSB_containerY=mCSB_container.position().top,
+                                focusedElemY=focusedElem.position().top,
+                                mCustomScrollBoxH=mCustomScrollBox.height(),
+                                focusedElemH=focusedElem.outerHeight();
+                            if(mCSB_containerY+focusedElemY>=0 && mCSB_containerY+focusedElemY<=mCustomScrollBoxH-focusedElemH){
+                                /*just focus...*/
+                            }else{ /*scroll, then focus*/
+                                var moveDragger=focusedElemY/$this.data("scrollAmount");
+                                if(moveDragger>=mCSB_draggerContainer.height()-mCSB_dragger.height()){ /*max dragger position is bottom*/
+                                    moveDragger=mCSB_draggerContainer.height()-mCSB_dragger.height();
+                                }
+                                mCSB_dragger.css("top",moveDragger);
+                                $this.mCustomScrollbar("scroll");
+                            }
+                        }
+                    }
+                });
+            }
 		},
 		scroll:function(updated){
 			var $this=$(this),
@@ -673,7 +677,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						$this.mCustomScrollbar("scroll",true);
 					}
 				}
-					
+
 			}
 		},
 		callbacks:function(mCustomScrollBox,mCSB_container){
@@ -722,4 +726,4 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			$.error("Method "+method+" does not exist");
 		}
 	};
-})(jQuery);  
+})(jQuery);
