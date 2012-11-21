@@ -750,6 +750,29 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					}
 				}
 			}
+		},
+		destroy: function () {
+			$(document).removeData('mCS-is-touch-device');
+			$(this).removeClass('_mCS_' + $(document).data("mCustomScrollbar-index"));
+			$(document).removeData('mCustomScrollbar-index');
+			$(this).removeData('horizontalScroll');
+			$(this).removeData('scrollInertia');
+			$(this).removeData('scrollEasing');
+			$(this).removeData('mouseWheel');
+			$(this).removeData('autoDraggerLength');
+			$(this).removeData('scrollButtons-enable');
+			$(this).removeData('scrollButtons-scrollType');
+			$(this).removeData('scrollButtons-scrollSpeed');
+			$(this).removeData('scrollButtons-scrollAmount');
+			$(this).removeData('autoExpandHorizontalScroll');
+			$(this).removeData('onScroll-Callback');
+			$(this).removeData('onTotalScroll-Callback');
+			$(this).removeData('onTotalScroll-Offset');
+			$(this).removeData('scrollAmount');
+			$(this).removeClass('mCustomScrollbar');
+			$(this).find('.mCustomScrollBox').contents().unwrap();
+			$(this).find('.mCSB_container').contents().unwrap();
+			$(this).find('.mCSB_scrollTools').remove();
 		}
 	}
 	$.fn.mCustomScrollbar=function(method){
