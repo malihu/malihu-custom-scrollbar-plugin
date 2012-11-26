@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0">
 	<title>jQuery custom scrollbar demo</title>
 	<!-- stylesheet for demo and examples -->
 	<style type="text/css">
-	<!--
 		body{margin:0; padding:0; color:#eee; background:#222; font-family:Verdana,Geneva,sans-serif; font-size:13px; line-height:20px;}
 		a:link,a:visited,a:hover{color:#fff;}
 		h1{font-family:Georgia,serif; font-size:19px; font-style:italic; margin:20px 40px 0 40px; color:#09C;}
@@ -17,7 +17,6 @@
 		.content{margin:40px; width:260px; height:500px; padding:20px; overflow:auto; background:#333;}
 		.content p:nth-child(even){color:#999; font-family:Georgia,serif; font-size:17px; font-style:italic;}
 		.content p:nth-child(3n+0){color:#c96;}
-	-->
 	</style>
 	<!-- Custom scrollbars CSS -->
 	<link href="jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" />
@@ -62,7 +61,8 @@
 					horizontalScroll:false, /*scroll horizontally: boolean*/
 					scrollInertia:550, /*scrolling inertia: integer (milliseconds)*/
 					scrollEasing:"easeOutCirc", /*scrolling easing: string*/
-					mouseWheel:"auto", /*mousewheel support and velocity: boolean, "auto", integer*/
+					mouseWheel:"pixels", /*mousewheel support and velocity: boolean, "auto", integer, "pixels"*/
+					mouseWheelPixels:60, /*mousewheel pixels amount: integer*/
 					autoDraggerLength:true, /*auto-adjust scrollbar dragger length: boolean*/
 					scrollButtons:{ /*scroll buttons*/
 						enable:false, /*scroll buttons support: boolean*/
@@ -73,12 +73,17 @@
 					advanced:{
 						updateOnBrowserResize:true, /*update scrollbars on browser resize (for layouts based on percentages): boolean*/
 						updateOnContentResize:false, /*auto-update scrollbars on content resize (for dynamic content): boolean*/
-						autoExpandHorizontalScroll:false /*auto expand width for horizontal scrolling: boolean*/
+						autoExpandHorizontalScroll:false, /*auto expand width for horizontal scrolling: boolean*/
+						autoScrollOnFocus:true /*auto-scroll on focused elements: boolean*/
 					},
 					callbacks:{
+						onScrollStart:function(){}, /*user custom callback function on scroll start event*/
 						onScroll:function(){}, /*user custom callback function on scroll event*/
-						onTotalScroll:function(){}, /*user custom callback function on bottom reached event*/
-						onTotalScrollOffset:0 /*bottom reached offset: integer (pixels)*/
+						onTotalScroll:function(){}, /*user custom callback function on scroll end reached event*/
+						onTotalScrollBack:function(){}, /*user custom callback function on scroll begin reached event*/
+						onTotalScrollOffset:0, /*scroll end reached offset: integer (pixels)*/
+						whileScrolling:false, /*user custom callback function on scrolling event*/
+						whileScrollingInterval:30 /*interval for calling whileScrolling callback: integer (milliseconds)*/
 					}
 				});
 			});

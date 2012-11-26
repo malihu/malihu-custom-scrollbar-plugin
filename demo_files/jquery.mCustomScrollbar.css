@@ -8,6 +8,10 @@
 .mCSB_container.mCS_no_scrollbar{
 	margin-right:0;
 }
+.mCS_disabled .mCSB_container.mCS_no_scrollbar,
+.mCS_destroyed .mCSB_container.mCS_no_scrollbar{
+	margin-right:30px;
+}
 .mCustomScrollBox .mCSB_scrollTools{
 	width:16px;
 	height:100%;
@@ -32,6 +36,7 @@
 	border-radius:10px;
 }
 .mCSB_scrollTools .mCSB_dragger{
+	cursor:pointer;
 	width:100%;
 	height:30px;
 }
@@ -64,6 +69,11 @@
 }
 .mCSB_horizontal .mCSB_container.mCS_no_scrollbar{
 	margin-bottom:0;
+}
+.mCS_disabled .mCSB_horizontal .mCSB_container.mCS_no_scrollbar,
+.mCS_destroyed .mCSB_horizontal .mCSB_container.mCS_no_scrollbar{
+	margin-right:0;
+	margin-bottom:30px;
 }
 .mCSB_horizontal.mCustomScrollBox .mCSB_scrollTools{
 	width:100%;
