@@ -1,6 +1,6 @@
 /* 
 == malihu jquery custom scrollbars plugin == 
-version: 2.3 
+version: 2.3.1 
 author: malihu (http://manos.malihu.gr) 
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
 */
@@ -130,6 +130,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					"bindEvent_buttonsPixels_y":false,
 					"bindEvent_buttonsPixels_x":false,
 					"bindEvent_scrollbar_touch":false,
+					"bindEvent_content_touch":false,
 					/*buttons intervals*/
 					"mCSB_buttonScrollRight":false,
 					"mCSB_buttonScrollLeft":false,
@@ -578,7 +579,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			}
 			/*touch events*/
 			if($(document).data("mCS-is-touch-device")){
-				/*scrollbar*/
+				/*scrollbar touch-drag*/
 				if(!$this.data("bindEvent_scrollbar_touch")){ /*bind once*/
 					var mCSB_draggerTouchY,
 						mCSB_draggerTouchX;
@@ -610,6 +611,40 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						}
 					});
 					$this.data({"bindEvent_scrollbar_touch":true});
+				}
+				/*content touch-drag*/
+				if(!$this.data("bindEvent_content_touch")){ /*bind once*/
+					var touch,
+						elem,
+						elemOffset,
+						x,
+						y,
+						mCSB_containerTouchY,
+						mCSB_containerTouchX;
+					mCSB_container.bind("touchstart onmsgesturestart",function(e){
+						touch=e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+						elem=$(this);
+						elemOffset=elem.offset();
+						x=touch.pageX-elemOffset.left;
+						y=touch.pageY-elemOffset.top;
+						mCSB_containerTouchY=y;
+						mCSB_containerTouchX=x;
+					});
+					mCSB_container.bind("touchmove onmsgesturechange",function(e){
+						e.preventDefault();
+						e.stopPropagation();
+						touch=e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+						elem=$(this).parent();
+						elemOffset=elem.offset();
+						x=touch.pageX-elemOffset.left;
+						y=touch.pageY-elemOffset.top;
+						if($this.data("horizontalScroll")){
+							$this.mCustomScrollbar("scrollTo",mCSB_containerTouchX-x);
+						}else{
+							$this.mCustomScrollbar("scrollTo",mCSB_containerTouchY-y);
+						}
+					});
+					$this.data({"bindEvent_content_touch":true});
 				}
 			}
 		},
@@ -822,3 +857,18 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 		}
 	};
 })(jQuery); 
+/*iOS 6 bug fix 
+  iOS 6 suffers from a bug that kills timers that are created while a page is scrolling. 
+  The following fixes that problem by recreating timers after scrolling finishes (with interval correction).*/
+var iOSVersion=iOSVersion();
+if(iOSVersion>=6){
+	(function(h){var a={};var d={};var e=h.setTimeout;var f=h.setInterval;var i=h.clearTimeout;var c=h.clearInterval;if(!h.addEventListener){return false}function j(q,n,l){var p,k=l[0],m=(q===f);function o(){if(k){k.apply(h,arguments);if(!m){delete n[p];k=null}}}l[0]=o;p=q.apply(h,l);n[p]={args:l,created:Date.now(),cb:k,id:p};return p}function b(q,o,k,r,t){var l=k[r];if(!l){return}var m=(q===f);o(l.id);if(!m){var n=l.args[1];var p=Date.now()-l.created;if(p<0){p=0}n-=p;if(n<0){n=0}l.args[1]=n}function s(){if(l.cb){l.cb.apply(h,arguments);if(!m){delete k[r];l.cb=null}}}l.args[0]=s;l.created=Date.now();l.id=q.apply(h,l.args)}h.setTimeout=function(){return j(e,a,arguments)};h.setInterval=function(){return j(f,d,arguments)};h.clearTimeout=function(l){var k=a[l];if(k){delete a[l];i(k.id)}};h.clearInterval=function(l){var k=d[l];if(k){delete d[l];c(k.id)}};var g=h;while(g.location!=g.parent.location){g=g.parent}g.addEventListener("scroll",function(){var k;for(k in a){b(e,i,a,k)}for(k in d){b(f,c,d,k)}})}(window));
+}
+function iOSVersion(){
+	var agent=window.navigator.userAgent,
+		start=agent.indexOf('OS ');
+	if((agent.indexOf('iPhone')>-1 || agent.indexOf('iPad')>-1) && start>-1){
+		return window.Number(agent.substr(start+3,3).replace('_','.'));
+	}
+	return 0;
+}
