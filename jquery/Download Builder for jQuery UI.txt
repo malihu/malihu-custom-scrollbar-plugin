@@ -1,0 +1,14 @@
+jQuery UI required components for custom scrollbar plugin 
+
+-----
+
+UI Core: 
+Core - The core of jQuery UI, required for all interactions and widgets.
+Widget - Provides a factory for creating stateful widgets with a common API.
+Mouse - Abstracts mouse-based interactions to assist in creating certain widgets.
+
+Interactions: 
+Draggable - Enables dragging functionality for any element.
+
+Effects: 
+Effects Core - Extends the internal jQuery effects. Includes morphing and easing. Required by all other effects.
