@@ -786,9 +786,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 		}
 	}
 	/*plugin dependencies*/
-	$.event.special.mousewheel || document.write('<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"><\/script>');
-	(window.com && window.com.greensock && window.com.greensock.TweenLite) || document.write('<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"><\/script>');
-	(window.com && window.com.greensock && window.com.greensock.plugins && window.com.greensock.plugins.CSSPlugin) || document.write('<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"><\/script>');
+	$.event.special.mousewheel || document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"><\/script>');
+	(window.com && window.com.greensock && window.com.greensock.TweenLite) || document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"><\/script>');
+	(window.com && window.com.greensock && window.com.greensock.plugins && window.com.greensock.plugins.CSSPlugin) || document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"><\/script>');
 	/*plugin fn*/
 	$.fn.mCustomScrollbar=function(method){
 		if(methods[method]){
