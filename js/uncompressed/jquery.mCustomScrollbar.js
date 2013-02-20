@@ -5,7 +5,6 @@ author: malihu (http://manos.malihu.gr)
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
 */
 (function($){
-	/*plugin script*/
 	var methods={
 		init:function(options){
 			var defaults={ 
@@ -785,10 +784,6 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			$(document).unbind("mousemove."+$this.data("mCustomScrollbarIndex")+" mouseup."+$this.data("mCustomScrollbarIndex")+" MSPointerMove."+$this.data("mCustomScrollbarIndex")+" MSPointerUp."+$this.data("mCustomScrollbarIndex"));
 		}
 	}
-	/*plugin dependencies*/
-	$.event.special.mousewheel || document.write('<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"><\/script>');
-	(window.com && window.com.greensock && window.com.greensock.TweenLite) || document.write('<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"><\/script>');
-	(window.com && window.com.greensock && window.com.greensock.plugins && window.com.greensock.plugins.CSSPlugin) || document.write('<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"><\/script>');
 	/*plugin fn*/
 	$.fn.mCustomScrollbar=function(method){
 		if(methods[method]){

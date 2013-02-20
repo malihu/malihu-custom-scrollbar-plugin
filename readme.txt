@@ -2,7 +2,7 @@
 
 == Description ==
 
-Custom scrollbar plugin utilizing jquery UI that's fully customizable with CSS. Features vertical/horizontal scrolling, mouse-wheel support, scroll easing, adjustable scrollbar height/width etc.
+Custom scrollbar jQuery plugin that's fully customizable with CSS. Features vertical/horizontal scrolling, mouse-wheel support, scroll easing, adjustable scrollbar height/width, nested scrollbars, user defined callbacks etc.
 
 == Browser compatibility ==
 
@@ -35,6 +35,7 @@ For implementation guides and tutorials please visit plugin home.
 
 == Changelog ==
 
+= Version 2.7 (FEB 19, 2013) =
 = Version 2.3.2 (DEC 19, 2012) =
 = Version 2.3.1 (NOV 28, 2012) =
 = Version 2.3 (NOV 25, 2012) =

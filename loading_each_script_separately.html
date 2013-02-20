@@ -46,8 +46,17 @@
 	<!-- Google CDN jQuery with fallback to local -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script>!window.jQuery && document.write(unescape('%3Cscript src="js/minified/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
+	<!-- CloudFlare CDN mousewheel plugin with fallback to local -->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+	<script>$.event.special.mousewheel || document.write('<script src="js/minified/jquery.mousewheel.min.js"><\/script>')</script>
+	<!-- CloudFlare CDN GSAP TweenLite -->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"></script>
+	<script>(window.com && window.com.greensock && window.com.greensock.TweenLite) || document.write('<script src="js/minified/TweenLite.min.js"><\/script>')</script>
+	<!-- CloudFlare CDN GSAP CSSPlugin -->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"></script>
+	<script>(window.com && window.com.greensock && window.com.greensock.plugins && window.com.greensock.plugins.CSSPlugin) || document.write('<script src="js/minified/CSSPlugin.min.js"><\/script>')</script>
 	<!-- custom scrollbars plugin -->
-	<script src="jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="js/minified/jquery.mCustomScrollbar.min.js"></script>
 	<script>
 		(function($){
 			$(window).load(function(){
