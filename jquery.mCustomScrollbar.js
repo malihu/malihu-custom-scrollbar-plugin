@@ -99,7 +99,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						mCustomScrollBox.scrollTop(0).scrollLeft(0);
 					}
 				});
-				/*store options, global vars/states, intervals and update element*/
+				/*store options, global vars/states, intervals*/
 				$this.data({
 					/*init state*/
 					"mCS_Init":true,
@@ -142,7 +142,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					"mCSB_buttonScrollLeft":false,
 					"mCSB_buttonScrollDown":false,
 					"mCSB_buttonScrollUp":false
-				}).mCustomScrollbar("update");
+				});
 				/*max-width/max-height*/
 				if(options.horizontalScroll){
 					if($this.css("max-width")!=="none"){
@@ -161,6 +161,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						mCustomScrollBox.css("max-height",maxHeight);
 					}
 				}
+				$this.mCustomScrollbar("update");
 				/*window resize fn (for layouts based on percentages)*/
 				if(options.advanced.updateOnBrowserResize){
 					var mCSB_resizeTimeout,currWinWidth=$(window).width(),currWinHeight=$(window).height();
