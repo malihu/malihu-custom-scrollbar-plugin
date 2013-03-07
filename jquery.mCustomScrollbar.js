@@ -1,6 +1,6 @@
 /* 
 == malihu jquery custom scrollbars plugin == 
-version: 2.7 
+version: 2.8 
 author: malihu (http://manos.malihu.gr) 
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
 */
@@ -27,8 +27,10 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					updateOnBrowserResize:true, /*update scrollbars on browser resize (for layouts based on percentages): boolean*/
 					updateOnContentResize:false, /*auto-update scrollbars on content resize (for dynamic content): boolean*/
 					autoExpandHorizontalScroll:false, /*auto-expand width for horizontal scrolling: boolean*/
-					autoScrollOnFocus:true /*auto-scroll on focused elements: boolean*/
+					autoScrollOnFocus:true, /*auto-scroll on focused elements: boolean*/
+					normalizeMouseWheelDelta:false /*normalize mouse-wheel delta (-1/1)*/
 				},
+				contentTouchScroll:true, /*scrolling by touch-swipe content: boolean*/
 				callbacks:{
 					onScrollStart:function(){}, /*user custom callback function on scroll start event*/
 					onScroll:function(){}, /*user custom callback function on scroll event*/
@@ -41,14 +43,6 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				theme:"light" /*"light", "dark", "light-2", "dark-2", "light-thick", "dark-thick", "light-thin", "dark-thin"*/
 			},
 			options=$.extend(true,defaults,options);
-			/*check for touch device*/
-			$(document).data("mCS-is-touch-device",false);
-			if(is_touch_device()){
-				$(document).data("mCS-is-touch-device",true); 
-			}
-			function is_touch_device(){
-				return !!("ontouchstart" in window) ? 1 : 0;
-			}
 			return this.each(function(){
 				var $this=$(this);
 				/*set element width/height, create markup for custom scrollbars, add classes*/
@@ -74,7 +68,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					mCustomScrollBox.wrapInner("<div class='mCSB_container' style='position:relative; top:0;' />");
 				}
 				var mCSB_container=mCustomScrollBox.children(".mCSB_container");
-				if($(document).data("mCS-is-touch-device")){
+				if($.support.touch){
 					mCSB_container.addClass("mCS_touch");
 				}
 				mCSB_container.after("<div class='mCSB_scrollTools' style='position:absolute;'><div class='mCSB_draggerContainer'><div class='mCSB_dragger' style='position:absolute;' oncontextmenu='return false;'><div class='mCSB_dragger_bar' style='position:relative;'></div></div><div class='mCSB_draggerRail'></div></div></div>");
@@ -108,7 +102,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					/*option parameters*/
 					"horizontalScroll":options.horizontalScroll,
 					"scrollInertia":options.scrollInertia,
-					"scrollEasing":Power4.easeOut,
+					"scrollEasing":"mcsEaseOut",
 					"mouseWheel":options.mouseWheel,
 					"mouseWheelPixels":options.mouseWheelPixels,
 					"autoDraggerLength":options.autoDraggerLength,
@@ -119,6 +113,8 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					"scrollButtons_scrollAmount":options.scrollButtons.scrollAmount,
 					"autoExpandHorizontalScroll":options.advanced.autoExpandHorizontalScroll,
 					"autoScrollOnFocus":options.advanced.autoScrollOnFocus,
+					"normalizeMouseWheelDelta":options.advanced.normalizeMouseWheelDelta,
+					"contentTouchScroll":options.contentTouchScroll,
 					"onScrollStart_Callback":options.callbacks.onScrollStart,
 					"onScroll_Callback":options.callbacks.onScroll,
 					"onTotalScroll_Callback":options.callbacks.onTotalScroll,
@@ -165,7 +161,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				/*window resize fn (for layouts based on percentages)*/
 				if(options.advanced.updateOnBrowserResize){
 					var mCSB_resizeTimeout,currWinWidth=$(window).width(),currWinHeight=$(window).height();
-					$(window).resize(function(){
+					$(window).bind("resize."+$this.data("mCustomScrollbarIndex"),function(){
 						if(mCSB_resizeTimeout){
 							clearTimeout(mCSB_resizeTimeout);
 						}
@@ -297,7 +293,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			/*scrollbar drag scrolling*/
 			if(!$this.data("bindEvent_scrollbar_drag")){
 				var mCSB_draggerDragY,mCSB_draggerDragX;
-				if(window.navigator.msPointerEnabled){ /*MSPointer*/
+				if($.support.msPointer){ /*MSPointer*/
 					mCSB_dragger.bind("MSPointerDown",function(e){
 						e.preventDefault();
 						$this.data({"on_drag":true}); mCSB_dragger.addClass("mCSB_dragger_onDrag");
@@ -370,7 +366,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				}
 			}
 			/*content touch-drag*/
-			if($(document).data("mCS-is-touch-device")){
+			if($.support.touch && $this.data("contentTouchScroll")){
 				if(!$this.data("bindEvent_content_touch")){
 					var touch,
 						elem,elemOffset,y,x,mCSB_containerTouchY,mCSB_containerTouchX;
@@ -407,7 +403,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						scrollToPos=(e.pageX-mCSB_draggerContainer.offset().left)*$this.data("scrollAmount");
 					}
 					if(target.hasClass("mCSB_draggerContainer") || target.hasClass("mCSB_draggerRail")){
-						$this.mCustomScrollbar("scrollTo",scrollToPos,{trigger:"internal"});
+						$this.mCustomScrollbar("scrollTo",scrollToPos,{trigger:"internal",scrollEasing:"draggerRailEase"});
 					}
 				});
 				$this.data({"bindEvent_scrollbar_click":true});
@@ -418,7 +414,9 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					mCustomScrollBox.bind("mousewheel",function(e,delta){
 						var scrollTo,mouseWheelPixels=$this.data("mouseWheelPixels"),absPos=Math.abs(mCSB_container.position().top),
 							draggerPos=mCSB_dragger.position().top,limit=mCSB_draggerContainer.height()-mCSB_dragger.height();
-						if(delta<0){delta=-1;}else{delta=1;}
+						if($this.data("normalizeMouseWheelDelta")){
+							if(delta<0){delta=-1;}else{delta=1;}
+						}
 						if(mouseWheelPixels==="auto"){
 							mouseWheelPixels=100+Math.round($this.data("scrollAmount")/2);
 						}
@@ -486,7 +484,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollRight":setInterval(function(){
-									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().left)+scrollButtonsSpeed,{trigger:"internal"});
+									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().left)+scrollButtonsSpeed,{trigger:"internal",scrollEasing:"easeOutCirc"});
 								},17)});
 							});
 							var mCSB_buttonRight_stop=function(e){
@@ -498,7 +496,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollLeft":setInterval(function(){
-									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().left)-scrollButtonsSpeed,{trigger:"internal"});
+									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().left)-scrollButtonsSpeed,{trigger:"internal",scrollEasing:"easeOutCirc"});
 								},17)});
 							});	
 							var mCSB_buttonLeft_stop=function(e){
@@ -516,7 +514,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollDown":setInterval(function(){
-									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().top)+scrollButtonsSpeed,{trigger:"internal"});
+									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().top)+scrollButtonsSpeed,{trigger:"internal",scrollEasing:"easeOutCirc"});
 								},17)});
 							});
 							var mCSB_buttonDown_stop=function(e){
@@ -528,7 +526,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollUp":setInterval(function(){
-									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().top)-scrollButtonsSpeed,{trigger:"internal"});
+									$this.mCustomScrollbar("scrollTo",Math.abs(mCSB_container.position().top)-scrollButtonsSpeed,{trigger:"internal",scrollEasing:"easeOutCirc"});
 								},17)});
 							});	
 							var mCSB_buttonUp_stop=function(e){
@@ -541,7 +539,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 					function ScrollButtonsSpeed(){
 						var speed=$this.data("scrollButtons_scrollSpeed");
 						if($this.data("scrollButtons_scrollSpeed")==="auto"){
-							speed=Math.round(($this.data("scrollInertia")+100)/20);
+							speed=Math.round(($this.data("scrollInertia")+100)/40);
 						}
 						return speed;
 					}
@@ -574,10 +572,11 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			if($this.data("autoHideScrollbar")){
 				if(!$this.data("bindEvent_autoHideScrollbar")){
 					mCustomScrollBox.bind("mouseenter",function(e){
-						mCustomScrollBox.addClass("mCS-mouse-over").children(".mCSB_scrollTools").stop().animate({opacity:1},"fast");
+						mCustomScrollBox.addClass("mCS-mouse-over");
+						functions.showScrollbar.call(mCustomScrollBox.children(".mCSB_scrollTools"));
 					}).bind("mouseleave touchend",function(e){
 						mCustomScrollBox.removeClass("mCS-mouse-over");
-						if(e.type==="mouseleave"){mCustomScrollBox.children(".mCSB_scrollTools").stop().animate({opacity:0},"fast");}
+						if(e.type==="mouseleave"){functions.hideScrollbar.call(mCustomScrollBox.children(".mCSB_scrollTools"));}
 					});
 					$this.data({"bindEvent_autoHideScrollbar":true});
 				}
@@ -602,7 +601,6 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				contentSpeed=draggerSpeed=options.scrollInertia,
 				scrollBeginning,scrollBeginningOffset,totalScroll,totalScrollOffset;
 			$this.data({"mCS_trigger":options.trigger});
-			if(options.scrollInertia>0){contentSpeed=draggerSpeed=options.scrollInertia/1000;}
 			if($this.data("mCS_Init")){options.callbacks=false;}
 			if(scrollTo || scrollTo===0){
 				if(typeof(scrollTo)==="number"){ /*if integer, scroll by number of pixels*/
@@ -662,11 +660,11 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						if(!totalScrollOffset){totalScroll=true;}
 					}else{scrollTo=-scrollTo;}
 					/*scrolling animation*/
-					TweenLite.to(mCSB_dragger,draggerSpeed,{css:{left:Math.round(draggerScrollTo)},overwrite:"all",ease:options.scrollEasing});
-					TweenLite.to(mCSB_container,contentSpeed,{css:{left:Math.round(scrollTo)},overwrite:"all",ease:options.scrollEasing,
+					functions.mTweenAxis.call(this,mCSB_dragger[0],"left",Math.round(draggerScrollTo),draggerSpeed,options.scrollEasing);
+					functions.mTweenAxis.call(this,mCSB_container[0],"left",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
 						onStart:function(){
 							if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-							if($this.data("autoHideScrollbar")){showScrollbar();}
+							if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
 						},
 						onUpdate:function(){
 							if(options.callbacks){callbacks("whileScrolling");}
@@ -678,8 +676,8 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								if(totalScroll || (totalScrollOffset && mCSB_container.position().left<=totalScrollOffset)){callbacks("onTotalScroll");}
 							}
 							mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-							if($this.data("autoHideScrollbar")){hideScrollbar();}
-						}
+							if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
+						},
 					});
 				}else{
 					if($this.data("onTotalScrollBack_Offset")){ /*scroll beginning offset*/
@@ -697,11 +695,11 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						if(!totalScrollOffset){totalScroll=true;}
 					}else{scrollTo=-scrollTo;}
 					/*scrolling animation*/
-					TweenLite.to(mCSB_dragger,draggerSpeed,{css:{top:Math.round(draggerScrollTo)},overwrite:"all",ease:options.scrollEasing});
-					TweenLite.to(mCSB_container,contentSpeed,{css:{top:Math.round(scrollTo)},overwrite:"all",ease:options.scrollEasing,
+					functions.mTweenAxis.call(this,mCSB_dragger[0],"top",Math.round(draggerScrollTo),draggerSpeed,options.scrollEasing);
+					functions.mTweenAxis.call(this,mCSB_container[0],"top",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
 						onStart:function(){
 							if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-							if($this.data("autoHideScrollbar")){showScrollbar();}
+							if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
 						},
 						onUpdate:function(){
 							if(options.callbacks){callbacks("whileScrolling");}
@@ -713,8 +711,8 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 								if(totalScroll || (totalScrollOffset && mCSB_container.position().top<=totalScrollOffset)){callbacks("onTotalScroll");}
 							}
 							mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-							if($this.data("autoHideScrollbar")){hideScrollbar();}
-						}
+							if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
+						},
 					});
 				}
 				if($this.data("mCS_Init")){$this.data({"mCS_Init":false});}
@@ -746,20 +744,13 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 						break;
 				}
 			}
-			/*hide/show scrollbar*/
-			function showScrollbar(){
-				TweenLite.to(mCSB_scrollTools,0.15,{css:{opacity:1},ease:Power2.easeIn});
-			}
-			function hideScrollbar(){
-				if(!mCustomScrollBox.hasClass("mCS-mouse-over")){TweenLite.to(mCSB_scrollTools,0.15,{css:{opacity:0},ease:Power2.easeIn});}
-			}
 		},
 		stop:function(){
 			var $this=$(this),
 				mCSB_container=$this.children().children(".mCSB_container"),
 				mCSB_dragger=$this.children().children().children().children(".mCSB_dragger");
-			TweenLite.killTweensOf(mCSB_container);
-			TweenLite.killTweensOf(mCSB_dragger);
+			functions.mTweenAxisStop.call(this,mCSB_container[0]);
+			functions.mTweenAxisStop.call(this,mCSB_dragger[0]);
 		},
 		disable:function(resetScroll){
 			var $this=$(this),
@@ -784,12 +775,136 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 			var $this=$(this);
 			$this.removeClass("mCustomScrollbar _mCS_"+$this.data("mCustomScrollbarIndex")).addClass("mCS_destroyed").children().children(".mCSB_container").unwrap().children().unwrap().siblings(".mCSB_scrollTools").remove();
 			$(document).unbind("mousemove."+$this.data("mCustomScrollbarIndex")+" mouseup."+$this.data("mCustomScrollbarIndex")+" MSPointerMove."+$this.data("mCustomScrollbarIndex")+" MSPointerUp."+$this.data("mCustomScrollbarIndex"));
+			$(window).unbind("resize."+$this.data("mCustomScrollbarIndex"));
+		}
+	},
+	functions={
+		/*hide/show scrollbar*/
+		showScrollbar:function(){
+			this.stop().animate({opacity:1},"fast");
+		},
+		hideScrollbar:function(){
+			this.stop().animate({opacity:0},"fast");
+		},
+		/*js animation tween*/
+		mTweenAxis:function(el,prop,to,duration,easing,callbacks){
+			var callbacks=callbacks || {},
+				onStart=callbacks.onStart || function(){},onUpdate=callbacks.onUpdate || function(){},onComplete=callbacks.onComplete || function(){};
+			var startTime=_getTime(),_delay,progress=0,from=el.offsetTop,elStyle=el.style;
+			if(prop==="left"){from=el.offsetLeft;}
+			var diff=to-from;
+			_cancelTween();
+			_startTween();
+			function _getTime(){
+				if(window.performance && window.performance.now){
+					return window.performance.now();
+				}else{
+					if(window.performance && window.performance.webkitNow){
+						return window.performance.webkitNow();
+					}else{
+						if(Date.now){return Date.now();}else{return new Date().getTime();}
+					}
+				}
+			}
+			function _step(){
+				if(!progress){onStart.call();}
+				progress=_getTime()-startTime;
+				_tween();
+				if(progress>=el._time){
+					el._time=(progress>el._time) ? progress+_delay-(progress- el._time) : progress+_delay-1;
+					if(el._time<progress+1){el._time=progress+1;}
+				}
+				if(el._time<duration){el._id=_request(_step);}else{onComplete.call();}
+			}
+			function _tween(){
+				if(duration>0){
+					el.currVal=_ease(el._time,from,diff,duration,easing);
+					elStyle[prop]=Math.round(el.currVal)+"px";
+				}else{
+					elStyle[prop]=to+"px";
+				}
+				onUpdate.call();
+			}
+			function _startTween(){
+				_delay=1000/60;
+				el._time=progress+_delay;
+				_request=(!window.requestAnimationFrame) ? function(f){_tween(); return setTimeout(f,0.01);} : window.requestAnimationFrame;
+				el._id=_request(_step);
+			}
+			function _cancelTween(){
+				if(el._id==null){return;}
+				if(!window.requestAnimationFrame){clearTimeout(el._id);
+				}else{window.cancelAnimationFrame(el._id);}
+				el._id=null;
+			}
+			function _ease(t,b,c,d,type){
+				switch(type){
+					case "linear":
+						return c*t/d + b;
+						break;
+					case "easeOutQuad":
+						t /= d; return -c * t*(t-2) + b;
+						break;
+					case "easeInOutQuad":
+						t /= d/2;
+						if (t < 1) return c/2*t*t + b;
+						t--;
+						return -c/2 * (t*(t-2) - 1) + b;
+						break;
+					case "easeOutCubic":
+						t /= d; t--; return c*(t*t*t + 1) + b;
+						break;
+					case "easeOutQuart":
+						t /= d; t--; return -c * (t*t*t*t - 1) + b;
+						break;
+					case "easeOutQuint":
+						t /= d; t--; return c*(t*t*t*t*t + 1) + b;
+						break;
+					case "easeOutCirc":
+						t /= d; t--; return c * Math.sqrt(1 - t*t) + b;
+						break;
+					case "easeOutSine":
+						return c * Math.sin(t/d * (Math.PI/2)) + b;
+						break;
+					case "easeOutExpo":
+						return c * ( -Math.pow( 2, -10 * t/d ) + 1 ) + b;
+						break;
+					case "mcsEaseOut":
+						var ts=(t/=d)*t,tc=ts*t;
+						return b+c*(0.499999999999997*tc*ts + -2.5*ts*ts + 5.5*tc + -6.5*ts + 4*t);
+						break;
+					case "draggerRailEase":
+						t /= d/2;
+						if (t < 1) return c/2*t*t*t + b;
+						t -= 2;
+						return c/2*(t*t*t + 2) + b;
+						break;
+				}
+			}
+		},
+		/*stop js animation tweens*/
+		mTweenAxisStop:function(el){
+			if(el._id==null){return;}
+			if(!window.requestAnimationFrame){clearTimeout(el._id);
+			}else{window.cancelAnimationFrame(el._id);}
+			el._id=null;
+		},
+		/*detect requestAnimationFrame and polyfill*/
+		rafPolyfill:function(){
+			var pfx=["ms","moz","webkit","o"],i=pfx.length;
+			while(--i > -1 && !window.requestAnimationFrame){
+				window.requestAnimationFrame=window[pfx[i]+"RequestAnimationFrame"];
+				window.cancelAnimationFrame=window[pfx[i]+"CancelAnimationFrame"] || window[pfx[i]+"CancelRequestAnimationFrame"];
+			}
 		}
 	}
+	/*detect features*/
+	functions.rafPolyfill.call(); /*requestAnimationFrame*/
+	$.support.touch=!!('ontouchstart' in window); /*touch*/
+	$.support.msPointer=window.navigator.msPointerEnabled; /*MSPointer support*/
 	/*plugin dependencies*/
-	$.event.special.mousewheel || document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"><\/script>');
-	(window.com && window.com.greensock && window.com.greensock.TweenLite) || document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"><\/script>');
-	(window.com && window.com.greensock && window.com.greensock.plugins && window.com.greensock.plugins.CSSPlugin) || document.write('<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"><\/script>');
+	var _dlp=("https:"==document.location.protocol) ? "https:" : "http:";
+	$.event.special.mousewheel || document.write('<script src="'+_dlp+'//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"><\/script>');
 	/*plugin fn*/
 	$.fn.mCustomScrollbar=function(method){
 		if(methods[method]){

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -74,11 +74,11 @@
 							if(pixelsToScroll>activeElemPos){
 								activeElem.mCustomScrollbar("scrollTo","top");
 							}else{
-								activeElem.mCustomScrollbar("scrollTo",(activeElemPos-pixelsToScroll),{scrollInertia:400,scrollEasing:Power2.easeOut});
+								activeElem.mCustomScrollbar("scrollTo",(activeElemPos-pixelsToScroll),{scrollInertia:400,scrollEasing:"easeOutCirc"});
 							}
 						}else if(e.which===40){ //scroll down
 							e.preventDefault();
-							activeElem.mCustomScrollbar("scrollTo",(activeElemPos+pixelsToScroll),{scrollInertia:400,scrollEasing:Power2.easeOut});
+							activeElem.mCustomScrollbar("scrollTo",(activeElemPos+pixelsToScroll),{scrollInertia:400,scrollEasing:"easeOutCirc"});
 						}
 					}
 				});

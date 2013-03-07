@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -86,7 +86,7 @@
 						$this.removeClass("loading");
 						$("#content_1 .mCSB_container").append(data); //append new content inside .mCSB_container
 						$("#content_1").mCustomScrollbar("update"); //update scrollbar according to newly appended content
-						$("#content_1").mCustomScrollbar("scrollTo","h2:last",{scrollInertia:2500,scrollEasing:Power3.easeInOut}); //scroll to appended content
+						$("#content_1").mCustomScrollbar("scrollTo","h2:last",{scrollInertia:2500,scrollEasing:"easeInOutQuad"}); //scroll to appended content
 					});
 				});
 			});

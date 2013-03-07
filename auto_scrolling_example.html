@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -83,7 +83,7 @@
 				});
 				function AutoScrollOn(to,timer){
 					if(!timer){timer=autoScrollTimer;}
-					content.addClass("auto-scrolling-on").mCustomScrollbar("scrollTo",to,{scrollInertia:timer,scrollEasing:Power1.easeInOut});
+					content.addClass("auto-scrolling-on").mCustomScrollbar("scrollTo",to,{scrollInertia:timer,scrollEasing:"easeInOutQuad"});
 					autoScroll=setTimeout(function(){
 						if(content.hasClass("auto-scrolling-to-top")){
 							AutoScrollOn("bottom",autoScrollTimer-autoScrollTimerAdjust);
