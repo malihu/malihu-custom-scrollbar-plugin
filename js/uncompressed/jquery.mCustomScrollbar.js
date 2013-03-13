@@ -1,8 +1,25 @@
-/* 
+/*
 == malihu jquery custom scrollbars plugin == 
-version: 2.8 
+version: 2.8.1 
 author: malihu (http://manos.malihu.gr) 
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
+*/
+
+/*
+Copyright 2010-2013 Manos Malihutsakis 
+
+This program is free software: you can redistribute it and/or modify 
+it under the terms of the GNU General Public License as published by 
+the Free Software Foundation, either version 3 of the License, or 
+any later version. 
+
+This program is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+GNU General Public License for more details. 
+
+You should have received a copy of the GNU General Public License 
+along with this program.  If not, see http://www.gnu.org/licenses/. 
 */
 (function($){
 	/*plugin script*/
@@ -251,7 +268,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				$this.data("scrollAmount",scrollAmount).mCustomScrollbar("scrolling",mCustomScrollBox,mCSB_container,mCSB_draggerContainer,mCSB_dragger,mCSB_buttonUp,mCSB_buttonDown,mCSB_buttonLeft,mCSB_buttonRight);
 				/*scroll*/
 				var mCSB_containerP=Math.abs(mCSB_container.position().top);
-				$this.mCustomScrollbar("scrollTo",mCSB_containerP,{scrollInertia:0});
+				$this.mCustomScrollbar("scrollTo",mCSB_containerP,{scrollInertia:0,trigger:"internal"});
 			}else if(mCSB_containerW>mCustomScrollBoxW && $this.data("horizontalScroll")){ /*content needs horizontal scrolling*/
 				mCSB_scrollTools.css("display","block");
 				var mCSB_draggerContainerW=mCSB_draggerContainer.width();
@@ -274,7 +291,7 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				$this.data("scrollAmount",scrollAmount).mCustomScrollbar("scrolling",mCustomScrollBox,mCSB_container,mCSB_draggerContainer,mCSB_dragger,mCSB_buttonUp,mCSB_buttonDown,mCSB_buttonLeft,mCSB_buttonRight);
 				/*scroll*/
 				var mCSB_containerP=Math.abs(mCSB_container.position().left);
-				$this.mCustomScrollbar("scrollTo",mCSB_containerP,{scrollInertia:0});
+				$this.mCustomScrollbar("scrollTo",mCSB_containerP,{scrollInertia:0,trigger:"internal"});
 			}else{ /*content does not need scrolling*/
 				/*unbind events, reset content position, hide scrollbars, remove classes*/
 				mCustomScrollBox.unbind("mousewheel focusin");
@@ -600,122 +617,124 @@ plugin home: http://manos.malihu.gr/jquery-custom-content-scroller
 				mCSB_dragger=mCSB_draggerContainer.children(".mCSB_dragger"),
 				contentSpeed=draggerSpeed=options.scrollInertia,
 				scrollBeginning,scrollBeginningOffset,totalScroll,totalScrollOffset;
-			$this.data({"mCS_trigger":options.trigger});
-			if($this.data("mCS_Init")){options.callbacks=false;}
-			if(scrollTo || scrollTo===0){
-				if(typeof(scrollTo)==="number"){ /*if integer, scroll by number of pixels*/
-					if(options.moveDragger){ /*scroll dragger*/
-						draggerScrollTo=scrollTo;
-						if($this.data("horizontalScroll")){
-							scrollTo=mCSB_dragger.position().left*$this.data("scrollAmount");
-						}else{
-							scrollTo=mCSB_dragger.position().top*$this.data("scrollAmount");
+			if(!mCSB_container.hasClass("mCS_no_scrollbar")){
+				$this.data({"mCS_trigger":options.trigger});
+				if($this.data("mCS_Init")){options.callbacks=false;}
+				if(scrollTo || scrollTo===0){
+					if(typeof(scrollTo)==="number"){ /*if integer, scroll by number of pixels*/
+						if(options.moveDragger){ /*scroll dragger*/
+							draggerScrollTo=scrollTo;
+							if($this.data("horizontalScroll")){
+								scrollTo=mCSB_dragger.position().left*$this.data("scrollAmount");
+							}else{
+								scrollTo=mCSB_dragger.position().top*$this.data("scrollAmount");
+							}
+							draggerSpeed=0;
+						}else{ /*scroll content by default*/
+							draggerScrollTo=scrollTo/$this.data("scrollAmount");
 						}
-						draggerSpeed=0;
-					}else{ /*scroll content by default*/
-						draggerScrollTo=scrollTo/$this.data("scrollAmount");
-					}
-				}else if(typeof(scrollTo)==="string"){ /*if string, scroll by element position*/
-					var target;
-					if(scrollTo==="top"){ /*scroll to top*/
-						target=0;
-					}else if(scrollTo==="bottom" && !$this.data("horizontalScroll")){ /*scroll to bottom*/
-						target=mCSB_container.outerHeight()-mCustomScrollBox.height();
-					}else if(scrollTo==="left"){ /*scroll to left*/
-						target=0;
-					}else if(scrollTo==="right" && $this.data("horizontalScroll")){ /*scroll to right*/
-						target=mCSB_container.outerWidth()-mCustomScrollBox.width();
-					}else if(scrollTo==="first"){ /*scroll to first element position*/
-						target=$this.find(".mCSB_container").find(":first");
-					}else if(scrollTo==="last"){ /*scroll to last element position*/
-						target=$this.find(".mCSB_container").find(":last");
-					}else{ /*scroll to element position*/
-						target=$this.find(scrollTo);
-					}
-					if(target.length===1){ /*if such unique element exists, scroll to it*/
-						if($this.data("horizontalScroll")){
-							scrollTo=target.position().left;
-						}else{
-							scrollTo=target.position().top;
+					}else if(typeof(scrollTo)==="string"){ /*if string, scroll by element position*/
+						var target;
+						if(scrollTo==="top"){ /*scroll to top*/
+							target=0;
+						}else if(scrollTo==="bottom" && !$this.data("horizontalScroll")){ /*scroll to bottom*/
+							target=mCSB_container.outerHeight()-mCustomScrollBox.height();
+						}else if(scrollTo==="left"){ /*scroll to left*/
+							target=0;
+						}else if(scrollTo==="right" && $this.data("horizontalScroll")){ /*scroll to right*/
+							target=mCSB_container.outerWidth()-mCustomScrollBox.width();
+						}else if(scrollTo==="first"){ /*scroll to first element position*/
+							target=$this.find(".mCSB_container").find(":first");
+						}else if(scrollTo==="last"){ /*scroll to last element position*/
+							target=$this.find(".mCSB_container").find(":last");
+						}else{ /*scroll to element position*/
+							target=$this.find(scrollTo);
 						}
-						draggerScrollTo=scrollTo/$this.data("scrollAmount");
+						if(target.length===1){ /*if such unique element exists, scroll to it*/
+							if($this.data("horizontalScroll")){
+								scrollTo=target.position().left;
+							}else{
+								scrollTo=target.position().top;
+							}
+							draggerScrollTo=scrollTo/$this.data("scrollAmount");
+						}else{
+							draggerScrollTo=scrollTo=target;
+						}
+					}
+					/*scroll to*/
+					if($this.data("horizontalScroll")){
+						if($this.data("onTotalScrollBack_Offset")){ /*scroll beginning offset*/
+							scrollBeginningOffset=-$this.data("onTotalScrollBack_Offset");
+						}
+						if($this.data("onTotalScroll_Offset")){ /*total scroll offset*/
+							totalScrollOffset=mCustomScrollBox.width()-mCSB_container.outerWidth()+$this.data("onTotalScroll_Offset");
+						}
+						if(draggerScrollTo<0){ /*scroll start position*/
+							draggerScrollTo=scrollTo=0; clearInterval($this.data("mCSB_buttonScrollLeft"));
+							if(!scrollBeginningOffset){scrollBeginning=true;}
+						}else if(draggerScrollTo>=mCSB_draggerContainer.width()-mCSB_dragger.width()){ /*scroll end position*/
+							draggerScrollTo=mCSB_draggerContainer.width()-mCSB_dragger.width();
+							scrollTo=mCustomScrollBox.width()-mCSB_container.outerWidth(); clearInterval($this.data("mCSB_buttonScrollRight"));
+							if(!totalScrollOffset){totalScroll=true;}
+						}else{scrollTo=-scrollTo;}
+						/*scrolling animation*/
+						functions.mTweenAxis.call(this,mCSB_dragger[0],"left",Math.round(draggerScrollTo),draggerSpeed,options.scrollEasing);
+						functions.mTweenAxis.call(this,mCSB_container[0],"left",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
+							onStart:function(){
+								if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
+								if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
+							},
+							onUpdate:function(){
+								if(options.callbacks){callbacks("whileScrolling");}
+							},
+							onComplete:function(){
+								if(options.callbacks){
+									callbacks("onScroll");
+									if(scrollBeginning || (scrollBeginningOffset && mCSB_container.position().left>=scrollBeginningOffset)){callbacks("onTotalScrollBack");}
+									if(totalScroll || (totalScrollOffset && mCSB_container.position().left<=totalScrollOffset)){callbacks("onTotalScroll");}
+								}
+								mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
+								if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
+							}
+						});
 					}else{
-						draggerScrollTo=scrollTo=target;
-					}
-				}
-				/*scroll to*/
-				if($this.data("horizontalScroll")){
-					if($this.data("onTotalScrollBack_Offset")){ /*scroll beginning offset*/
-						scrollBeginningOffset=-$this.data("onTotalScrollBack_Offset");
-					}
-					if($this.data("onTotalScroll_Offset")){ /*total scroll offset*/
-						totalScrollOffset=mCustomScrollBox.width()-mCSB_container.outerWidth()+$this.data("onTotalScroll_Offset");
-					}
-					if(draggerScrollTo<0){ /*scroll start position*/
-						draggerScrollTo=scrollTo=0; clearInterval($this.data("mCSB_buttonScrollLeft"));
-						if(!scrollBeginningOffset){scrollBeginning=true;}
-					}else if(draggerScrollTo>=mCSB_draggerContainer.width()-mCSB_dragger.width()){ /*scroll end position*/
-						draggerScrollTo=mCSB_draggerContainer.width()-mCSB_dragger.width();
-						scrollTo=mCustomScrollBox.width()-mCSB_container.outerWidth(); clearInterval($this.data("mCSB_buttonScrollRight"));
-						if(!totalScrollOffset){totalScroll=true;}
-					}else{scrollTo=-scrollTo;}
-					/*scrolling animation*/
-					functions.mTweenAxis.call(this,mCSB_dragger[0],"left",Math.round(draggerScrollTo),draggerSpeed,options.scrollEasing);
-					functions.mTweenAxis.call(this,mCSB_container[0],"left",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
-						onStart:function(){
-							if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-							if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
-						},
-						onUpdate:function(){
-							if(options.callbacks){callbacks("whileScrolling");}
-						},
-						onComplete:function(){
-							if(options.callbacks){
-								callbacks("onScroll");
-								if(scrollBeginning || (scrollBeginningOffset && mCSB_container.position().left>=scrollBeginningOffset)){callbacks("onTotalScrollBack");}
-								if(totalScroll || (totalScrollOffset && mCSB_container.position().left<=totalScrollOffset)){callbacks("onTotalScroll");}
+						if($this.data("onTotalScrollBack_Offset")){ /*scroll beginning offset*/
+							scrollBeginningOffset=-$this.data("onTotalScrollBack_Offset");
+						}
+						if($this.data("onTotalScroll_Offset")){ /*total scroll offset*/
+							totalScrollOffset=mCustomScrollBox.height()-mCSB_container.outerHeight()+$this.data("onTotalScroll_Offset");
+						}
+						if(draggerScrollTo<0){ /*scroll start position*/
+							draggerScrollTo=scrollTo=0; clearInterval($this.data("mCSB_buttonScrollUp"));
+							if(!scrollBeginningOffset){scrollBeginning=true;}
+						}else if(draggerScrollTo>=mCSB_draggerContainer.height()-mCSB_dragger.height()){ /*scroll end position*/
+							draggerScrollTo=mCSB_draggerContainer.height()-mCSB_dragger.height();
+							scrollTo=mCustomScrollBox.height()-mCSB_container.outerHeight(); clearInterval($this.data("mCSB_buttonScrollDown"));
+							if(!totalScrollOffset){totalScroll=true;}
+						}else{scrollTo=-scrollTo;}
+						/*scrolling animation*/
+						functions.mTweenAxis.call(this,mCSB_dragger[0],"top",Math.round(draggerScrollTo),draggerSpeed,options.scrollEasing);
+						functions.mTweenAxis.call(this,mCSB_container[0],"top",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
+							onStart:function(){
+								if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
+								if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
+							},
+							onUpdate:function(){
+								if(options.callbacks){callbacks("whileScrolling");}
+							},
+							onComplete:function(){
+								if(options.callbacks){
+									callbacks("onScroll");
+									if(scrollBeginning || (scrollBeginningOffset && mCSB_container.position().top>=scrollBeginningOffset)){callbacks("onTotalScrollBack");}
+									if(totalScroll || (totalScrollOffset && mCSB_container.position().top<=totalScrollOffset)){callbacks("onTotalScroll");}
+								}
+								mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
+								if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
 							}
-							mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-							if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
-						},
-					});
-				}else{
-					if($this.data("onTotalScrollBack_Offset")){ /*scroll beginning offset*/
-						scrollBeginningOffset=-$this.data("onTotalScrollBack_Offset");
+						});
 					}
-					if($this.data("onTotalScroll_Offset")){ /*total scroll offset*/
-						totalScrollOffset=mCustomScrollBox.height()-mCSB_container.outerHeight()+$this.data("onTotalScroll_Offset");
-					}
-					if(draggerScrollTo<0){ /*scroll start position*/
-						draggerScrollTo=scrollTo=0; clearInterval($this.data("mCSB_buttonScrollUp"));
-						if(!scrollBeginningOffset){scrollBeginning=true;}
-					}else if(draggerScrollTo>=mCSB_draggerContainer.height()-mCSB_dragger.height()){ /*scroll end position*/
-						draggerScrollTo=mCSB_draggerContainer.height()-mCSB_dragger.height();
-						scrollTo=mCustomScrollBox.height()-mCSB_container.outerHeight(); clearInterval($this.data("mCSB_buttonScrollDown"));
-						if(!totalScrollOffset){totalScroll=true;}
-					}else{scrollTo=-scrollTo;}
-					/*scrolling animation*/
-					functions.mTweenAxis.call(this,mCSB_dragger[0],"top",Math.round(draggerScrollTo),draggerSpeed,options.scrollEasing);
-					functions.mTweenAxis.call(this,mCSB_container[0],"top",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
-						onStart:function(){
-							if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-							if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
-						},
-						onUpdate:function(){
-							if(options.callbacks){callbacks("whileScrolling");}
-						},
-						onComplete:function(){
-							if(options.callbacks){
-								callbacks("onScroll");
-								if(scrollBeginning || (scrollBeginningOffset && mCSB_container.position().top>=scrollBeginningOffset)){callbacks("onTotalScrollBack");}
-								if(totalScroll || (totalScrollOffset && mCSB_container.position().top<=totalScrollOffset)){callbacks("onTotalScroll");}
-							}
-							mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-							if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
-						},
-					});
+					if($this.data("mCS_Init")){$this.data({"mCS_Init":false});}
 				}
-				if($this.data("mCS_Init")){$this.data({"mCS_Init":false});}
 			}
 			/*callbacks*/
 			function callbacks(cb){
