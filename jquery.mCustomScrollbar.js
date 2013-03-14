@@ -333,7 +333,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							scrollbarDrag(mCSB_draggerDragY,mCSB_draggerDragX,y,x);
 						}
 					}).bind("MSPointerUp."+$this.data("mCustomScrollbarIndex"),function(e){
-						e.preventDefault();
 						$this.data({"on_drag":false}); mCSB_dragger.removeClass("mCSB_dragger_onDrag");
 					});
 				}else{ /*mouse/touch*/
@@ -360,7 +359,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 						scrollbarDrag(mCSB_draggerDragY,mCSB_draggerDragX,y,x);
 					});
 					$(document).bind("mousemove."+$this.data("mCustomScrollbarIndex"),function(e){
-						e.preventDefault();
 						if($this.data("on_drag")){
 							var elem=mCSB_dragger,
 								elemOffset=elem.offset(),
@@ -369,7 +367,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 							scrollbarDrag(mCSB_draggerDragY,mCSB_draggerDragX,y,x);
 						}
 					}).bind("mouseup."+$this.data("mCustomScrollbarIndex"),function(e){
-						e.preventDefault();
 						$this.data({"on_drag":false}); mCSB_dragger.removeClass("mCSB_dragger_onDrag");
 					});
 				}
