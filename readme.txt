@@ -35,6 +35,7 @@ Android 4.x
 
 == Versions ==
 
+= Version 2.8.2 (MAY 9, 2013) =
 = Version 2.8.1 (MAR 13, 2013) =
 = Version 2.8 (MAR 7, 2013) =
 = Version 2.7 (FEB 19, 2013) =
@@ -52,11 +53,11 @@ http://manos.malihu.gr/jquery-custom-content-scroller/2/
 == License ==
 
 This program is free software: you can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published by 
+it under the terms of the GNU Lesser General Public License as published by 
 the Free Software Foundation, either version 3 of the License, or 
 any later version. 
 
-http://www.gnu.org/licenses/gpl.html
+http://www.gnu.org/licenses/lgpl.html
 
 == Donate ==
 
