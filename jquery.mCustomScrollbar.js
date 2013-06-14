@@ -205,8 +205,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 					var mCSB_onContentResize;
 					if(options.horizontalScroll){
 						var mCSB_containerOldSize=mCSB_container.outerWidth();
+						var mCSB_contentOldSize=mCSB_container.innerWidth();
 					}else{
 						var mCSB_containerOldSize=mCSB_container.outerHeight();
+						var mCSB_contentOldSize=mCSB_container.innerHeight();
 					}
 					mCSB_onContentResize=setInterval(function(){
 						if(options.horizontalScroll){
@@ -217,9 +219,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						}else{
 							var mCSB_containerNewSize=mCSB_container.outerHeight();
 						}
-						if(mCSB_containerNewSize!=mCSB_containerOldSize){
+						if(mCSB_containerNewSize!=mCSB_containerOldSize || mCSB_contentNewSize!=mCSB_contentOldSize){
 							$this.mCustomScrollbar("update");
 							mCSB_containerOldSize=mCSB_containerNewSize;
+							mCSB_contentOldSize=mCSB_contentNewSize;
 						}
 					},300);
 				}
