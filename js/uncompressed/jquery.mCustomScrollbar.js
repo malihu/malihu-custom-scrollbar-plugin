@@ -216,8 +216,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 								mCSB_container.css({"position":"absolute","width":"auto"}).wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />").css({"width":mCSB_container.outerWidth(),"position":"relative"}).unwrap();
 							}
 							var mCSB_containerNewSize=mCSB_container.outerWidth();
+							var mCSB_contentNewSize=mCSB_container.innerWidth();
 						}else{
 							var mCSB_containerNewSize=mCSB_container.outerHeight();
+							var mCSB_contentNewSize=mCSB_container.innerHeight();
 						}
 						if(mCSB_containerNewSize!=mCSB_containerOldSize || mCSB_contentNewSize!=mCSB_contentOldSize){
 							$this.mCustomScrollbar("update");
