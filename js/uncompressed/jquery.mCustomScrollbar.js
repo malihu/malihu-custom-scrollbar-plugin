@@ -445,8 +445,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							limit=mCSB_draggerContainer.width()-mCSB_dragger.width();
 							absPos=Math.abs(mCSB_container.position().left);
 						}
-						//e.preventDefault();
-						//e.stopImmediatePropagation();
 						if((delta>0 && draggerPos!==0) || (delta<0 && draggerPos!==limit) || $this.data('preventDefault')){e.preventDefault(); e.stopImmediatePropagation();}
 						scrollTo=absPos-(delta*mouseWheelPixels);
 						$this.mCustomScrollbar("scrollTo",scrollTo,{trigger:"internal"});
