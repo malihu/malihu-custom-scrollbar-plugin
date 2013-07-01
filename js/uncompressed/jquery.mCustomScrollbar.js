@@ -35,6 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				autoDraggerLength:true, /*auto-adjust scrollbar dragger length: boolean*/
 				autoHideScrollbar:false, /*auto-hide scrollbar when idle*/
 				snapAmount:null, /* optional element always snaps to a multiple of this number in pixels */
+				preventDefault:false,
 				snapOffset:0, /* when snapping, snap with this number in pixels as an offset */
 				scrollButtons:{ /*scroll buttons*/
 					enable:false, /*scroll buttons support: boolean*/
@@ -127,6 +128,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 					"autoDraggerLength":options.autoDraggerLength,
 					"autoHideScrollbar":options.autoHideScrollbar,
 					"snapAmount":options.snapAmount,
+					"preventDefault":options.preventDefault,
 					"snapOffset":options.snapOffset,
 					"scrollButtons_enable":options.scrollButtons.enable,
 					"scrollButtons_scrollType":options.scrollButtons.scrollType,
@@ -443,7 +445,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							limit=mCSB_draggerContainer.width()-mCSB_dragger.width();
 							absPos=Math.abs(mCSB_container.position().left);
 						}
-						if((delta>0 && draggerPos!==0) || (delta<0 && draggerPos!==limit)){e.preventDefault(); e.stopImmediatePropagation();}
+						//e.preventDefault();
+						//e.stopImmediatePropagation();
+						if((delta>0 && draggerPos!==0) || (delta<0 && draggerPos!==limit) || $this.data('preventDefault')){e.preventDefault(); e.stopImmediatePropagation();}
 						scrollTo=absPos-(delta*mouseWheelPixels);
 						$this.mCustomScrollbar("scrollTo",scrollTo,{trigger:"internal"});
 					});
