@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				autoDraggerLength:true, /*auto-adjust scrollbar dragger length: boolean*/
 				autoHideScrollbar:false, /*auto-hide scrollbar when idle*/
 				snapAmount:null, /* optional element always snaps to a multiple of this number in pixels */
-				preventDefault:false,
+				preventDefault:false, /* prevents mousewheel scrolling propagation */
 				snapOffset:0, /* when snapping, snap with this number in pixels as an offset */
 				scrollButtons:{ /*scroll buttons*/
 					enable:false, /*scroll buttons support: boolean*/
