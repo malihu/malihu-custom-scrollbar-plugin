@@ -34,6 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				mouseWheelPixels:"auto", /*mousewheel pixels amount: integer, "auto"*/
 				autoDraggerLength:true, /*auto-adjust scrollbar dragger length: boolean*/
 				autoHideScrollbar:false, /*auto-hide scrollbar when idle*/
+				alwaysShowScrollbar:false, /*always show scrollbar even nothing to scroll (disables autoHideScrollbar): boolean*/
 				snapAmount:null, /* optional element always snaps to a multiple of this number in pixels */
 				preventDefault:false, /* prevent mousewheel scrolling of parent elements */
 				snapOffset:0, /* when snapping, snap with this number in pixels as an offset */
@@ -127,6 +128,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 					"mouseWheelPixels":options.mouseWheelPixels,
 					"autoDraggerLength":options.autoDraggerLength,
 					"autoHideScrollbar":options.autoHideScrollbar,
+					"alwaysShowScrollbar":options.alwaysShowScrollbar,
 					"snapAmount":options.snapAmount,
 					"preventDefault":options.preventDefault,
 					"snapOffset":options.snapOffset,
@@ -306,8 +308,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				}else{
 					mCSB_dragger.add(mCSB_container).css("top",0);
 				}
-				mCSB_scrollTools.css("display","none");
-				mCSB_container.addClass("mCS_no_scrollbar");
+				if ($this.data("alwaysShowScrollbar")) {
+					if(!$this.data("horizontalScroll")){ /*vertical scrolling*/
+						mCSB_dragger.css({"height":mCSB_draggerContainer.height()});
+					}else if($this.data("horizontalScroll")){ /*horizontal scrolling*/
+						mCSB_dragger.css({"width":mCSB_draggerContainer.width()});
+					}
+				} else {
+					mCSB_scrollTools.css("display","none");
+					mCSB_container.addClass("mCS_no_scrollbar");
+				}
 				$this.data({"bindEvent_mousewheel":false,"bindEvent_focusin":false});
 			}
 		},
@@ -589,7 +599,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				}
 			}
 			/*auto-hide scrollbar*/
-			if($this.data("autoHideScrollbar")){
+			if($this.data("autoHideScrollbar")&&!$this.data("alwaysShowScrollbar")){
 				if(!$this.data("bindEvent_autoHideScrollbar")){
 					mCustomScrollBox.bind("mouseenter",function(e){
 						mCustomScrollBox.addClass("mCS-mouse-over");
@@ -689,7 +699,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						functions.mTweenAxis.call(this,mCSB_container[0],"left",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
 							onStart:function(){
 								if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-								if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
+								if($this.data("autoHideScrollbar")&&!$this.data("alwaysShowScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
 							},
 							onUpdate:function(){
 								if(options.callbacks){callbacks("whileScrolling");}
@@ -701,7 +711,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 									if(totalScroll || (totalScrollOffset && mCSB_container.position().left<=totalScrollOffset)){callbacks("onTotalScroll");}
 								}
 								mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-								if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
+								if($this.data("autoHideScrollbar")&&!$this.data("alwaysShowScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
 							}
 						});
 					}else{
@@ -728,7 +738,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						functions.mTweenAxis.call(this,mCSB_container[0],"top",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
 							onStart:function(){
 								if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-								if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
+								if($this.data("autoHideScrollbar")&&!$this.data("alwaysShowScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
 							},
 							onUpdate:function(){
 								if(options.callbacks){callbacks("whileScrolling");}
@@ -740,7 +750,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 									if(totalScroll || (totalScrollOffset && mCSB_container.position().top<=totalScrollOffset)){callbacks("onTotalScroll");}
 								}
 								mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-								if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
+								if($this.data("autoHideScrollbar")&&!$this.data("alwaysShowScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
 							}
 						});
 					}
