@@ -747,29 +747,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 			}
 			/*callbacks*/
 			function callbacks(cb){
-				this.mcs={
-					top:mCSB_container.position().top,left:mCSB_container.position().left,
-					draggerTop:mCSB_dragger.position().top,draggerLeft:mCSB_dragger.position().left,
-					topPct:Math.round((100*Math.abs(mCSB_container.position().top))/Math.abs(mCSB_container.outerHeight()-mCustomScrollBox.height())),
-					leftPct:Math.round((100*Math.abs(mCSB_container.position().left))/Math.abs(mCSB_container.outerWidth()-mCustomScrollBox.width()))
-				};
-				switch(cb){
-					/*start scrolling callback*/
-					case "onScrollStart":
-						$this.data("mCS_tweenRunning",true).data("onScrollStart_Callback").call($this,this.mcs);
-						break;
-					case "whileScrolling":
-						$this.data("whileScrolling_Callback").call($this,this.mcs);
-						break;
-					case "onScroll":
-						$this.data("onScroll_Callback").call($this,this.mcs);
-						break;
-					case "onTotalScrollBack":
-						$this.data("onTotalScrollBack_Callback").call($this,this.mcs);
-						break;
-					case "onTotalScroll":
-						$this.data("onTotalScroll_Callback").call($this,this.mcs);
-						break;
+				if ($this.data("mCustomScrollbarIndex")) {
+					this.mcs = {
+						top: mCSB_container.position().top, left: mCSB_container.position().left,
+						draggerTop: mCSB_dragger.position().top, draggerLeft: mCSB_dragger.position().left,
+						topPct: Math.round((100 * Math.abs(mCSB_container.position().top)) / Math.abs(mCSB_container.outerHeight() - mCustomScrollBox.height())),
+						leftPct: Math.round((100 * Math.abs(mCSB_container.position().left)) / Math.abs(mCSB_container.outerWidth() - mCustomScrollBox.width()))
+					};
+					switch (cb) {
+						/*start scrolling callback*/
+						case "onScrollStart":
+							$this.data("mCS_tweenRunning", true).data("onScrollStart_Callback").call($this, this.mcs);
+							break;
+						case "whileScrolling":
+							$this.data("whileScrolling_Callback").call($this, this.mcs);
+							break;
+						case "onScroll":
+							$this.data("onScroll_Callback").call($this, this.mcs);
+							break;
+						case "onTotalScrollBack":
+							$this.data("onTotalScrollBack_Callback").call($this, this.mcs);
+							break;
+						case "onTotalScroll":
+							$this.data("onTotalScroll_Callback").call($this, this.mcs);
+							break;
+					}
 				}
 			}
 		},
