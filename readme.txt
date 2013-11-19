@@ -15,6 +15,7 @@ For implementation guides and tutorials please visit plugin home.
 
 Plugin tested successfully under the following browsers/OS: 
 
+Internet Explorer 11 (Win 7/8)
 Internet Explorer 10 (Win 8)
 Internet Explorer 9 (Win 7)
 Internet Explorer 8 (Win 7)
@@ -35,6 +36,7 @@ Android 4.x
 
 == Versions ==
 
+= Version 2.8.3 (NOV 19, 2013) =
 = Version 2.8.2 (MAY 9, 2013) =
 = Version 2.8.1 (MAR 13, 2013) =
 = Version 2.8 (MAR 7, 2013) =
