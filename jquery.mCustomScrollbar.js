@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbars plugin == 
-version: 2.8.2 
+version: 2.8.3 
 author: malihu (http://manos.malihu.gr) 
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
 */
@@ -34,6 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				mouseWheelPixels:"auto", /*mousewheel pixels amount: integer, "auto"*/
 				autoDraggerLength:true, /*auto-adjust scrollbar dragger length: boolean*/
 				autoHideScrollbar:false, /*auto-hide scrollbar when idle*/
+				alwaysShowScrollbar:false, /*always show scrollbar even when there's nothing to scroll (disables autoHideScrollbar): boolean*/
 				snapAmount:null, /* optional element always snaps to a multiple of this number in pixels */
 				snapOffset:0, /* when snapping, snap with this number in pixels as an offset */
 				scrollButtons:{ /*scroll buttons*/
@@ -126,6 +127,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 					"mouseWheelPixels":options.mouseWheelPixels,
 					"autoDraggerLength":options.autoDraggerLength,
 					"autoHideScrollbar":options.autoHideScrollbar,
+					"alwaysShowScrollbar":options.alwaysShowScrollbar,
 					"snapAmount":options.snapAmount,
 					"snapOffset":options.snapOffset,
 					"scrollButtons_enable":options.scrollButtons.enable,
@@ -304,8 +306,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				}else{
 					mCSB_dragger.add(mCSB_container).css("top",0);
 				}
-				mCSB_scrollTools.css("display","none");
-				mCSB_container.addClass("mCS_no_scrollbar");
+				if ($this.data("alwaysShowScrollbar")) {
+					if(!$this.data("horizontalScroll")){ /*vertical scrolling*/
+						mCSB_dragger.css({"height":mCSB_draggerContainer.height()});
+					}else if($this.data("horizontalScroll")){ /*horizontal scrolling*/
+						mCSB_dragger.css({"width":mCSB_draggerContainer.width()});
+					}
+				} else {
+					mCSB_scrollTools.css("display","none");
+					mCSB_container.addClass("mCS_no_scrollbar");
+				}
 				$this.data({"bindEvent_mousewheel":false,"bindEvent_focusin":false});
 			}
 		},
@@ -313,9 +323,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 			var $this=$(this);
 			/*scrollbar drag scrolling*/
 			if(!$this.data("bindEvent_scrollbar_drag")){
-				var mCSB_draggerDragY,mCSB_draggerDragX;
-				if($.support.msPointer){ /*MSPointer*/
-					mCSB_dragger.bind("MSPointerDown",function(e){
+				var mCSB_draggerDragY,mCSB_draggerDragX,
+					mCSB_dragger_downEvent,mCSB_dragger_moveEvent,mCSB_dragger_upEvent;
+				if($.support.pointer){ /*pointer*/
+					mCSB_dragger_downEvent="pointerdown";
+					mCSB_dragger_moveEvent="pointermove";
+					mCSB_dragger_upEvent="pointerup";
+				}else if($.support.msPointer){ /*MSPointer*/
+					mCSB_dragger_downEvent="MSPointerDown";
+					mCSB_dragger_moveEvent="MSPointerMove";
+					mCSB_dragger_upEvent="MSPointerUp";
+				}
+				if($.support.pointer || $.support.msPointer){ /*pointer, MSPointer*/
+					mCSB_dragger.bind(mCSB_dragger_downEvent,function(e){
 						e.preventDefault();
 						$this.data({"on_drag":true}); mCSB_dragger.addClass("mCSB_dragger_onDrag");
 						var elem=$(this),
@@ -327,7 +347,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							mCSB_draggerDragX=x;
 						}
 					});
-					$(document).bind("MSPointerMove."+$this.data("mCustomScrollbarIndex"),function(e){
+					$(document).bind(mCSB_dragger_moveEvent+"."+$this.data("mCustomScrollbarIndex"),function(e){
 						e.preventDefault();
 						if($this.data("on_drag")){
 							var elem=mCSB_dragger,
@@ -336,7 +356,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 								y=e.originalEvent.pageY-elemOffset.top;
 							scrollbarDrag(mCSB_draggerDragY,mCSB_draggerDragX,y,x);
 						}
-					}).bind("MSPointerUp."+$this.data("mCustomScrollbarIndex"),function(e){
+					}).bind(mCSB_dragger_upEvent+"."+$this.data("mCustomScrollbarIndex"),function(e){
 						$this.data({"on_drag":false}); mCSB_dragger.removeClass("mCSB_dragger_onDrag");
 					});
 				}else{ /*mouse/touch*/
@@ -454,7 +474,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 			if($this.data("scrollButtons_enable")){
 				if($this.data("scrollButtons_scrollType")==="pixels"){ /*scroll by pixels*/
 					if($this.data("horizontalScroll")){
-						mCSB_buttonRight.add(mCSB_buttonLeft).unbind("mousedown touchstart MSPointerDown mouseup MSPointerUp mouseout MSPointerOut touchend",mCSB_buttonRight_stop,mCSB_buttonLeft_stop);
+						mCSB_buttonRight.add(mCSB_buttonLeft).unbind("mousedown touchstart MSPointerDown pointerdown mouseup MSPointerUp pointerup mouseout MSPointerOut pointerout touchend",mCSB_buttonRight_stop,mCSB_buttonLeft_stop);
 						$this.data({"bindEvent_buttonsContinuous_x":false});
 						if(!$this.data("bindEvent_buttonsPixels_x")){
 							/*scroll right*/
@@ -470,7 +490,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							$this.data({"bindEvent_buttonsPixels_x":true});
 						}
 					}else{
-						mCSB_buttonDown.add(mCSB_buttonUp).unbind("mousedown touchstart MSPointerDown mouseup MSPointerUp mouseout MSPointerOut touchend",mCSB_buttonRight_stop,mCSB_buttonLeft_stop);
+						mCSB_buttonDown.add(mCSB_buttonUp).unbind("mousedown touchstart MSPointerDown pointerdown mouseup MSPointerUp pointerup mouseout MSPointerOut pointerout touchend",mCSB_buttonRight_stop,mCSB_buttonLeft_stop);
 						$this.data({"bindEvent_buttonsContinuous_y":false});
 						if(!$this.data("bindEvent_buttonsPixels_y")){
 							/*scroll down*/
@@ -498,7 +518,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						$this.data({"bindEvent_buttonsPixels_x":false});
 						if(!$this.data("bindEvent_buttonsContinuous_x")){
 							/*scroll right*/
-							mCSB_buttonRight.bind("mousedown touchstart MSPointerDown",function(e){
+							mCSB_buttonRight.bind("mousedown touchstart MSPointerDown pointerdown",function(e){
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollRight":setInterval(function(){
@@ -508,9 +528,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							var mCSB_buttonRight_stop=function(e){
 								e.preventDefault(); clearInterval($this.data("mCSB_buttonScrollRight"));
 							}
-							mCSB_buttonRight.bind("mouseup touchend MSPointerUp mouseout MSPointerOut",mCSB_buttonRight_stop);
+							mCSB_buttonRight.bind("mouseup touchend MSPointerUp pointerup mouseout MSPointerOut pointerout",mCSB_buttonRight_stop);
 							/*scroll left*/
-							mCSB_buttonLeft.bind("mousedown touchstart MSPointerDown",function(e){
+							mCSB_buttonLeft.bind("mousedown touchstart MSPointerDown pointerdown",function(e){
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollLeft":setInterval(function(){
@@ -520,7 +540,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							var mCSB_buttonLeft_stop=function(e){
 								e.preventDefault(); clearInterval($this.data("mCSB_buttonScrollLeft"));
 							}
-							mCSB_buttonLeft.bind("mouseup touchend MSPointerUp mouseout MSPointerOut",mCSB_buttonLeft_stop);
+							mCSB_buttonLeft.bind("mouseup touchend MSPointerUp pointerup mouseout MSPointerOut pointerout",mCSB_buttonLeft_stop);
 							$this.data({"bindEvent_buttonsContinuous_x":true});
 						}
 					}else{
@@ -528,7 +548,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						$this.data({"bindEvent_buttonsPixels_y":false});
 						if(!$this.data("bindEvent_buttonsContinuous_y")){
 							/*scroll down*/
-							mCSB_buttonDown.bind("mousedown touchstart MSPointerDown",function(e){
+							mCSB_buttonDown.bind("mousedown touchstart MSPointerDown pointerdown",function(e){
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollDown":setInterval(function(){
@@ -538,9 +558,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							var mCSB_buttonDown_stop=function(e){
 								e.preventDefault(); clearInterval($this.data("mCSB_buttonScrollDown"));
 							}
-							mCSB_buttonDown.bind("mouseup touchend MSPointerUp mouseout MSPointerOut",mCSB_buttonDown_stop);
+							mCSB_buttonDown.bind("mouseup touchend MSPointerUp pointerup mouseout MSPointerOut pointerout",mCSB_buttonDown_stop);
 							/*scroll up*/
-							mCSB_buttonUp.bind("mousedown touchstart MSPointerDown",function(e){
+							mCSB_buttonUp.bind("mousedown touchstart MSPointerDown pointerdown",function(e){
 								e.preventDefault();
 								var scrollButtonsSpeed=ScrollButtonsSpeed();
 								$this.data({"mCSB_buttonScrollUp":setInterval(function(){
@@ -550,7 +570,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							var mCSB_buttonUp_stop=function(e){
 								e.preventDefault(); clearInterval($this.data("mCSB_buttonScrollUp"));
 							}
-							mCSB_buttonUp.bind("mouseup touchend MSPointerUp mouseout MSPointerOut",mCSB_buttonUp_stop);
+							mCSB_buttonUp.bind("mouseup touchend MSPointerUp pointerup mouseout MSPointerOut pointerout",mCSB_buttonUp_stop);
 							$this.data({"bindEvent_buttonsContinuous_y":true});
 						}
 					}
@@ -587,7 +607,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				}
 			}
 			/*auto-hide scrollbar*/
-			if($this.data("autoHideScrollbar")){
+			if($this.data("autoHideScrollbar") && !$this.data("alwaysShowScrollbar")){
 				if(!$this.data("bindEvent_autoHideScrollbar")){
 					mCustomScrollBox.bind("mouseenter",function(e){
 						mCustomScrollBox.addClass("mCS-mouse-over");
@@ -687,7 +707,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						functions.mTweenAxis.call(this,mCSB_container[0],"left",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
 							onStart:function(){
 								if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-								if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
+								if($this.data("autoHideScrollbar") && !$this.data("alwaysShowScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
 							},
 							onUpdate:function(){
 								if(options.callbacks){callbacks("whileScrolling");}
@@ -699,7 +719,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 									if(totalScroll || (totalScrollOffset && mCSB_container.position().left<=totalScrollOffset)){callbacks("onTotalScroll");}
 								}
 								mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-								if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
+								if($this.data("autoHideScrollbar") && !$this.data("alwaysShowScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
 							}
 						});
 					}else{
@@ -726,7 +746,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						functions.mTweenAxis.call(this,mCSB_container[0],"top",Math.round(scrollTo),contentSpeed,options.scrollEasing,{
 							onStart:function(){
 								if(options.callbacks && !$this.data("mCS_tweenRunning")){callbacks("onScrollStart");}
-								if($this.data("autoHideScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
+								if($this.data("autoHideScrollbar") && !$this.data("alwaysShowScrollbar")){functions.showScrollbar.call(mCSB_scrollTools);}
 							},
 							onUpdate:function(){
 								if(options.callbacks){callbacks("whileScrolling");}
@@ -738,7 +758,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 									if(totalScroll || (totalScrollOffset && mCSB_container.position().top<=totalScrollOffset)){callbacks("onTotalScroll");}
 								}
 								mCSB_dragger.data("preventAction",false); $this.data("mCS_tweenRunning",false);
-								if($this.data("autoHideScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
+								if($this.data("autoHideScrollbar") && !$this.data("alwaysShowScrollbar")){if(!mCustomScrollBox.hasClass("mCS-mouse-over")){functions.hideScrollbar.call(mCSB_scrollTools);}}
 							}
 						});
 					}
@@ -931,6 +951,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 	/*detect features*/
 	functions.rafPolyfill.call(); /*requestAnimationFrame*/
 	$.support.touch=!!('ontouchstart' in window); /*touch*/
+	$.support.pointer=window.navigator.pointerEnabled; /*pointer support*/
 	$.support.msPointer=window.navigator.msPointerEnabled; /*MSPointer support*/
 	/*plugin dependencies*/
 	var _dlp=("https:"==document.location.protocol) ? "https:" : "http:";
