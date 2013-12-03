@@ -729,11 +729,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						if($this.data("onTotalScroll_Offset")){ /*total scroll offset*/
 							totalScrollOffset=mCustomScrollBox.height()-mCSB_container.outerHeight()+$this.data("onTotalScroll_Offset");
 						}
+
+						var _mCSB_draggerHeight = mCSB_dragger.height() + (mCSB_dragger.css('padding-top').replace(/px/g, '') * 1) + ((mCSB_dragger.css('padding-bottom').replace(/px/g, '') * 1));
+
 						if(draggerScrollTo<0){ /*scroll start position*/
 							draggerScrollTo=scrollTo=0; clearInterval($this.data("mCSB_buttonScrollUp"));
 							if(!scrollBeginningOffset){scrollBeginning=true;}
-						}else if(draggerScrollTo>=mCSB_draggerContainer.height()-mCSB_dragger.height()){ /*scroll end position*/
-							draggerScrollTo=mCSB_draggerContainer.height()-mCSB_dragger.height();
+						}else if(draggerScrollTo>=mCSB_draggerContainer.height()-_mCSB_draggerHeight){ /*scroll end position*/
+							draggerScrollTo=mCSB_draggerContainer.height()-_mCSB_draggerHeight;
 							scrollTo=mCustomScrollBox.height()-mCSB_container.outerHeight(); clearInterval($this.data("mCSB_buttonScrollDown"));
 							if(!totalScrollOffset){totalScroll=true;}
 						}else{scrollTo=-scrollTo;}
