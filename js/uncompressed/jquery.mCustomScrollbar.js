@@ -58,7 +58,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 					onTotalScrollBack:function(){}, /*user custom callback function on scroll begin reached event*/
 					onTotalScrollOffset:0, /*scroll end reached offset: integer (pixels)*/
 					onTotalScrollBackOffset:0, /*scroll begin reached offset: integer (pixels)*/
-					whileScrolling:function(){} /*user custom callback function on scrolling event*/
+					whileScrolling:function(){}, /*user custom callback function on scrolling event*/
+					onDragStart:function(){}, /*user custom callback function on drag start event*/
+					onDragStop:function(){} /*user custom callback function on drag stop event*/
 				},
 				theme:"light" /*"light", "dark", "light-2", "dark-2", "light-thick", "dark-thick", "light-thin", "dark-thin"*/
 			},
@@ -145,6 +147,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 					"onTotalScroll_Offset":options.callbacks.onTotalScrollOffset,
 					"onTotalScrollBack_Offset":options.callbacks.onTotalScrollBackOffset,
 					"whileScrolling_Callback":options.callbacks.whileScrolling,
+					"onDragStart_Callback":options.callbacks.onDragStart,
+					"onDragStop_Callback":options.callbacks.onDragStop,
 					/*events binding state*/
 					"bindEvent_scrollbar_drag":false,
 					"bindEvent_content_touch":false,
@@ -338,6 +342,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 					mCSB_dragger.bind(mCSB_dragger_downEvent,function(e){
 						e.preventDefault();
 						$this.data({"on_drag":true}); mCSB_dragger.addClass("mCSB_dragger_onDrag");
+						$this.data("onDragStart_Callback").call($this);
 						var elem=$(this),
 							elemOffset=elem.offset(),
 							x=e.originalEvent.pageX-elemOffset.left,
@@ -358,6 +363,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						}
 					}).bind(mCSB_dragger_upEvent+"."+$this.data("mCustomScrollbarIndex"),function(e){
 						$this.data({"on_drag":false}); mCSB_dragger.removeClass("mCSB_dragger_onDrag");
+						$this.data("onDragStop_Callback").call($this);
 					});
 				}else{ /*mouse/touch*/
 					mCSB_dragger.bind("mousedown touchstart",function(e){
@@ -368,6 +374,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							x=touch.pageX-elemOffset.left; y=touch.pageY-elemOffset.top;
 						}else{
 							$this.data({"on_drag":true}); mCSB_dragger.addClass("mCSB_dragger_onDrag");
+							$this.data("onDragStart_Callback").call($this);
 							x=e.pageX-elemOffset.left; y=e.pageY-elemOffset.top;
 						}
 						if(x<elem.width() && x>0 && y<elem.height() && y>0){
@@ -392,6 +399,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						}
 					}).bind("mouseup."+$this.data("mCustomScrollbarIndex"),function(e){
 						$this.data({"on_drag":false}); mCSB_dragger.removeClass("mCSB_dragger_onDrag");
+						$this.data("onDragStop_Callback").call($this);
 					});
 				}
 				$this.data({"bindEvent_scrollbar_drag":true});
