@@ -831,7 +831,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 	functions={
 		/*hide/show scrollbar*/
 		showScrollbar:function(){
-			if ($(this).css('opacity') != 1) {
+			if ($(this).css('opacity') == 0) {
 				this.stop().animate({opacity:1},"fast");
 			}
 		},
