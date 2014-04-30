@@ -192,8 +192,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							if(!$this.is(".mCS_disabled") && !$this.is(".mCS_destroyed")){
 								var winWidth=$(window).width(),winHeight=$(window).height();
 								if(currWinWidth!==winWidth || currWinHeight!==winHeight){ /*ie8 fix*/
-									if($this.css("max-height")!=="none" && percentage){
-										mCustomScrollBox.css("max-height",$this.parent().height()*percentage/100);
+								    if ($this.css("max-height") !== "none") {
+								        if (percentage) {
+								            mCustomScrollBox.css("max-height", $this.parent().height() * percentage / 100);
+								        } else {
+								            mCustomScrollBox.css("max-height", $this.css("max-height"));
+								        }
 									}
 									$this.mCustomScrollbar("update");
 									currWinWidth=winWidth; currWinHeight=winHeight;
