@@ -199,8 +199,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 								            mCustomScrollBox.css("max-height", $this.css("max-height"));
 								        }
 									}
-									$this.mCustomScrollbar("update");
-									currWinWidth=winWidth; currWinHeight=winHeight;
+								    $this.mCustomScrollbar("update");
+								    currWinWidth=winWidth; currWinHeight=winHeight;
 								}
 							}
 						},150);
