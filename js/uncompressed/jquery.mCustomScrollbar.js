@@ -195,10 +195,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 								    if ($this.css("max-height") !== "none") {
 								        if (percentage) {
 								            mCustomScrollBox.css("max-height", $this.parent().height() * percentage / 100);
-								        } else {
+								        }else{
 								            mCustomScrollBox.css("max-height", $this.css("max-height"));
 								        }
-									}
+								    }
 								    $this.mCustomScrollbar("update");
 								    currWinWidth=winWidth; currWinHeight=winHeight;
 								}
