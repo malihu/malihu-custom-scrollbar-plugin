@@ -176,8 +176,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 							percentage=maxHeight,
 							maxHeight=$this.parent().height()*percentage/100;
 						}
+						var paddingTop = parseInt($this.css("padding-top"));
+						var paddingBottom = parseInt($this.css("padding-bottom"));
+						var paddingY = paddingTop + paddingBottom;
+
 						$this.css("overflow","hidden");
-						mCustomScrollBox.css("max-height",maxHeight);
+						mCustomScrollBox.css("max-height",maxHeight - paddingY);
 					}
 				}
 				$this.mCustomScrollbar("update");
