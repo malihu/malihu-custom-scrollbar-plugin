@@ -685,6 +685,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						}else{
 							draggerScrollTo=scrollTo=target;
 						}
+					}else if(typeof(scrollTo)==="object"){/*if object, scroll by element position*/
+						var target = $(scrollTo);
+						if(target.length===1){ /*if such unique element exists, scroll to it*/
+							if($this.data("horizontalScroll")){
+								scrollTo=target.position().left;
+							}else{
+								scrollTo=target.position().top;
+							}
+							draggerScrollTo=scrollTo/$this.data("scrollAmount");
+						}else{
+							draggerScrollTo=scrollTo=target;
+						}
 					}
 					/*scroll to*/
 					if($this.data("horizontalScroll")){
