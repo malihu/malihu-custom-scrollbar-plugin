@@ -30,6 +30,7 @@ Plugin tested successfully under the following browsers/OS:
 Versions
 -------------------------
 
+* Version 2.8.5 (MAY 8, 2014) 
 * Version 2.8.4 (MAY 8, 2014) 
 * Version 2.8.3 (NOV 19, 2013) 
 * Version 2.8.2 (MAY 9, 2013) 

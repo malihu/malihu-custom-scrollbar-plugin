@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbars plugin == 
-version: 2.8.4 
+version: 2.8.5 
 author: malihu (http://manos.malihu.gr) 
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
 */
