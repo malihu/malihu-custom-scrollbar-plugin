@@ -36,6 +36,7 @@ Android 4.x
 
 == Versions ==
 
+= Version 2.8.4 (MAY 8, 2014) =
 = Version 2.8.3 (NOV 19, 2013) =
 = Version 2.8.2 (MAY 9, 2013) =
 = Version 2.8.1 (MAR 13, 2013) =
