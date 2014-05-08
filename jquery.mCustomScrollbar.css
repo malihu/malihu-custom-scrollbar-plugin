@@ -14,7 +14,7 @@
 }
 .mCustomScrollBox>.mCSB_scrollTools{
 	width:16px;
-	height:100%;
+	bottom:0;
 	top:0;
 	right:0;
 }

@@ -658,32 +658,63 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						}else{ /*scroll content by default*/
 							draggerScrollTo=scrollTo/$this.data("scrollAmount");
 						}
-					}else if(typeof(scrollTo)==="string"){ /*if string, scroll by element position*/
-						var target;
-						if(scrollTo==="top"){ /*scroll to top*/
-							target=0;
-						}else if(scrollTo==="bottom" && !$this.data("horizontalScroll")){ /*scroll to bottom*/
-							target=mCSB_container.outerHeight()-mCustomScrollBox.height();
-						}else if(scrollTo==="left"){ /*scroll to left*/
-							target=0;
-						}else if(scrollTo==="right" && $this.data("horizontalScroll")){ /*scroll to right*/
-							target=mCSB_container.outerWidth()-mCustomScrollBox.width();
-						}else if(scrollTo==="first"){ /*scroll to first element position*/
-							target=$this.find(".mCSB_container").find(":first");
-						}else if(scrollTo==="last"){ /*scroll to last element position*/
-							target=$this.find(".mCSB_container").find(":last");
-						}else{ /*scroll to element position*/
-							target=$this.find(scrollTo);
-						}
-						if(target.length===1){ /*if such unique element exists, scroll to it*/
-							if($this.data("horizontalScroll")){
-								scrollTo=target.position().left;
+					}else if(typeof(scrollTo)==="string"){
+						if(/^[+\-]\d+%?$/.test(scrollTo)){ /*if +-N, scroll by relative amount */
+							if($this.data("horizontalScroll")){ /*not supported yet*/
+								throw new Error('whaargarbl');
 							}else{
-								scrollTo=target.position().top;
+								var match=scrollTo.match(/^([+\-])(\d+)(%)?$/), target,
+									top=mCSB_dragger.position().top,
+									max=mCSB_scrollTools.height()-mCSB_dragger.height();
+								if(match[3]==="%"){ /*scroll by percent*/
+									var amt=~~(mCSB_dragger.height()*match[2]/100);
+									if(match[1]==="+"){
+										target=top+amt;
+									}else{
+										target=top-amt;
+									}								
+								}else{ /*scroll by pixels*/
+									if(match[1]==="+"){
+										target=top+parseInt(match[2], 10);
+									}else{
+										target=top-parseInt(match[2], 10);
+									}
+								}
+								if(target<0){
+									target=0;
+								}else if(target>max){
+									target=max;
+								}
+								draggerScrollTo=target;
+								scrollTo = draggerScrollTo*$this.data("scrollAmount");
 							}
-							draggerScrollTo=scrollTo/$this.data("scrollAmount");
-						}else{
-							draggerScrollTo=scrollTo=target;
+						} else {
+							var target;
+							if(scrollTo==="top"){ /*scroll to top*/
+								target=0;
+							}else if(scrollTo==="bottom" && !$this.data("horizontalScroll")){ /*scroll to bottom*/
+								target=mCSB_container.outerHeight()-mCustomScrollBox.height();
+							}else if(scrollTo==="left"){ /*scroll to left*/
+								target=0;
+							}else if(scrollTo==="right" && $this.data("horizontalScroll")){ /*scroll to right*/
+								target=mCSB_container.outerWidth()-mCustomScrollBox.width();
+							}else if(scrollTo==="first"){ /*scroll to first element position*/
+								target=$this.find(".mCSB_container").find(":first");
+							}else if(scrollTo==="last"){ /*scroll to last element position*/
+								target=$this.find(".mCSB_container").find(":last");
+							}else{ /*scroll to element position*/
+								target=$this.find(scrollTo);
+							}
+							if(target.length===1){ /*if such unique element exists, scroll to it*/
+								if($this.data("horizontalScroll")){
+									scrollTo=target.position().left;
+								}else{
+									scrollTo=target.position().top;
+								}
+								draggerScrollTo=scrollTo/$this.data("scrollAmount");
+							}else{
+								draggerScrollTo=scrollTo=target;
+							}
 						}
 					}
 					/*scroll to*/
@@ -694,10 +725,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						if($this.data("onTotalScroll_Offset")){ /*total scroll offset*/
 							totalScrollOffset=mCustomScrollBox.width()-mCSB_container.outerWidth()+$this.data("onTotalScroll_Offset");
 						}
-						if(draggerScrollTo<0){ /*scroll start position*/
+						if(draggerScrollTo<=0){ /*scroll start position*/
 							draggerScrollTo=scrollTo=0; clearInterval($this.data("mCSB_buttonScrollLeft"));
 							if(!scrollBeginningOffset){scrollBeginning=true;}
-						}else if(draggerScrollTo>=mCSB_draggerContainer.width()-mCSB_dragger.width()){ /*scroll end position*/
+						}else if(draggerScrollTo>mCSB_draggerContainer.width()-mCSB_dragger.width()){ /*scroll end position*/
 							draggerScrollTo=mCSB_draggerContainer.width()-mCSB_dragger.width();
 							scrollTo=mCustomScrollBox.width()-mCSB_container.outerWidth(); clearInterval($this.data("mCSB_buttonScrollRight"));
 							if(!totalScrollOffset){totalScroll=true;}
@@ -733,10 +764,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 						if($this.data("onTotalScroll_Offset")){ /*total scroll offset*/
 							totalScrollOffset=mCustomScrollBox.height()-mCSB_container.outerHeight()+$this.data("onTotalScroll_Offset");
 						}
-						if(draggerScrollTo<0){ /*scroll start position*/
+						if(draggerScrollTo<=0){ /*scroll start position*/
 							draggerScrollTo=scrollTo=0; clearInterval($this.data("mCSB_buttonScrollUp"));
 							if(!scrollBeginningOffset){scrollBeginning=true;}
-						}else if(draggerScrollTo>=mCSB_draggerContainer.height()-mCSB_dragger.height()){ /*scroll end position*/
+						}else if(draggerScrollTo>mCSB_draggerContainer.height()-mCSB_dragger.height()){ /*scroll end position*/
 							draggerScrollTo=mCSB_draggerContainer.height()-mCSB_dragger.height();
 							scrollTo=mCustomScrollBox.height()-mCSB_container.outerHeight(); clearInterval($this.data("mCSB_buttonScrollDown"));
 							if(!totalScrollOffset){totalScroll=true;}
@@ -805,6 +836,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/lgpl.html.
 				mCSB_dragger=$this.children().children().children().children(".mCSB_dragger");
 			functions.mTweenAxisStop.call(this,mCSB_container[0]);
 			functions.mTweenAxisStop.call(this,mCSB_dragger[0]);
+		},
+		pause:function(){
+			var $this=$(this),
+				mCustomScrollBox=$this.children(".mCustomScrollBox"),
+				mCSB_container=mCustomScrollBox.children(".mCSB_container"),
+				mCSB_scrollTools=mCustomScrollBox.children(".mCSB_scrollTools"),
+				mCSB_dragger=mCSB_scrollTools.children().children(".mCSB_dragger");
+			mCustomScrollBox.unbind("mousewheel focusin mouseenter mouseleave touchend");
+			mCSB_container.unbind("touchstart touchmove")
+			$this.data({"bindEvent_mousewheel":false,"bindEvent_focusin":false,"bindEvent_content_touch":false,"bindEvent_autoHideScrollbar":false}).addClass("mCS_disabled");
 		},
 		disable:function(resetScroll){
 			var $this=$(this),
