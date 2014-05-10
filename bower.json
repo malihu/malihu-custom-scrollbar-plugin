@@ -1,8 +1,8 @@
 {
   "name": "malihu-custom-scrollbar-plugin",
-  "version": "2.8.5",
+  "version": "3.0.0",
   "title": "malihu custom scrollbar plugin",
-  "description": "Highly customizable custom scrollbar jQuery plugin, featuring vertical/horizontal scrollbars, scrolling momentum, mouse-wheel and touch support user defined callbacks etc.",
+  "description": "Highly customizable custom scrollbar jQuery plugin, featuring vertical/horizontal scrollbars, scrolling momentum, mouse-wheel, keyboard and touch support user defined callbacks etc.",
   "main": "./jquery.mCustomScrollbar.js",
   "keywords": [
     "jquery",
