@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="en" class="ie8"><![endif]-->
+<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>jQuery custom scrollbar demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- stylesheet for demo and examples -->
+	<link rel="stylesheet" href="style.css">
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<![endif]-->
+	
+	<!-- custom scrollbar stylesheet -->
+	<link rel="stylesheet" href="../jquery.mCustomScrollbar.css">
+	
+</head>
+
+<body>
+	<header>
+		<a href="http://manos.malihu.gr/jquery-custom-content-scroller/" class="logo"><img src="logo.png" alt="jQuery custom scrollbar" /></a>
+		<hr />
+	</header>
+	
+	<div id="demo">
+		<section id="examples" class="snap-scrolling-example">
+			
+			<!-- content -->
+			<div id="content-1" class="content horizontal-images">
+				<ul>
+					<li><img src="images/img1.jpg" /></li>
+					<li><img src="images/img2.jpg" /></li>
+					<li><img src="images/img3.jpg" /></li>
+					<li><img src="images/img4.jpg" /></li>
+					<li><img src="images/img5.jpg" /></li>
+					<li><img src="images/img6.jpg" /></li>
+					<li><img src="images/img7.jpg" /></li>
+					<li><img src="images/img1.jpg" /></li>
+					<li><img src="images/img2.jpg" /></li>
+					<li><img src="images/img3.jpg" /></li>
+					<li><img src="images/img4.jpg" /></li>
+					<li><img src="images/img5.jpg" /></li>
+					<li><img src="images/img6.jpg" /></li>
+					<li><img src="images/img7.jpg" /></li>
+				</ul>
+			</div>
+			
+		</section>
+	</div>
+	
+	<footer>
+		<hr />
+		<p><a href="http://manos.malihu.gr/jquery-custom-content-scroller">Plugin home</a> <a href="https://github.com/malihu/malihu-custom-scrollbar-plugin">Project on Github</a> <a href="http://opensource.org/licenses/MIT">MIT License</a></p>
+	</footer>
+	
+	<!-- Google CDN jQuery with fallback to local -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="../js/minified/jquery-1.11.0.min.js"><\/script>')</script>
+	
+	<!-- custom scrollbar plugin -->
+	<script src="../jquery.mCustomScrollbar.concat.min.js"></script>
+	
+	<script>
+		(function($){
+			$(window).load(function(){
+				
+				/* 
+				get snap amount programmatically or just set it directly (e.g. "273") 
+				in this example, the snap amount is list item's (li) outer-width (width+margins)
+				*/
+				var amount=Math.max.apply(Math,$("#content-1 li").map(function(){return $(this).outerWidth(true);}).get());
+				
+				$("#content-1").mCustomScrollbar({
+					axis:"x",
+					theme:"inset",
+					advanced:{
+						autoExpandHorizontalScroll:true
+					},
+					scrollButtons:{
+						enable:true,
+						scrollType:"stepped"
+					},
+					keyboard:{scrollType:"stepped"},
+					snapAmount:amount,
+					mouseWheel:{scrollAmount:amount}
+				});
+				
+			});
+		})(jQuery);
+	</script>
+</body>
+</html>

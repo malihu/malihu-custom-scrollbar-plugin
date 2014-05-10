@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="en" class="ie8"><![endif]-->
+<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>jQuery custom scrollbar demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- stylesheet for demo and examples -->
+	<link rel="stylesheet" href="style.css">
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<![endif]-->
+	
+	<!-- custom scrollbar stylesheet -->
+	<link rel="stylesheet" href="../jquery.mCustomScrollbar.css">
+	
+	<!-- demo CSS -->
+	<style>
+		.content{ height: 401px; }
+	</style>
+	
+</head>
+
+<body>
+	<header>
+		<a href="http://manos.malihu.gr/jquery-custom-content-scroller/" class="logo"><img src="logo.png" alt="jQuery custom scrollbar" /></a>
+		<hr />
+	</header>
+	
+	<div id="demo">
+		<section id="examples">
+			
+			<!-- content -->
+			<div class="content">
+				<table>
+					<tr><td>Row 1</td></tr>
+					<tr><td>Row 2</td></tr>
+					<tr><td>Row 3</td></tr>
+					<tr><td>Row 4</td></tr>
+					<tr><td>Row 5</td></tr>
+					<tr><td>Row 6</td></tr>
+					<tr><td>Row 7</td></tr>
+					<tr><td>Row 8</td></tr>
+					<tr><td>Row 9</td></tr>
+					<tr><td>Row 10</td></tr>
+					<tr><td>Row 11</td></tr>
+					<tr><td>Row 12</td></tr>
+					<tr><td>Row 13</td></tr>
+					<tr><td>Row 14</td></tr>
+					<tr><td>Row 15</td></tr>
+					<tr><td>Row 16</td></tr>
+					<tr><td>Row 17</td></tr>
+					<tr><td>Row 18</td></tr>
+					<tr><td>Row 19</td></tr>
+					<tr><td>Row 20</td></tr>
+					<tr><td>Row 21</td></tr>
+					<tr><td>Row 22</td></tr>
+					<tr><td>Row 23</td></tr>
+					<tr><td>Row 24</td></tr>
+					<tr><td>Row 25</td></tr>
+					<tr><td>Row 26</td></tr>
+					<tr><td>Row 27</td></tr>
+					<tr><td>Row 28</td></tr>
+					<tr><td>Row 29</td></tr>
+					<tr><td>Row 30</td></tr>
+					<tr><td>Row 31</td></tr>
+					<tr><td>Row 32</td></tr>
+					<tr><td>Row 33</td></tr>
+					<tr><td>Row 34</td></tr>
+					<tr><td>Row 35</td></tr>
+					<tr><td>Row 36</td></tr>
+					<tr><td>Row 37</td></tr>
+					<tr><td>Row 38</td></tr>
+					<tr><td>Row 39</td></tr>
+					<tr><td>Row 40 - end</td></tr>
+				</table>
+			</div>
+			
+		</section>
+	</div>
+	
+	<footer>
+		<hr />
+		<p><a href="http://manos.malihu.gr/jquery-custom-content-scroller">Plugin home</a> <a href="https://github.com/malihu/malihu-custom-scrollbar-plugin">Project on Github</a> <a href="http://opensource.org/licenses/MIT">MIT License</a></p>
+	</footer>
+	
+	<!-- Google CDN jQuery with fallback to local -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="../js/minified/jquery-1.11.0.min.js"><\/script>')</script>
+	
+	<!-- custom scrollbar plugin -->
+	<script src="../jquery.mCustomScrollbar.concat.min.js"></script>
+	
+	<script>
+		(function($){
+			$(window).load(function(){
+				
+				$(".content").mCustomScrollbar({
+					snapAmount:40,
+					scrollButtons:{enable:true},
+					keyboard:{scrollAmount:40},
+					mouseWheel:{deltaFactor:40},
+					scrollInertia:400
+				});
+				
+			});
+		})(jQuery);
+	</script>
+</body>
+</html>

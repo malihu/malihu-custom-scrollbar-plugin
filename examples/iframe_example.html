@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html lang="en" class="ie8"><![endif]-->
+<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>jQuery custom scrollbar demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- stylesheet for demo and examples -->
+	<link rel="stylesheet" href="style.css">
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<![endif]-->
+	
+	<!-- custom scrollbar stylesheet -->
+	<link rel="stylesheet" href="../jquery.mCustomScrollbar.css">
+	
+</head>
+
+<body>
+	<header>
+		<a href="http://manos.malihu.gr/jquery-custom-content-scroller/" class="logo"><img src="logo.png" alt="jQuery custom scrollbar" /></a>
+		<hr />
+	</header>
+	
+	<div id="demo">
+		<section id="examples">
+			
+			<!-- content -->
+			<div id="iframe-container" class="content">
+				<!-- iframe -->
+				<iframe src="http://slipsum.com/" scrolling="no" width="1040" height="1000" frameborder="0">
+					<p>Your browser does not support iframes.</p>
+				</iframe>
+			</div>
+		
+		</section>
+	</div>
+	
+	<footer>
+		<hr />
+		<p><a href="http://manos.malihu.gr/jquery-custom-content-scroller">Plugin home</a> <a href="https://github.com/malihu/malihu-custom-scrollbar-plugin">Project on Github</a> <a href="http://opensource.org/licenses/MIT">MIT License</a></p>
+	</footer>
+	
+	<!-- Google CDN jQuery with fallback to local -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="../js/minified/jquery-1.11.0.min.js"><\/script>')</script>
+	
+	<!-- custom scrollbar plugin -->
+	<script src="../jquery.mCustomScrollbar.concat.min.js"></script>
+	
+	<script>
+		(function($){
+			$(window).load(function(){
+				
+				$("#iframe-container").mCustomScrollbar({
+					axis:"yx",
+					theme:"light-thick"
+				});
+				
+			});
+		})(jQuery);
+	</script>
+</body>
+</html>
