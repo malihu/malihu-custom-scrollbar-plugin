@@ -52,14 +52,11 @@ http://manos.malihu.gr/jquery-custom-content-scroller/2/
 License 
 -------------------------
 
-This program is free software: you can redistribute it and/or modify 
-it under the terms of the GNU Lesser General Public License as published by 
-the Free Software Foundation, either version 3 of the License, or 
-any later version. 
+MIT License (MIT)
 
-http://www.gnu.org/licenses/lgpl.html
+http://opensource.org/licenses/MIT
 
 Donate 
 -------------------------
 
-If you feel like it, you can make a donation by visiting http://manos.malihu.gr. I greatly appreciate your support to continue updating, developing and sharing cool stuff.
+https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UYJ5G65M6ZA28
