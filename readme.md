@@ -3,7 +3,7 @@ malihu custom scrollbar plugin
 
 Highly customizable custom scrollbar jQuery plugin. Features include: 
 
-* Vertical or horizontal scrollbar  
+* Vertical or horizontal scrollbar(s)  
 * Adjustable scrolling momentum 
 * Mouse-wheel and touch support 
 * Ready-to-use themes and customization via CSS 
@@ -31,10 +31,15 @@ Browser compatibility
 * Firefox 
 * Chrome 
 * Opera 
-* Safari  
+* Safari 
 * iOS 
 * Android 
 * Windows Phone
+
+Changelog 
+-------------------------
+
+http://manos.malihu.gr/jquery-custom-content-scroller/2/
 
 License 
 -------------------------

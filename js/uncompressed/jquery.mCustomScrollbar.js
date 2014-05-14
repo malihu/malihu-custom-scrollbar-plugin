@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbars plugin == 
-version: 2.8.5 
+version: 2.8.6 
 author: malihu (http://manos.malihu.gr) 
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
 */
@@ -72,6 +72,7 @@ THE SOFTWARE.
 			options=$.extend(true,defaults,options);
 			return this.each(function(){
 				var $this=$(this);
+				if($this.hasClass("mCustomScrollbar")){return;} /* prevent multiple instantiations */
 				/*set element width/height, create markup for custom scrollbars, add classes*/
 				if(options.set_width){
 					$this.css("width",options.set_width);
@@ -169,7 +170,10 @@ THE SOFTWARE.
 					"mCSB_buttonScrollRight":false,
 					"mCSB_buttonScrollLeft":false,
 					"mCSB_buttonScrollDown":false,
-					"mCSB_buttonScrollUp":false
+					"mCSB_buttonScrollUp":false,
+					/* timeouts/intervals */
+					"mCSB_resizeTimeout":false,
+					"mCSB_onContentResize":false
 				});
 				/*max-width/max-height*/
 				if(options.horizontalScroll){
@@ -193,12 +197,12 @@ THE SOFTWARE.
 				$this.mCustomScrollbar("update");
 				/*window resize fn (for layouts based on percentages)*/
 				if(options.advanced.updateOnBrowserResize){
-					var mCSB_resizeTimeout,currWinWidth=$(window).width(),currWinHeight=$(window).height();
+					var currWinWidth=$(window).width(),currWinHeight=$(window).height();
 					$(window).bind("resize."+$this.data("mCustomScrollbarIndex"),function(){
-						if(mCSB_resizeTimeout){
-							clearTimeout(mCSB_resizeTimeout);
+						if($this.data("mCSB_resizeTimeout")){
+							clearTimeout($this.data("mCSB_resizeTimeout"));
 						}
-						mCSB_resizeTimeout=setTimeout(function(){
+						$this.data("mCSB_resizeTimeout",setTimeout(function(){
 							if(!$this.is(".mCS_disabled") && !$this.is(".mCS_destroyed")){
 								var winWidth=$(window).width(),winHeight=$(window).height();
 								if(currWinWidth!==winWidth || currWinHeight!==winHeight){ /*ie8 fix*/
@@ -213,18 +217,17 @@ THE SOFTWARE.
 									currWinWidth=winWidth; currWinHeight=winHeight;
 								}
 							}
-						},150);
+						},150));
 					});
 				}
 				/*content resize fn (for dynamically generated content)*/
 				if(options.advanced.updateOnContentResize){
-					var mCSB_onContentResize;
 					if(options.horizontalScroll){
 						var mCSB_containerOldSize=mCSB_container.outerWidth(),mCSB_contentOldSize=mCSB_container.innerWidth();
 					}else{
 						var mCSB_containerOldSize=mCSB_container.outerHeight(),mCSB_contentOldSize=mCSB_container.innerHeight();
 					}
-					mCSB_onContentResize=setInterval(function(){
+					$this.data("mCSB_onContentResize",setInterval(function(){
 						if(options.horizontalScroll){
 							if(options.advanced.autoExpandHorizontalScroll){
 								mCSB_container.css({"position":"absolute","width":"auto"}).wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />").css({"width":mCSB_container.outerWidth(),"position":"relative"}).unwrap();
@@ -238,7 +241,7 @@ THE SOFTWARE.
 							mCSB_containerOldSize=mCSB_containerNewSize;
 							mCSB_contentOldSize=mCSB_contentNewSize;
 						}
-					},300);
+					},300));
 				}
 			});
 		},
@@ -854,6 +857,12 @@ THE SOFTWARE.
 		},
 		destroy:function(){
 			var $this=$(this);
+			if($this.data("mCSB_resizeTimeout")){clearTimeout($this.data("mCSB_resizeTimeout"));}
+			if($this.data("mCSB_onContentResize")){clearTimeout($this.data("mCSB_onContentResize"));}
+			if($this.data("mCSB_buttonScrollDown")){clearTimeout($this.data("mCSB_buttonScrollDown"));}
+			if($this.data("mCSB_buttonScrollUp")){clearTimeout($this.data("mCSB_buttonScrollUp"));}
+			if($this.data("mCSB_buttonScrollLeft")){clearTimeout($this.data("mCSB_buttonScrollLeft"));}
+			if($this.data("mCSB_buttonScrollRight")){clearTimeout($this.data("mCSB_buttonScrollRight"));}
 			$this.removeClass("mCustomScrollbar _mCS_"+$this.data("mCustomScrollbarIndex")).addClass("mCS_destroyed").children().children(".mCSB_container").unwrap().children().unwrap().siblings(".mCSB_scrollTools").remove();
 			$(document).unbind("mousemove."+$this.data("mCustomScrollbarIndex")+" mouseup."+$this.data("mCustomScrollbarIndex")+" MSPointerMove."+$this.data("mCustomScrollbarIndex")+" MSPointerUp."+$this.data("mCustomScrollbarIndex"));
 			$(window).unbind("resize."+$this.data("mCustomScrollbarIndex"));
