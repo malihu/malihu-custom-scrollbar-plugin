@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbars plugin == 
-version: 2.8.6 
+version: 2.8.7 
 author: malihu (http://manos.malihu.gr) 
 plugin home: http://manos.malihu.gr/jquery-custom-content-scroller 
 */
@@ -230,7 +230,7 @@ THE SOFTWARE.
 					$this.data("mCSB_onContentResize",setInterval(function(){
 						if(options.horizontalScroll){
 							if(options.advanced.autoExpandHorizontalScroll){
-								mCSB_container.css({"position":"absolute","width":"auto"}).wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />").css({"width":mCSB_container.outerWidth(),"position":"relative"}).unwrap();
+								mCSB_container.css({"position":"absolute","width":"auto"}).wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />").css({"width":(Math.ceil(mCSB_container[0].getBoundingClientRect().right+0.4)-Math.floor(mCSB_container[0].getBoundingClientRect().left)),"position":"relative"}).unwrap();
 							}
 							var mCSB_containerNewSize=mCSB_container.outerWidth(),mCSB_contentNewSize=mCSB_container.innerWidth();
 						}else{
@@ -260,7 +260,7 @@ THE SOFTWARE.
 					mCSB_buttonRight=mCSB_scrollTools.children(".mCSB_buttonRight"),
 					mCustomScrollBoxW=mCustomScrollBox.width();
 				if($this.data("autoExpandHorizontalScroll")){
-					mCSB_container.css({"position":"absolute","width":"auto"}).wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />").css({"width":mCSB_container.outerWidth(),"position":"relative"}).unwrap();
+					mCSB_container.css({"position":"absolute","width":"auto"}).wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />").css({"width":(Math.ceil(mCSB_container[0].getBoundingClientRect().right+0.4)-Math.floor(mCSB_container[0].getBoundingClientRect().left)),"position":"relative"}).unwrap();
 				}
 				var mCSB_containerW=mCSB_container.outerWidth();
 			}else{
@@ -355,6 +355,7 @@ THE SOFTWARE.
 				if($.support.pointer || $.support.msPointer){ /*pointer, MSPointer*/
 					mCSB_dragger.bind(mCSB_dragger_downEvent,function(e){
 						e.preventDefault();
+						_iframe(false); /* enable scrollbar dragging over iframes by disabling their events */
 						$this.data({"on_drag":true}); mCSB_dragger.addClass("mCSB_dragger_onDrag");
 						$this.data("onDragStart_Callback").call($this);
 						var elem=$(this),
@@ -378,10 +379,12 @@ THE SOFTWARE.
 					}).bind(mCSB_dragger_upEvent+"."+$this.data("mCustomScrollbarIndex"),function(e){
 						$this.data({"on_drag":false}); mCSB_dragger.removeClass("mCSB_dragger_onDrag");
 						$this.data("onDragStop_Callback").call($this);
+						_iframe(true); /* enable iframes events */
 					});
 				}else{ /*mouse/touch*/
 					mCSB_dragger.bind("mousedown touchstart",function(e){
 						e.preventDefault(); e.stopImmediatePropagation();
+						_iframe(false); /* enable scrollbar dragging over iframes by disabling their events */
 						var	elem=$(this),elemOffset=elem.offset(),x,y;
 						if(e.type==="touchstart"){
 							var touch=e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
@@ -414,6 +417,7 @@ THE SOFTWARE.
 					}).bind("mouseup."+$this.data("mCustomScrollbarIndex"),function(e){
 						$this.data({"on_drag":false}); mCSB_dragger.removeClass("mCSB_dragger_onDrag");
 						$this.data("onDragStop_Callback").call($this);
+						_iframe(true); /* enable iframes events */
 					});
 				}
 				$this.data({"bindEvent_scrollbar_drag":true});
@@ -478,12 +482,15 @@ THE SOFTWARE.
 							if(delta<0){delta=-1;}else{delta=1;}
 						}
 						if(mouseWheelPixels==="auto"){
-							mouseWheelPixels=100+Math.round($this.data("scrollAmount")/2);
+							mouseWheelPixels=100*Math.round($this.data("scrollAmount"));
 						}
 						if($this.data("horizontalScroll")){
 							draggerPos=mCSB_dragger.position().left; 
 							limit=mCSB_draggerContainer.width()-mCSB_dragger.width();
 							absPos=Math.abs(mCSB_container.position().left);
+							if(mouseWheelPixels>=mCustomScrollBox.width()){mouseWheelPixels=mCustomScrollBox.width()*0.9;}
+						}else{
+							if(mouseWheelPixels>=mCustomScrollBox.height()){mouseWheelPixels=mCustomScrollBox.height()*0.9;}
 						}
 						if((delta>0 && draggerPos!==0) || (delta<0 && draggerPos!==limit)){e.preventDefault(); e.stopImmediatePropagation();}
 						scrollTo=absPos-(delta*mouseWheelPixels);
@@ -491,6 +498,12 @@ THE SOFTWARE.
 					});
 					$this.data({"bindEvent_mousewheel":true});
 				}
+			}
+			function _iframe(evt){
+				var el=mCSB_container.find("iframe");
+				if(!el.length){return;} /* check if content contains iframes */
+				var val=!evt ? "none" : "auto";
+				el.css("pointer-events",val); /* for IE11, iframe's display property should not be "block" */
 			}
 			/*buttons scrolling*/
 			if($this.data("scrollButtons_enable")){
@@ -997,7 +1010,7 @@ THE SOFTWARE.
 	$.support.msPointer=window.navigator.msPointerEnabled; /*MSPointer support*/
 	/*plugin dependencies*/
 	var _dlp=("https:"==document.location.protocol) ? "https:" : "http:";
-	$.event.special.mousewheel || $("<script>",{src:_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.6/jquery.mousewheel.min.js"}).appendTo("body");
+	$.event.special.mousewheel || $("<script>",{src:_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js"}).appendTo("body");
 	/*plugin fn*/
 	$.fn.mCustomScrollbar=function(method){
 		if(methods[method]){
