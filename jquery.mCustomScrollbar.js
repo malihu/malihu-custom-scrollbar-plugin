@@ -2020,7 +2020,7 @@ and dependencies (minified).
 	/* plugin dependencies */
 	var _dlp=("https:"==document.location.protocol) ? "https:" : "http:"; /* dependency location protocol */
 	/* load jquery-mousewheel plugin (via CDN) if it's not present (works when mCustomScrollbar fn is called on window load) */
-	$.event.special.mousewheel || $("body").append(decodeURI("%3Cscript src="+_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.6/jquery.mousewheel.min.js%3E%3C/script%3E"));
+	$.event.special.mousewheel || $("body").append(decodeURI("%3Cscript src="+_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js%3E%3C/script%3E"));
 	
 	/* plugin constructor functions */
 	$.fn[pluginNS]=function(method){ /* usage: $(selector).mCustomScrollbar(); */
