@@ -3,10 +3,15 @@ malihu custom scrollbar plugin
 
 Highly customizable custom scrollbar jQuery plugin. Features include: 
 
+<<<<<<< HEAD
 * Vertical or horizontal scrollbar(s)  
+=======
+* Vertical and/or horizontal scrollbar(s)  
+>>>>>>> 3.x
 * Adjustable scrolling momentum 
-* Mouse-wheel and touch support 
+* Mouse-wheel, keyboard and touch support 
 * Ready-to-use themes and customization via CSS 
+* RTL direction support 
 * Option parameters for full control of scrollbar functionality 
 * Methods for triggering actions like scroll-to, update, destroy etc. 
 * User-defined callbacks 

@@ -1,101 +1,112 @@
 <!DOCTYPE html>
+<!--[if IE 8 ]><html lang="en" class="ie8"><![endif]-->
+<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
 <html lang="en">
+<!--<![endif]-->
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>jQuery custom scrollbar demo</title>
-	<!-- style for demo and examples -->
-	<style>
-		body{margin:0; padding:0; color:#eee; background:#222; font-family:Verdana,Geneva,sans-serif; font-size:13px; line-height:20px;}
-		a:link,a:visited,a:hover{color:inherit;}
-		h1{font-family:Georgia,serif; font-size:18px; font-style:italic; margin:40px; color:#26beff;}
-		h2{font-family:Georgia,serif; font-size:16px; font-style:italic; color:#eee;}
-		p{margin:0 0 20px 0;}
-		hr{height:0; border:none; border-bottom:1px solid rgba(255,255,255,0.13); border-top:1px solid rgba(0,0,0,1); margin:9px 10px; clear:both;}
-		.links{margin:10px;}
-		.links a{display:inline-block; padding:3px 15px; margin:7px 10px; background:#444; text-decoration:none; -webkit-border-radius:15px; -moz-border-radius:15px; border-radius:15px;}
-		.links a:hover{background:#eb3755; color:#fff;}
-		.content{margin:40px; width:260px; padding:20px; background:#333;}
-		.content textarea{width:210px; height:140px; border:none; background:transparent; resize:none; margin:0; padding:0 0 0 10px; overflow:hidden; line-height:20px; font-family: Arial, sans-serif; font-size: 13px; margin:5px 0; outline:none; color:#ccc;}
-		.content .textarea-wrapper{height:162px; overflow:hidden; border:1px solid #666; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; -webkit-box-shadow:inset 0 0 40px rgba(0,0,0,0.5); -moz-box-shadow:inset 0 0 40px rgba(0,0,0,0.5); box-shadow:inset 0 0 40px rgba(0,0,0,0.5);}
-		.hiddendiv{position:absolute; top:-9999px; left:-9999px; visibility:hidden; white-space: pre-wrap; width: 210px; min-height: 140px; font-family: Arial, sans-serif; font-size: 13px; padding:0 0 0 10px; word-wrap: break-word;}
-		.mCSB_scrollTools{box-sizing:border-box; padding:5px 0;}
-		.mCSB_scrollTools .mCSB_draggerContainer{margin:5px 0;}
-	</style>
-	<!-- Custom scrollbars CSS -->
-	<link href="../jquery.mCustomScrollbar.css" rel="stylesheet" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- stylesheet for demo and examples -->
+	<link rel="stylesheet" href="style.css">
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<![endif]-->
+	
+	<!-- custom scrollbar stylesheet -->
+	<link rel="stylesheet" href="../jquery.mCustomScrollbar.css">
+	
 </head>
+
 <body>
-	<p class="links">
-		<a href="http://manos.malihu.gr">malihu</a>
-		<a href="http://manos.malihu.gr/jquery-custom-content-scroller">Plugin home</a>
-		<a href="complete_examples.html">Plugin demo</a>
-	</p>
-	<hr />
-	<h1>Textarea with custom scrollbar</h1>
-	<!-- content block -->
-	<div class="content">
-		<form>
-			<textarea></textarea>
-		</form>
+	<header>
+		<a href="http://manos.malihu.gr/jquery-custom-content-scroller/" class="logo"><img src="logo.png" alt="jQuery custom scrollbar" /></a>
+		<hr />
+	</header>
+	
+	<div id="demo">
+		<section id="examples" class="textarea-example">
+			
+			<!-- content -->
+			<div id="content-1" class="content">
+				<h2>textarea example</h2>
+				<hr />
+				<form>
+					<!-- wrap textarea in a .textarea-wrapper div -->
+					<div class="textarea-wrapper">
+						<textarea>Start typing...</textarea>
+						<!-- add an extra .textarea-clone div -->
+						<div class="textarea-clone"></div>
+					</div>
+				</form>
+				<hr />
+			</div>
+			
+		</section>
 	</div>
-	<hr />
-	<p>&nbsp;</p>
+	
+	<footer>
+		<hr />
+		<p><a href="http://manos.malihu.gr/jquery-custom-content-scroller">Plugin home</a> <a href="https://github.com/malihu/malihu-custom-scrollbar-plugin">Project on Github</a> <a href="http://opensource.org/licenses/MIT">MIT License</a></p>
+	</footer>
+	
 	<!-- Google CDN jQuery with fallback to local -->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script>!window.jQuery && document.write(unescape('%3Cscript src="../js/minified/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
-	<!-- custom scrollbars plugin -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="../js/minified/jquery-1.11.0.min.js"><\/script>')</script>
+	
+	<!-- custom scrollbar plugin -->
 	<script src="../jquery.mCustomScrollbar.concat.min.js"></script>
+	
 	<script>
 		(function($){
 			$(window).load(function(){
-				var textArea=$(".content textarea");
-				textArea.wrap("<div class='textarea-wrapper' />");
-				var textAreaWrapper=textArea.parent(".textarea-wrapper");
-				textAreaWrapper.mCustomScrollbar({
+				
+				var textareaLineHeight=parseInt($(".textarea-wrapper textarea").css("line-height"));
+				
+				$(".textarea-wrapper").mCustomScrollbar({
 					scrollInertia:0,
-					advanced:{autoScrollOnFocus:false}
+					theme:"dark-3",
+					advanced:{autoScrollOnFocus:false},
+					keyboard:{enable:false},
+					snapAmount:textareaLineHeight
 				});
-				var hiddenDiv=$(document.createElement("div")),
-        			content=null;
-    			hiddenDiv.addClass("hiddendiv");
-    			$("body").prepend(hiddenDiv);
-    			textArea.bind("keyup",function(e){
-        			content=$(this).val();
-					var clength=content.length;
-        			var cursorPosition=textArea.getCursorPosition();
-					content="<span>"+content.substr(0,cursorPosition)+"</span>"+content.substr(cursorPosition,content.length);
-					content=content.replace(/\n/g,"<br />");
-        			hiddenDiv.html(content+"<br />");
-        			$(this).css("height",hiddenDiv.height());
-					textAreaWrapper.mCustomScrollbar("update");
-					var hiddenDivSpan=hiddenDiv.children("span"),
-						hiddenDivSpanOffset=0,
-						viewLimitBottom=(parseInt(hiddenDiv.css("min-height")))-hiddenDivSpanOffset,
-						viewLimitTop=hiddenDivSpanOffset,
-						viewRatio=Math.round(hiddenDivSpan.height()+textAreaWrapper.find(".mCSB_container").position().top);
+				
+				var textarea=$(".textarea-wrapper textarea"),textareaWrapper=$(".textarea-wrapper"),textareaClone=$(".textarea-wrapper .textarea-clone");
+				
+				textarea.bind("keyup keydown",function(e){
+        			var $this=$(this),textareaContent=$this.val(),clength=textareaContent.length,cursorPosition=textarea.getCursorPosition();
+					textareaContent="<span>"+textareaContent.substr(0,cursorPosition)+"</span>"+textareaContent.substr(cursorPosition,textareaContent.length);
+					textareaContent=textareaContent.replace(/\n/g,"<br />");
+        			textareaClone.html(textareaContent+"<br />");
+        			$this.css("height",textareaClone.height());
+					var textareaCloneSpan=textareaClone.children("span"),textareaCloneSpanOffset=0,
+						viewLimitBottom=(parseInt(textareaClone.css("min-height")))-textareaCloneSpanOffset,viewLimitTop=textareaCloneSpanOffset,
+						viewRatio=Math.round(textareaCloneSpan.height()+textareaWrapper.find(".mCSB_container").position().top);
 					if(viewRatio>viewLimitBottom || viewRatio<viewLimitTop){
-						if((hiddenDivSpan.height()-hiddenDivSpanOffset)>0){
-							textAreaWrapper.mCustomScrollbar("scrollTo",hiddenDivSpan.height()-hiddenDivSpanOffset);
+						if((textareaCloneSpan.height()-textareaCloneSpanOffset)>0){
+							textareaWrapper.mCustomScrollbar("scrollTo",textareaCloneSpan.height()-textareaCloneSpanOffset-textareaLineHeight);
 						}else{
-							textAreaWrapper.mCustomScrollbar("scrollTo","top");
+							textareaWrapper.mCustomScrollbar("scrollTo","top");
 						}
 					}
     			});
-				$.fn.getCursorPosition=function(){
-        			var el=$(this).get(0),
-						pos=0;
+    			
+    			$.fn.getCursorPosition=function(){
+        			var el=$(this).get(0),pos=0;
         			if("selectionStart" in el){
             			pos=el.selectionStart;
         			}else if("selection" in document){
             			el.focus();
-            			var sel=document.selection.createRange(),
-							selLength=document.selection.createRange().text.length;
+            			var sel=document.selection.createRange(),selLength=document.selection.createRange().text.length;
             			sel.moveStart("character",-el.value.length);
             			pos=sel.text.length-selLength;
         			}
         			return pos;
     			}
+				
 			});
 		})(jQuery);
 	</script>
