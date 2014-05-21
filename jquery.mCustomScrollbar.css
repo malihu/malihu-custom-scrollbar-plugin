@@ -980,7 +980,7 @@ yx-axis
 	
 	.mCS-3d-thick-dark.mCSB_scrollTools .mCSB_draggerContainer{
 		background-color: #fff; background-color: rgba(0,0,0,0.05);
-		box-shadow: box-shadow: inset 1px 1px 16px rgba(0,0,0,0.1);
+		box-shadow: inset 1px 1px 16px rgba(0,0,0,0.1);
 	}
 	
 	.mCS-3d-thick-dark.mCSB_scrollTools .mCSB_draggerRail{ background-color: transparent; }
