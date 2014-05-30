@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.0.0 
+Version: 3.0.1 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -302,7 +302,12 @@ and dependencies (minified).
 			values: boolean, string 
 			string values: "on" (enable), "once" (disable after first invocation), "off" (disable)
 			*/
-			live:false
+			live:false,
+			/*
+			the matching set of elements (instead of the current selector) to add scrollbar(s), now and in the future
+			values: string (selector)
+			*/
+			liveSelector:null
 		},
 	
 	
@@ -354,9 +359,9 @@ and dependencies (minified).
 				if live option is enabled, monitor for elements matching the current selector and 
 				apply scrollbar(s) when found (now and in the future) 
 				*/
-				var liveSelector=this.selector || defaultSelector; /* live selector(s) */
 				if(options.live){
-					var $liveSelector=$(liveSelector); /* live selector(s) as jquery object */
+					var liveSelector=options.liveSelector || this.selector || defaultSelector, /* live selector(s) */
+						$liveSelector=$(liveSelector); /* live selector(s) as jquery object */
 					if(options.live==="off"){
 						/* 
 						disable live if requested 
@@ -460,6 +465,8 @@ and dependencies (minified).
 						var d=$this.data(pluginPfx),o=d.opt,
 							mCSB_container=$("#mCSB_"+d.idx+"_container"),
 							mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")];
+						
+						if(!mCSB_container.length){return;}
 						
 						if(d.tweenRunning){functions._stop.call(null,$this);} /* stop any running tweens while updating */
 						
@@ -728,7 +735,7 @@ and dependencies (minified).
 			
 			/* validates selector (if selector is invalid or undefined uses the default one) */
 			_selector:function(){
-				return (typeof $(this.selector)!=="object" || $(this.selector).length<1) ? defaultSelector : this.selector;
+				return (typeof $(this)!=="object" || $(this).length<1) ? defaultSelector : this;
 			},
 			/* -------------------- */
 			
@@ -2020,7 +2027,7 @@ and dependencies (minified).
 	/* plugin dependencies */
 	var _dlp=("https:"==document.location.protocol) ? "https:" : "http:"; /* dependency location protocol */
 	/* load jquery-mousewheel plugin (via CDN) if it's not present (works when mCustomScrollbar fn is called on window load) */
-	$.event.special.mousewheel || $("body").append(decodeURI("%3Cscript src="+_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js%3E%3C/script%3E"));
+	$.event.special.mousewheel || $("head").append(decodeURI("%3Cscript src="+_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js%3E%3C/script%3E"));
 	
 	/* plugin constructor functions */
 	$.fn[pluginNS]=function(method){ /* usage: $(selector).mCustomScrollbar(); */
