@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.0.1 
+Version: 3.0.2 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -164,7 +164,11 @@ and dependencies (minified).
 				invert mouse-wheel scrolling direction 
 				values: boolean
 				*/
-				invert:false
+				invert:false,
+				/*
+				the tags that disable mouse-wheel when cursor is over them
+				*/
+				disableOver:["select","option","keygen","datalist","textarea"]
 			},
 			/* 
 			scrollbar buttons
@@ -1252,6 +1256,7 @@ and dependencies (minified).
 					mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")];
 				mCustomScrollBox.bind("mousewheel."+namespace,function(e,delta){
 					functions._stop($this);
+					if(functions._disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
 					var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor<40 ? 40 : e.deltaFactor || 100;
 					if(o.axis==="x" || o.mouseWheel.axis==="x"){
 						var dir="x",
@@ -1279,6 +1284,17 @@ and dependencies (minified).
 					}
 					functions._scrollTo($this,(contentPos-(dlt*amount)).toString(),{dir:dir});
 				});
+			},
+			/* -------------------- */
+			
+			
+			/* disables mouse-wheel when hovering specific elements like select, datalist etc. */
+			_disableMousewheel:function(el,target){
+				var tag=target.nodeName.toLowerCase(),
+					tags=el.data(pluginPfx).opt.mouseWheel.disableOver,
+					/* elements that require focus */
+					focusTags=["select","textarea"];
+				return $.inArray(tag,tags) > -1 && !($.inArray(tag,focusTags) > -1 && !$(target).is(":focus"));
 			},
 			/* -------------------- */
 			
