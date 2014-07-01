@@ -36,7 +36,21 @@ the production-ready jquery.mCustomScrollbar.concat.min.js which contains the pl
 and dependencies (minified). 
 */
 
-;(function($,window,document,undefined){
+;(function (window,document,undefined){
+
+(function (init) {
+    if (typeof define === 'function' && define.amd) {
+        define(['jquery', 'jquery-mousewheel'], init);
+    } else {
+        var _dlp = ("https:" == document.location.protocol) ? "https:" : "http:"; /* dependency location protocol */
+        /* load jquery-mousewheel plugin (via CDN) if it's not present (works when mCustomScrollbar fn is called on window load) */
+        $.event.special.mousewheel || $("head").append(decodeURI("%3Cscript src=" + _dlp + "//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js%3E%3C/script%3E"));
+
+        init(jQuery);
+    }
+}
+
+(function($){
 	
 	/* 
 	----------------------------------------
@@ -2040,11 +2054,6 @@ and dependencies (minified).
 	----------------------------------------
 	*/
 	
-	/* plugin dependencies */
-	var _dlp=("https:"==document.location.protocol) ? "https:" : "http:"; /* dependency location protocol */
-	/* load jquery-mousewheel plugin (via CDN) if it's not present (works when mCustomScrollbar fn is called on window load) */
-	$.event.special.mousewheel || $("head").append(decodeURI("%3Cscript src="+_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js%3E%3C/script%3E"));
-	
 	/* plugin constructor functions */
 	$.fn[pluginNS]=function(method){ /* usage: $(selector).mCustomScrollbar(); */
 		if(methods[method]){
@@ -2082,5 +2091,5 @@ and dependencies (minified).
 	$(window).load(function(){
 		$(defaultSelector)[pluginNS](); /* add scrollbars automatically on default selector */
 	});
-	
-})(jQuery,window,document);
+
+}))}(window,document));
