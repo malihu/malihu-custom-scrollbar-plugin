@@ -6,6 +6,7 @@
   "main": [
     "./jquery.mCustomScrollbar.js",
     "./jquery.mCustomScrollbar.css",
+    "./mCSB_buttons.png"
   ],
   "keywords": [
     "jquery",
