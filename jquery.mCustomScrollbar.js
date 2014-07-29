@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.0.2 
+Version: 3.0.3 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -38,16 +38,17 @@ and dependencies (minified).
 
 ;(function(window,document,undefined){
 
-(function(init) {
-    if (typeof define === 'function' && define.amd) {
-        define(['jquery', 'jquery-mousewheel'], init);
-    } else {
-        var _dlp = ("https:" == document.location.protocol) ? "https:" : "http:"; /* dependency location protocol */
-        /* load jquery-mousewheel plugin (via CDN) if it's not present (works when mCustomScrollbar fn is called on window load) */
-        $.event.special.mousewheel || $("head").append(decodeURI("%3Cscript src=" + _dlp + "//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js%3E%3C/script%3E"));
-
-        init(jQuery);
-    }
+/* plugin dependencies */
+(function(init){
+	/* support for RequireJS */
+	if(typeof define==="function" && define.amd){
+		define(["jquery", "jquery-mousewheel"], init);
+	}else{
+		var _dlp=("https:"==document.location.protocol) ? "https:" : "http:"; /* dependency location protocol */
+		/* load jquery-mousewheel plugin (via CDN) if it's not present (works when mCustomScrollbar fn is called on window load) */
+		$.event.special.mousewheel || $("head").append(decodeURI("%3Cscript src="+_dlp+"//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.11/jquery.mousewheel.min.js%3E%3C/script%3E"));
+		init(jQuery);
+	}
 }
 
 (function($){
@@ -1265,7 +1266,7 @@ and dependencies (minified).
 			*/
 			_mousewheel:function(){
 				var $this=$(this),d=$this.data(pluginPfx);
-				if (d) {
+				if(d){ /* Check if the scrollbar is ready to use mousewheel events (issue: #185) */
 					var o=d.opt,
 						namespace=pluginPfx+"_"+d.idx,
 						mCustomScrollBox=$("#mCSB_"+d.idx),
