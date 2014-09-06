@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.0.3 
+Version: 3.0.4 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -314,7 +314,27 @@ and dependencies (minified).
 				callback offsets will trigger even if content is already scrolled to the end or beginning
 				values: boolean
 				*/
-				alwaysTriggerOffsets:true
+				alwaysTriggerOffsets:true,
+				/*
+				function to call when content becomes long enough and vertical scrollbar is added
+				values (function): function(){}
+				*/
+				onOverflowY:false,
+				/*
+				function to call when content becomes wide enough and horizontal scrollbar is added
+				values (function): function(){}
+				*/
+				onOverflowX:false,
+				/*
+				function to call when content becomes short enough and vertical scrollbar is removed
+				values (function): function(){}
+				*/
+				onOverflowYNone:false,
+				/*
+				function to call when content becomes narrow enough and horizontal scrollbar is removed
+				values (function): function(){}
+				*/
+				onOverflowXNone:false
 			},
 			/*
 			add scrollbar(s) on all elements matching the current selector, now and in the future 
@@ -405,7 +425,7 @@ and dependencies (minified).
 				options.setWidth=(options.set_width) ? options.set_width : options.setWidth;
 				options.setHeight=(options.set_height) ? options.set_height : options.setHeight;
 				options.axis=(options.horizontalScroll) ? "x" : functions._findAxis.call(null,options.axis);
-				options.scrollInertia=options.scrollInertia<17 ? 17 : options.scrollInertia;
+				options.scrollInertia=options.scrollInertia>0 && options.scrollInertia<17 ? 17 : options.scrollInertia;
 				if(typeof options.mouseWheel!=="object" &&  options.mouseWheel==true){ /* old school mouseWheel option (non-object) */
 					options.mouseWheel={enable:true,scrollAmount:"auto",axis:"y",preventDefault:false,deltaFactor:"auto",normalizeDelta:false,invert:false}
 				}
@@ -428,6 +448,7 @@ and dependencies (minified).
 							opt:options, /* options */
 							scrollRatio:{y:null,x:null}, /* scrollbar to content ratio */
 							overflowed:null, /* overflowed axis */
+							contentReset:{y:null,x:null}, /* object to check when content resets */
 							bindEvents:false, /* object to check if events are bound */
 							tweenRunning:false, /* object to check if tween is running */
 							sequential:{}, /* sequential scrolling object */
@@ -526,6 +547,7 @@ and dependencies (minified).
 								functions._resetContentPosition.call(this); /* reset content position */
 							}else{ /* y scrolling is required */
 								functions._scrollTo.call(this,$this,to[0].toString(),{dir:"y",dur:0,overwrite:"none"});
+								d.contentReset.y=null;
 							}
 						}
 						if(o.axis!=="y"){ /* x/yx axis */
@@ -540,6 +562,7 @@ and dependencies (minified).
 								functions._resetContentPosition.call(this); /* reset content position */
 							}else{ /* x scrolling is required */
 								functions._scrollTo.call(this,$this,to[1].toString(),{dir:"x",dur:0,overwrite:"none"});
+								d.contentReset.x=null;
 							}
 						}
 						
@@ -581,13 +604,14 @@ and dependencies (minified).
 								scrollInertia:o.scrollInertia, /* scrolling inertia (animation duration) */
 								scrollEasing:"mcsEaseInOut", /* animation easing */
 								moveDragger:false, /* move dragger instead of content */
+								timeout:60, /* scroll-to delay */
 								callbacks:true, /* enable/disable callbacks */
 								onStart:true,
 								onUpdate:true,
 								onComplete:true
 							},
 							methodOptions=$.extend(true,{},methodDefaults,options),
-							to=functions._arr.call(this,val),dur=methodOptions.scrollInertia < 17 ? 17 : methodOptions.scrollInertia;
+							to=functions._arr.call(this,val),dur=methodOptions.scrollInertia>0 && methodOptions.scrollInertia<17 ? 17 : methodOptions.scrollInertia;
 						
 						/* translate yx values to actual scroll-to positions */
 						to[0]=functions._to.call(this,to[0],"y");
@@ -616,7 +640,7 @@ and dependencies (minified).
 								methodOptions.overwrite="none";
 								functions._scrollTo.call(this,$this,to[1].toString(),methodOptions);
 							}
-						},60);
+						},methodOptions.timeout);
 						
 					}
 					
@@ -967,7 +991,10 @@ and dependencies (minified).
 					mCSB_container=$("#mCSB_"+d.idx+"_container"),
 					mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")];
 				functions._stop($this); /* stop any current scrolling before resetting */
-				if((o.axis!=="x" && !d.overflowed[0]) || (o.axis==="y" && d.overflowed[0])){mCSB_dragger[0].add(mCSB_container).css("top",0);} /* reset y */
+				if((o.axis!=="x" && !d.overflowed[0]) || (o.axis==="y" && d.overflowed[0])){ /* reset y */
+					mCSB_dragger[0].add(mCSB_container).css("top",0);
+					functions._scrollTo($this,"_resetY");
+				}
 				if((o.axis!=="y" && !d.overflowed[1]) || (o.axis==="x" && d.overflowed[1])){ /* reset x */
 					var cx=dx=0;
 					if(d.langDir==="rtl"){ /* adjust left position for rtl direction */
@@ -976,6 +1003,7 @@ and dependencies (minified).
 					}
 					mCSB_container.css("left",cx);
 					mCSB_dragger[1].css("left",dx);
+					functions._scrollTo($this,"_resetX");
 				}
 			},
 			/* -------------------- */
@@ -1270,11 +1298,22 @@ and dependencies (minified).
 					var o=d.opt,
 						namespace=pluginPfx+"_"+d.idx,
 						mCustomScrollBox=$("#mCSB_"+d.idx),
-						mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")];
-					mCustomScrollBox.bind("mousewheel."+namespace,function(e,delta){
+						mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
+						iframe=$("#mCSB_"+d.idx+"_container").find("iframe"),
+						el=mCustomScrollBox /* mousewheel element selector */;
+					/* check for cross domain iframes and bind mousewheel event on them in addition to default mousewheel element selector */
+					if(iframe.length){
+						iframe.each(function(){
+							var iFobj=this;
+							if(_canAccessIFrame(iFobj)){ /* check if iframe can be accessed */
+								el=el.add($(iFobj).contents().find("body"));
+							}
+						});
+					}
+					el.bind("mousewheel."+namespace,function(e,delta){
 						functions._stop($this);
 						if(functions._disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
-						var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor<40 ? 40 : e.deltaFactor || 100;
+						var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100;
 						if(o.axis==="x" || o.mouseWheel.axis==="x"){
 							var dir="x",
 								px=[Math.round(deltaFactor*d.scrollRatio.x),parseInt(o.mouseWheel.scrollAmount)],
@@ -1301,6 +1340,15 @@ and dependencies (minified).
 						}
 						functions._scrollTo($this,(contentPos-(dlt*amount)).toString(),{dir:dir});
 					});
+				}
+				/* check if iframe can be accessed */
+				function _canAccessIFrame(iframe){
+					var html=null;
+					try{
+						var doc=iframe.contentDocument || iframe.contentWindow.document;
+						html=doc.body.innerHTML;
+					}catch(err){/* do nothing */}
+					return(html!==null);
 				}
 			},
 			/* -------------------- */
@@ -1792,6 +1840,27 @@ and dependencies (minified).
 					totalScrollOffsets=o.callbacks.onTotalScrollOffset ? functions._arr.call(el,o.callbacks.onTotalScrollOffset) : [0,0],
 					totalScrollBackOffsets=o.callbacks.onTotalScrollBackOffset ? functions._arr.call(el,o.callbacks.onTotalScrollBackOffset) : [0,0];
 				d.trigger=options.trigger;
+				if(to==="_resetY" && !d.contentReset.y){
+					/* callbacks: onOverflowYNone */
+					if(_cb("onOverflowYNone")){o.callbacks.onOverflowYNone.call(el[0]);}
+					d.contentReset.y=1;
+				}
+				if(to==="_resetX" && !d.contentReset.x){
+					/* callbacks: onOverflowXNone */
+					if(_cb("onOverflowXNone")){o.callbacks.onOverflowXNone.call(el[0]);}
+					d.contentReset.x=1;
+				}
+				if(to==="_resetY" || to==="_resetX"){return;}
+				if((d.contentReset.y || !el[0].mcs) && d.overflowed[0]){
+					/* callbacks: onOverflowY */
+					if(_cb("onOverflowY")){o.callbacks.onOverflowY.call(el[0]);}
+					d.contentReset.x=null;
+				}
+				if((d.contentReset.x || !el[0].mcs) && d.overflowed[1]){
+					/* callbacks: onOverflowX */
+					if(_cb("onOverflowX")){o.callbacks.onOverflowX.call(el[0]);}
+					d.contentReset.x=null;
+				}
 				if(o.snapAmount){to=functions._snapAmount(to,o.snapAmount,o.snapOffset);} /* scrolling snapping */
 				switch(options.dir){
 					case "x":
@@ -1802,7 +1871,7 @@ and dependencies (minified).
 								mCustomScrollBox.width()-mCSB_container.outerWidth(false),
 								mCSB_dragger.parent().width()-mCSB_dragger.width()
 							],
-							scrollTo=[to,(to/d.scrollRatio.x)],
+							scrollTo=[to,to===0 ? 0 : (to/d.scrollRatio.x)],
 							tso=totalScrollOffsets[1],
 							tsbo=totalScrollBackOffsets[1],
 							totalScrollOffset=tso>0 ? tso/d.scrollRatio.x : 0,
@@ -1816,20 +1885,21 @@ and dependencies (minified).
 								mCustomScrollBox.height()-mCSB_container.outerHeight(false),
 								mCSB_dragger.parent().height()-mCSB_dragger.height()
 							],
-							scrollTo=[to,(to/d.scrollRatio.y)],
+							scrollTo=[to,to===0 ? 0 : (to/d.scrollRatio.y)],
 							tso=totalScrollOffsets[0],
 							tsbo=totalScrollBackOffsets[0],
 							totalScrollOffset=tso>0 ? tso/d.scrollRatio.y : 0,
 							totalScrollBackOffset=tsbo>0 ? tsbo/d.scrollRatio.y : 0;
 						break;
 				}
-				if(scrollTo[1]<0){
+				if(scrollTo[1]<0 || (scrollTo[0]===0 && scrollTo[1]===0)){
 					scrollTo=[0,0];
 				}else if(scrollTo[1]>=limit[1]){
 					scrollTo=[limit[0],limit[1]];
 				}else{
 					scrollTo[0]=-scrollTo[0];
 				}
+				if(!el[0].mcs){_mcs();} /* init mcs object (once) to make it available before callbacks */
 				clearTimeout(mCSB_container[0].onCompleteTimeout);
 				if(!d.tweenRunning && ((contentPos===0 && scrollTo[0]>=0) || (contentPos===limit[0] && scrollTo[0]<=limit[0]))){return;}
 				functions._tweenTo.call(null,mCSB_dragger[0],property,Math.round(scrollTo[1]),dur[1],options.scrollEasing);
@@ -1911,7 +1981,7 @@ and dependencies (minified).
 			_tweenTo:function(el,prop,to,duration,easing,overwrite,callbacks){
 				var callbacks=callbacks || {},
 					onStart=callbacks.onStart || function(){},onUpdate=callbacks.onUpdate || function(){},onComplete=callbacks.onComplete || function(){},
-					startTime=functions._getTime(),_delay,progress=0,from=el.offsetTop,elStyle=el.style;
+					startTime=functions._getTime(),_delay,progress=0,from=el.offsetTop,elStyle=el.style,_request;
 				if(prop==="left"){from=el.offsetLeft;}
 				var diff=to-from;
 				el._mcsstop=0;
