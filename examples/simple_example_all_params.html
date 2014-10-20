@@ -97,7 +97,8 @@
 						preventDefault:false,
 						deltaFactor:"auto",
 						normalizeDelta:false,
-						invert:false
+						invert:false,
+						disableOver:["select","option","keygen","datalist","textarea"]
 					},
 					scrollButtons:{
 						enable:false,
@@ -114,10 +115,13 @@
 						autoExpandHorizontalScroll:false,
 						autoScrollOnFocus:"input,textarea,select,button,datalist,keygen,a[tabindex],area,object,[contenteditable='true']",
 						updateOnContentResize:true,
-						updateOnSelectorLength:false
+						updateOnImageLoad:true,
+						updateOnSelectorChange:false,
+						releaseDraggableSelectors:false
 					},
 					theme:"light",
 					callbacks:{
+						onInit:false,
 						onScrollStart:false,
 						onScroll:false,
 						onTotalScroll:false,
@@ -125,9 +129,14 @@
 						whileScrolling:false,
 						onTotalScrollOffset:0,
 						onTotalScrollBackOffset:0,
-						alwaysTriggerOffsets:true
+						alwaysTriggerOffsets:true,
+						onOverflowY:false,
+						onOverflowX:false,
+						onOverflowYNone:false,
+						onOverflowXNone:false
 					},
-					live:false
+					live:false,
+					liveSelector:null
 				});
 				
 			});
