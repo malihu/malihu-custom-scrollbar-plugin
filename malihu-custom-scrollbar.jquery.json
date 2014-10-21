@@ -4,7 +4,7 @@
     "description": "Highly customizable custom scrollbar jQuery plugin, featuring vertical/horizontal scrollbars, scrolling momentum, mouse-wheel, keyboard and touch support user defined callbacks etc.",
     "keywords": [
         "jquery-plugin",
-    	"custom scrollbar",
+    	"custom-scrollbar",
     	"scrollbar"
     ],
     "version": "3.0.5",
