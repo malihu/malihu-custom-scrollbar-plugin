@@ -12,14 +12,15 @@ Highly customizable custom scrollbar jQuery plugin. Features include:
 * Methods for triggering actions like scroll-to, update, destroy etc. 
 * User-defined callbacks 
 
+#### Installation
+
+Bower: `bower install malihu-custom-scrollbar-plugin` 
+
+npm: `npm install malihu-custom-scrollbar-plugin` 
+
 #### Usage 
 
 `$(selector).mCustomScrollbar();` 
-
-#### Installation
-
-Bower `bower install malihu-custom-scrollbar-plugin` 
-npm `npm install malihu-custom-scrollbar-plugin` 
 
 #### For more information 
 
