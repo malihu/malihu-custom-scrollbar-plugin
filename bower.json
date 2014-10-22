@@ -34,11 +34,12 @@
   },
   "ignore": [
     "*.md",
-	"*.txt",
-	"*.json",
-	"*.html",
-	"/examples",
-	"/source-files",
-	"/js"
+    ".*",
+    "*.txt",
+    "*.json",
+    "*.html",
+    "/examples",
+    "/source-files",
+    "/js"
   ]
 }
