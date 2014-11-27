@@ -200,7 +200,13 @@ and dependencies (minified).
 				scrolling amount in pixels
 				values: "auto", integer 
 				*/
-				scrollAmount:"auto"
+				scrollAmount:"auto",
+				/*
+				tabindex of the scrollbar buttons
+				values: false or ineger
+				*/
+				tabindex:"false"
+
 			},
 			/* 
 			keyboard scrolling
@@ -892,9 +898,10 @@ and dependencies (minified).
 			_scrollButtons:function(){
 				var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 					mCSB_scrollTools=$(".mCSB_"+d.idx+"_scrollbar:first"),
+					tabindex=!$.isNumeric(o.scrollButtons.tabindex)?'':'tabindex="'+o.scrollButtons.tabindex+'"',
 					btnHTML=[
-						"<a href='#' class='mCSB_buttonUp' oncontextmenu='return false;' />","<a href='#' class='mCSB_buttonDown' oncontextmenu='return false;' />",
-						"<a href='#' class='mCSB_buttonLeft' oncontextmenu='return false;' />","<a href='#' class='mCSB_buttonRight' oncontextmenu='return false;' />"
+						"<a href='#' class='mCSB_buttonUp' oncontextmenu='return false;' "+tabindex+"/>","<a href='#' class='mCSB_buttonDown' oncontextmenu='return false;' "+tabindex+"/>",
+						"<a href='#' class='mCSB_buttonLeft' oncontextmenu='return false;' "+tabindex+"/>","<a href='#' class='mCSB_buttonRight' oncontextmenu='return false;' "+tabindex+"/>"
 					],
 					btn=[(o.axis==="x" ? btnHTML[2] : btnHTML[0]),(o.axis==="x" ? btnHTML[3] : btnHTML[1]),btnHTML[2],btnHTML[3]];
 				if(o.scrollButtons.enable){
