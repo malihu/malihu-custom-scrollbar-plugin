@@ -898,7 +898,7 @@ and dependencies (minified).
 			_scrollButtons:function(){
 				var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 					mCSB_scrollTools=$(".mCSB_"+d.idx+"_scrollbar:first"),
-					tabindex=$.isNumeric(o.scrollButtons.tabindex)?'': 'tabindex="'+o.scrollButtons.tabindex+'"',
+					tabindex=!$.isNumeric(o.scrollButtons.tabindex)?'':'tabindex="'+o.scrollButtons.tabindex+'"',
 					btnHTML=[
 						"<a href='#' class='mCSB_buttonUp' oncontextmenu='return false;' "+tabindex+"/>","<a href='#' class='mCSB_buttonDown' oncontextmenu='return false;' "+tabindex+"/>",
 						"<a href='#' class='mCSB_buttonLeft' oncontextmenu='return false;' "+tabindex+"/>","<a href='#' class='mCSB_buttonRight' oncontextmenu='return false;' "+tabindex+"/>"
