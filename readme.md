@@ -11,6 +11,7 @@ Highly customizable custom scrollbar jQuery plugin. Features include:
 * Option parameters for full control of scrollbar functionality 
 * Methods for triggering actions like scroll-to, update, destroy etc. 
 * User-defined callbacks 
+* Selectable/searchable content
 
 #### Installation
 
