@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.0.6 
+Version: 3.0.7 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -125,7 +125,7 @@ and dependencies (minified).
 			*/
 			/*
 			always show scrollbar, even when there's nothing to scroll 
-			values: integer (0=disable, 1=always show dragger rail, 2=always show dragger rail, dragger and buttons), boolean
+			values: integer (0=disable, 1=always show dragger rail and buttons, 2=always show dragger rail, dragger and buttons), boolean
 			*/
 			alwaysShowScrollbar:0,
 			/*
@@ -308,9 +308,6 @@ and dependencies (minified).
 					onTotalScroll				null
 					onTotalScrollBack			null
 					whileScrolling				null
-					onTotalScrollOffset			0
-					onTotalScrollBackOffset		0
-					alwaysTriggerOffsets		true
 					onOverflowY					null
 					onOverflowX					null
 					onOverflowYNone				null
@@ -348,7 +345,7 @@ and dependencies (minified).
 		totalInstances=0, /* plugin instances amount */
 		liveTimers={}, /* live option timers */
 		oldIE=(window.attachEvent && !window.addEventListener) ? 1 : 0, /* detect IE < 9 */
-		touchActive=false, /* global touch state (for touch and pointer events) */
+		touchActive=false,touchable, /* global touch vars (for touch and pointer events) */
 		/* general plugin classes */
 		classes=[
 			"mCSB_dragger_onDrag","mCSB_scrollTools_onDrag","mCS_img_loaded","mCS_disabled","mCS_destroyed","mCS_no_scrollbar",
@@ -1089,7 +1086,7 @@ and dependencies (minified).
 					content.removeClass(classes[8]+" "+classes[10]);
 				}else{
 					if(o.alwaysShowScrollbar){
-						if(o.alwaysShowScrollbar!==2){mCSB_dragger[0].add(scrollbar[0].children("a")).css("display","none");}
+						if(o.alwaysShowScrollbar!==2){mCSB_dragger[0].css("display","none");}
 						content.removeClass(classes[10]);
 					}else{
 						scrollbar[0].css("display","none");
@@ -1104,7 +1101,7 @@ and dependencies (minified).
 					content.removeClass(classes[9]+" "+classes[11]);
 				}else{
 					if(o.alwaysShowScrollbar){
-						if(o.alwaysShowScrollbar!==2){mCSB_dragger[1].add(scrollbar[1].children("a")).css("display","none");}
+						if(o.alwaysShowScrollbar!==2){mCSB_dragger[1].css("display","none");}
 						content.removeClass(classes[11]);
 					}else{
 						scrollbar[1].css("display","none");
@@ -1221,9 +1218,10 @@ and dependencies (minified).
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
 				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
 				dragY,dragX,touchStartY,touchStartX,touchMoveY=[],touchMoveX=[],startTime,runningTime,endTime,distance,speed,amount,
-				durA=0,durB,overwrite=o.axis==="yx" ? "none" : "all",touchIntent=[];
+				durA=0,durB,overwrite=o.axis==="yx" ? "none" : "all",touchIntent=[],touchDrag,docDrag;
 			mCSB_container.bind("touchstart."+namespace+" pointerdown."+namespace+" MSPointerDown."+namespace,function(e){
-				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){return;}
+				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){touchable=0; return;}
+				touchable=1; touchDrag=0; docDrag=0;
 				var offset=mCSB_container.offset();
 				dragY=_coordinates(e)[0]-offset.top;
 				dragX=_coordinates(e)[1]-offset.left;
@@ -1231,6 +1229,7 @@ and dependencies (minified).
 			}).bind("touchmove."+namespace+" pointermove."+namespace+" MSPointerMove."+namespace,function(e){
 				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){return;}
 				e.stopImmediatePropagation();
+				if(docDrag && !touchDrag){return;}
 				runningTime=_getTime();
 				var offset=mCustomScrollBox.offset(),y=_coordinates(e)[0]-offset.top,x=_coordinates(e)[1]-offset.left,
 					easing="mcsLinearOut";
@@ -1245,14 +1244,15 @@ and dependencies (minified).
 					var limitX=mCSB_dragger[1].parent().width()-mCSB_dragger[1].width(),
 						preventX=((dragX-x)>0 && (x-dragX)>-(limitX*d.scrollRatio.x) && (touchIntent[2]*2<touchIntent[3] || o.axis==="yx"));
 				}
-				if(prevent || preventX){e.preventDefault();} /* prevent native document scrolling */
+				if(prevent || preventX){e.preventDefault(); touchDrag=1;}else{docDrag=1;} /* prevent native document scrolling */
 				amount=o.axis==="yx" ? [(dragY-y),(dragX-x)] : o.axis==="x" ? [null,(dragX-x)] : [(dragY-y),null];
 				mCSB_container[0].idleTimer=250;
 				if(d.overflowed[0]){_drag(amount[0],durA,easing,"y","all",true);}
 				if(d.overflowed[1]){_drag(amount[1],durA,easing,"x",overwrite,true);}
 			});
 			mCustomScrollBox.bind("touchstart."+namespace+" pointerdown."+namespace+" MSPointerDown."+namespace,function(e){
-				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){return;}
+				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){touchable=0; return;}
+				touchable=1;
 				e.stopImmediatePropagation();
 				_stop($this);
 				startTime=_getTime();
@@ -1263,6 +1263,7 @@ and dependencies (minified).
 			}).bind("touchend."+namespace+" pointerup."+namespace+" MSPointerUp."+namespace,function(e){
 				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){return;}
 				e.stopImmediatePropagation();
+				touchDrag=0; docDrag=0;
 				endTime=_getTime();
 				var offset=mCustomScrollBox.offset(),y=_coordinates(e)[0]-offset.top,x=_coordinates(e)[1]-offset.left;
 				if((endTime-runningTime)>30){return;}
@@ -1315,9 +1316,10 @@ and dependencies (minified).
 				wrapper=mCSB_container.parent(),
 				action;
 			mCSB_container.bind("mousedown."+namespace,function(e){
+				if(touchable){return;}
 				if(!action){action=1; touchActive=true;}
 			}).add(document).bind("mousemove."+namespace,function(e){
-				if(action && _sel()){
+				if(!touchable && action && _sel()){
 					var offset=mCSB_container.offset(),
 						y=_coordinates(e)[0]-offset.top+mCSB_container[0].offsetTop,x=_coordinates(e)[1]-offset.left+mCSB_container[0].offsetLeft;
 					if(y>0 && y<wrapper.height() && x>0 && x<wrapper.width()){
@@ -1340,6 +1342,7 @@ and dependencies (minified).
 					}
 				}
 			}).bind("mouseup."+namespace,function(e){
+				if(touchable){return;}
 				if(action){action=0; _seq("off",null);}
 				touchActive=false;
 			});
@@ -1640,7 +1643,9 @@ and dependencies (minified).
 		_sequentialScroll=function(el,action,trigger,e,s){
 			var d=el.data(pluginPfx),o=d.opt,seq=d.sequential,
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
-				once=seq.type==="stepped" ? true : false;
+				once=seq.type==="stepped" ? true : false,
+				steplessSpeed=o.scrollInertia < 26 ? 26 : o.scrollInertia, /* 26/1.5=17 */
+				steppedSpeed=o.scrollInertia < 1 ? 17 : o.scrollInertia;
 			switch(action){
 				case "on":
 					seq.dir=[
@@ -1661,7 +1666,7 @@ and dependencies (minified).
 			/* starts sequence */
 			function _on(once){
 				var c=seq.type!=="stepped", /* continuous scrolling */
-					t=s ? s : !once ? 1000/60 : c ? o.scrollInertia/1.5 : o.scrollInertia, /* timer */
+					t=s ? s : !once ? 1000/60 : c ? steplessSpeed/1.5 : steppedSpeed, /* timer */
 					m=!once ? 2.5 : c ? 7.5 : 40, /* multiplier */
 					contentPos=[Math.abs(mCSB_container[0].offsetTop),Math.abs(mCSB_container[0].offsetLeft)],
 					ratio=[d.scrollRatio.y>10 ? 10 : d.scrollRatio.y,d.scrollRatio.x>10 ? 10 : d.scrollRatio.x],
