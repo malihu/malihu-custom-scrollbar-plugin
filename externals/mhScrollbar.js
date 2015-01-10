@@ -28,8 +28,7 @@
 	}
 
 	function convert(input, scope) {
-		//I can use eval()
-		if (angular.isUndefinedOrNull(input))
+		if (input === undefined || input === null)
 			return null;
 
 		//numbers, booleans
@@ -49,7 +48,6 @@
 		} catch (e) {
 			//String
 			return input;
-
 		}        
 	}
 
