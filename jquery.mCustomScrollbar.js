@@ -36,7 +36,15 @@ the production-ready jquery.mCustomScrollbar.concat.min.js which contains the pl
 and dependencies (minified). 
 */
 
-;(function($,window,document){
+(function (factory) {
+  if(typeof module === "object" && typeof module.exports === "object") {
+    var $ = require("jquery");
+    require("jquery-mousewheel")($);
+    module.exports = factory($, window, document);
+  } else {
+    factory(jQuery, window, document);
+  }
+}(function($,window,document){
 
 (function(init){
 	var _rjs=typeof define==="function" && define.amd, /* RequireJS */
@@ -2279,4 +2287,4 @@ and dependencies (minified).
 	
 	});
 
-}))}(jQuery,window,document));
+}))}));
