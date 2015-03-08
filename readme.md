@@ -23,6 +23,12 @@ npm: `npm install malihu-custom-scrollbar-plugin`
 
 `$(selector).mCustomScrollbar();` 
 
+###### Using with [Browserify](http://browserify.org/)
+
+    var $ = require('jquery');
+    require('malihu-custom-scrollbar-plugin')($);
+
+
 #### For more information 
 
 * [Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller) 
