@@ -1870,6 +1870,13 @@ and dependencies (minified).
 			upd();
 			function upd(){
 				clearTimeout(mCSB_container[0].autoUpdate);
+
+				/* check scroller in dom tree */
+				if($this.parents('html').length===0){
+					$this = null;
+					return;
+				}
+
 				mCSB_container[0].autoUpdate=setTimeout(function(){
 					/* update on specific selector(s) length and size change */
 					if(o.advanced.updateOnSelectorChange){
