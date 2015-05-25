@@ -1455,7 +1455,7 @@ and dependencies (minified).
 						dlt=e.deltaY || delta;
 				}
 				if((dir==="y" && !d.overflowed[0]) || (dir==="x" && !d.overflowed[1])){return;}
-				if(o.mouseWheel.invert){dlt=-dlt;}
+				if(o.mouseWheel.invert || (o.horizontalScroll && e.deltaX !== -0)){dlt=-dlt;}
 				if(o.mouseWheel.normalizeDelta){dlt=dlt<0 ? -1 : 1;}
 				if((dlt>0 && draggerPos!==0) || (dlt<0 && draggerPos!==limit) || o.mouseWheel.preventDefault){
 					e.stopImmediatePropagation();
