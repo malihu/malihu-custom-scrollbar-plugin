@@ -1042,6 +1042,11 @@ and dependencies (minified).
 								_mwt();
 							}else{
 								clearTimeout(mousewheelTimeout);
+								/* check scroller in dom tree */
+								if($this.parents('html').length===0){
+									$this = null;
+									return;
+								}
 								_mousewheel.call($this[0]);
 							}
 						},100);
@@ -1058,8 +1063,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* unbinds scrollbar events */
 		_unbindEvents=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1082,8 +1087,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* toggles scrollbar visibility */
 		_scrollbarVisibility=function(disabled){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1128,8 +1133,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* returns input coordinates of pointer, touch and mouse events (relative to document) */
 		_coordinates=function(e){
 			var t=e.type;
@@ -1147,11 +1152,11 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		SCROLLBAR DRAG EVENTS
-		scrolls content via scrollbar dragging 
+		scrolls content via scrollbar dragging
 		*/
 		_draggable=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1173,10 +1178,10 @@ and dependencies (minified).
 				var offset=draggable.offset(),y=_coordinates(e)[0]-offset.top,x=_coordinates(e)[1]-offset.left,
 					h=draggable.height()+offset.top,w=draggable.width()+offset.left;
 				if(y<h && y>0 && x<w && x>0){
-					dragY=y; 
+					dragY=y;
 					dragX=x;
 				}
-				_onDragClasses(draggable,"active",o.autoExpandScrollbar); 
+				_onDragClasses(draggable,"active",o.autoExpandScrollbar);
 			}).bind("touchmove."+namespace,function(e){
 				e.stopImmediatePropagation();
 				e.preventDefault();
@@ -1191,7 +1196,7 @@ and dependencies (minified).
 				}
 			}).add(rds).bind("mouseup."+namespace+" touchend."+namespace+" pointerup."+namespace+" MSPointerUp."+namespace,function(e){
 				if(draggable){
-					_onDragClasses(draggable,"active",o.autoExpandScrollbar); 
+					_onDragClasses(draggable,"active",o.autoExpandScrollbar);
 					draggable=null;
 				}
 				touchActive=false;
@@ -1215,12 +1220,12 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		TOUCH SWIPE EVENTS
-		scrolls content via touch swipe 
-		Emulates the native touch-swipe scrolling with momentum found in iOS, Android and WP devices 
+		scrolls content via touch swipe
+		Emulates the native touch-swipe scrolling with momentum found in iOS, Android and WP devices
 		*/
 		_contentDraggable=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1349,11 +1354,11 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
-		SELECT TEXT EVENTS 
-		scrolls content when text is selected 
+
+
+		/*
+		SELECT TEXT EVENTS
+		scrolls content when text is selected
 		*/
 		_selectable=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,seq=d.sequential,
@@ -1393,7 +1398,7 @@ and dependencies (minified).
 				touchActive=false;
 			});
 			function _sel(){
-				return 	window.getSelection ? window.getSelection().toString() : 
+				return 	window.getSelection ? window.getSelection().toString() :
 						document.selection && document.selection.type!="Control" ? document.selection.createRange().text : 0;
 			}
 			function _seq(a,c,s){
@@ -1403,11 +1408,11 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		MOUSE WHEEL EVENT
-		scrolls content via mouse-wheel 
+		scrolls content via mouse-wheel
 		via mouse-wheel plugin (https://github.com/brandonaaron/jquery-mousewheel)
 		*/
 		_mousewheel=function(){
@@ -1465,8 +1470,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* checks if iframe can be accessed */
 		_canAccessIFrame=function(iframe){
 			var html=null;
@@ -1477,8 +1482,8 @@ and dependencies (minified).
 			return(html!==null);
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* disables mouse-wheel when hovering specific elements like select, datalist etc. */
 		_disableMousewheel=function(el,target){
 			var tag=target.nodeName.toLowerCase(),
@@ -1488,11 +1493,11 @@ and dependencies (minified).
 			return $.inArray(tag,tags) > -1 && !($.inArray(tag,focusTags) > -1 && !$(target).is(":focus"));
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		DRAGGER RAIL CLICK EVENT
-		scrolls content via dragger rail 
+		scrolls content via dragger rail
 		*/
 		_draggerRail=function(){
 			var $this=$(this),d=$this.data(pluginPfx),
@@ -1524,9 +1529,9 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		FOCUS EVENT
 		scrolls content via element focus (e.g. clicking an input, pressing TAB key etc.)
 		*/
@@ -1561,8 +1566,8 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* sets content wrapper scrollTop/scrollLeft always to 0 */
 		_wrapperScroll=function(){
 			var $this=$(this),d=$this.data(pluginPfx),
@@ -1575,11 +1580,11 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		BUTTONS EVENTS
-		scrolls content via up, down, left and right buttons 
+		scrolls content via up, down, left and right buttons
 		*/
 		_buttons=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,seq=d.sequential,
@@ -1616,11 +1621,11 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		KEYBOARD EVENTS
-		scrolls content via keyboard 
+		scrolls content via keyboard
 		Keys: up arrow, down arrow, left arrow, right arrow, PgUp, PgDn, Home, End
 		*/
 		_keyboard=function(){
@@ -1707,8 +1712,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* scrolls content sequentially (used when scrolling via buttons, keyboard arrows etc.) */
 		_sequentialScroll=function(el,action,trigger,e,s){
 			var d=el.data(pluginPfx),o=d.opt,seq=d.sequential,
@@ -1766,8 +1771,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* returns a yx array from value */
 		_arr=function(val){
 			var o=$(this).data(pluginPfx).opt,vals=[];
@@ -1785,8 +1790,8 @@ and dependencies (minified).
 			return vals;
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* translates values (e.g. "top", 100, "100px", "#id") to actual scroll-to positions */
 		_to=function(val,dir){
 			if(val==null || typeof val=="undefined"){return;}
@@ -1843,15 +1848,15 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* calls the update method automatically */
 		_autoUpdate=function(rem){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				mCSB_container=$("#mCSB_"+d.idx+"_container");
 			if(rem){
-				/* 
-				removes autoUpdate timer 
+				/*
+				removes autoUpdate timer
 				usage: _autoUpdate.call(this,"remove");
 				*/
 				clearTimeout(mCSB_container[0].autoUpdate);
