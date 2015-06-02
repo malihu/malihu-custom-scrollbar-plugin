@@ -1462,6 +1462,9 @@ and dependencies (minified).
 				if((dir==="y" && !d.overflowed[0]) || (dir==="x" && !d.overflowed[1])){return;}
 				if(o.mouseWheel.invert || (o.horizontalScroll && e.deltaX !== -0)){dlt=-dlt;}
 				if(o.mouseWheel.normalizeDelta){dlt=dlt<0 ? -1 : 1;}
+				if(!$this.data('mCS').opt.horizontalScroll && ( e.deltaX < -8 || e.deltaX > 8 ) ){
+					return;
+				}
 				if((dlt>0 && draggerPos!==0) || (dlt<0 && draggerPos!==limit) || o.mouseWheel.preventDefault){
 					e.stopImmediatePropagation();
 					e.preventDefault();
