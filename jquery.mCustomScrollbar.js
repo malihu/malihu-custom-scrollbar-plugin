@@ -1271,6 +1271,7 @@ and dependencies (minified).
 			function _onTouchstart(e){
 				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){touchable=0; return;}
 				touchable=1; touchDrag=0; docDrag=0;
+				$this.removeClass("mCS_touch_action");
 				var offset=mCSB_container.offset();
 				dragY=_coordinates(e)[0]-offset.top;
 				dragX=_coordinates(e)[1]-offset.left;
@@ -1294,7 +1295,13 @@ and dependencies (minified).
 					var limitX=mCSB_dragger[1].parent().width()-mCSB_dragger[1].width(),
 						preventX=((dragX-x)>0 && (x-dragX)>-(limitX*d.scrollRatio.x) && (touchIntent[2]*2<touchIntent[3] || o.axis==="yx"));
 				}
-				if(prevent || preventX){e.preventDefault(); touchDrag=1;}else{docDrag=1;} /* prevent native document scrolling */
+				if(prevent || preventX){ /* prevent native document scrolling */
+					e.preventDefault(); 
+					touchDrag=1;
+				}else{
+					docDrag=1;
+					$this.addClass("mCS_touch_action");
+				}
 				amount=o.axis==="yx" ? [(dragY-y),(dragX-x)] : o.axis==="x" ? [null,(dragX-x)] : [(dragY-y),null];
 				mCSB_container[0].idleTimer=250;
 				if(d.overflowed[0]){_drag(amount[0],durA,easing,"y","all",true);}
