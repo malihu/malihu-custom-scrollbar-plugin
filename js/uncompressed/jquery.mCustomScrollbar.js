@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.0.8 
+Version: 3.0.9 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -282,7 +282,7 @@ and dependencies (minified).
 				auto-update scrollbars each time each image inside the element is fully loaded 
 				values: boolean
 				*/
-				updateOnImageLoad:true
+				updateOnImageLoad:true,
 				/*
 				auto-update scrollbars based on the amount and size changes of specific selectors 
 				useful when you need to update the scrollbar(s) automatically, each time a type of element is added, removed or changes its size 
@@ -298,6 +298,11 @@ and dependencies (minified).
 					-------------------------------------
 					releaseDraggableSelectors	null
 				*/
+				/*
+				auto-update timeout 
+				values: integer (milliseconds)
+				*/
+				autoUpdateTimeout:60
 			},
 			/* 
 			scrollbar theme 
@@ -1266,6 +1271,7 @@ and dependencies (minified).
 			function _onTouchstart(e){
 				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){touchable=0; return;}
 				touchable=1; touchDrag=0; docDrag=0;
+				$this.removeClass("mCS_touch_action");
 				var offset=mCSB_container.offset();
 				dragY=_coordinates(e)[0]-offset.top;
 				dragX=_coordinates(e)[1]-offset.left;
@@ -1289,7 +1295,13 @@ and dependencies (minified).
 					var limitX=mCSB_dragger[1].parent().width()-mCSB_dragger[1].width(),
 						preventX=((dragX-x)>0 && (x-dragX)>-(limitX*d.scrollRatio.x) && (touchIntent[2]*2<touchIntent[3] || o.axis==="yx"));
 				}
-				if(prevent || preventX){e.preventDefault(); touchDrag=1;}else{docDrag=1;} /* prevent native document scrolling */
+				if(prevent || preventX){ /* prevent native document scrolling */
+					e.preventDefault(); 
+					touchDrag=1;
+				}else{
+					docDrag=1;
+					$this.addClass("mCS_touch_action");
+				}
 				amount=o.axis==="yx" ? [(dragY-y),(dragX-x)] : o.axis==="x" ? [null,(dragX-x)] : [(dragY-y),null];
 				mCSB_container[0].idleTimer=250;
 				if(d.overflowed[0]){_drag(amount[0],durA,easing,"y","all",true);}
@@ -1411,28 +1423,27 @@ and dependencies (minified).
 		via mouse-wheel plugin (https://github.com/brandonaaron/jquery-mousewheel)
 		*/
 		_mousewheel=function(){
+			if(!$(this).data(pluginPfx)){return;} /* Check if the scrollbar is ready to use mousewheel events (issue: #185) */
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				namespace=pluginPfx+"_"+d.idx,
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
 				iframe=$("#mCSB_"+d.idx+"_container").find("iframe");
-			if(d){ /* Check if the scrollbar is ready to use mousewheel events (issue: #185) */
-				if(iframe.length){
-					iframe.each(function(){
-						$(this).load(function(){
-							/* bind events on accessible iframes */
-							if(_canAccessIFrame(this)){
-								$(this.contentDocument || this.contentWindow.document).bind("mousewheel."+namespace,function(e,delta){
-									_onMousewheel(e,delta);
-								});
-							}
-						});
+			if(iframe.length){
+				iframe.each(function(){
+					$(this).load(function(){
+						/* bind events on accessible iframes */
+						if(_canAccessIFrame(this)){
+							$(this.contentDocument || this.contentWindow.document).bind("mousewheel."+namespace,function(e,delta){
+								_onMousewheel(e,delta);
+							});
+						}
 					});
-				}
-				mCustomScrollBox.bind("mousewheel."+namespace,function(e,delta){
-					_onMousewheel(e,delta);
 				});
 			}
+			mCustomScrollBox.bind("mousewheel."+namespace,function(e,delta){
+				_onMousewheel(e,delta);
+			});
 			function _onMousewheel(e,delta){
 				_stop($this);
 				if(_disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
@@ -1455,7 +1466,7 @@ and dependencies (minified).
 						dlt=e.deltaY || delta;
 				}
 				if((dir==="y" && !d.overflowed[0]) || (dir==="x" && !d.overflowed[1])){return;}
-				if(o.mouseWheel.invert){dlt=-dlt;}
+				if(o.mouseWheel.invert || e.webkitDirectionInvertedFromDevice){dlt=-dlt;}
 				if(o.mouseWheel.normalizeDelta){dlt=dlt<0 ? -1 : 1;}
 				if((dlt>0 && draggerPos!==0) || (dlt<0 && draggerPos!==limit) || o.mouseWheel.preventDefault){
 					e.stopImmediatePropagation();
@@ -1870,6 +1881,11 @@ and dependencies (minified).
 			upd();
 			function upd(){
 				clearTimeout(mCSB_container[0].autoUpdate);
+				if($this.parents("html").length===0){
+					/* check element in dom tree */
+					$this=null;
+					return;
+				}
 				mCSB_container[0].autoUpdate=setTimeout(function(){
 					/* update on specific selector(s) length and size change */
 					if(o.advanced.updateOnSelectorChange){
@@ -1899,7 +1915,7 @@ and dependencies (minified).
 						}
 					}
 					if(o.advanced.updateOnSelectorChange || o.advanced.updateOnContentResize || o.advanced.updateOnImageLoad){upd();}
-				},60);
+				},o.advanced.autoUpdateTimeout);
 			}
 			/* returns images amount */
 			function imgSum(){
