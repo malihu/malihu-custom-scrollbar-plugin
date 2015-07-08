@@ -878,6 +878,9 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				mCSB_container=$("#mCSB_"+d.idx+"_container");
 			if(o.advanced.autoExpandHorizontalScroll && o.axis!=="y"){
+				//fix lost focus element
+				var afterFocus = $('textarea:focus,input:focus');
+
 				/* 
 				wrap content with an infinite width div and set its position to absolute and width to auto. 
 				Setting width to auto before calculating the actual width is important! 
@@ -893,6 +896,9 @@ and dependencies (minified).
 						"width":(Math.ceil(mCSB_container[0].getBoundingClientRect().right+0.4)-Math.floor(mCSB_container[0].getBoundingClientRect().left)),
 						"position":"relative"
 					}).unwrap();
+
+
+				afterFocus.focus();
 			}
 		},
 		/* -------------------- */
