@@ -1445,6 +1445,7 @@ and dependencies (minified).
 				_onMousewheel(e,delta);
 			});
 			function _onMousewheel(e,delta){
+				if (e.ctrlKey) return;
 				_stop($this);
 				if(_disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
 				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100;
