@@ -1374,6 +1374,7 @@ and dependencies (minified).
 				action;
 			mCSB_container.bind("mousedown."+namespace,function(e){
 				if(touchable){return;}
+				if(e.button!==0){return;}
 				if(!action){action=1; touchActive=true;}
 			}).add(document).bind("mousemove."+namespace,function(e){
 				if(!touchable && action && _sel()){
