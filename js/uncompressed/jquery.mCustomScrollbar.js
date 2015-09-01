@@ -43,6 +43,11 @@
         factory(jQuery,window,document);
     }
 }(function($){
+	$(document).on('contextmenu', '.mCSB_noContextMenu', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
     (function(init){
         var _rjs=typeof define==="function" && define.amd, /* RequireJS */
             _njs=typeof module !== "undefined" && module.exports, /* NodeJS */
@@ -845,8 +850,7 @@
                                 "class='"+classes[12]+"'>" +
                                     "<div " +
                                         "id='mCSB_"+d.idx+"_dragger_vertical'" +
-                                        "class='mCSB_absolute mCSB_dragger' " +
-                                        "oncontextmenu='return false;'>" +
+                                        "class='mCSB_absolute mCSB_dragger mCSB_noContextMenu'>" +
                                             "<div class='mCSB_dragger_bar' /></div>" +
                                             "<div class='mCSB_draggerRail' /></div>" +
                                     "</div>",
@@ -856,8 +860,7 @@
                                 "<div class='"+classes[12]+"'>" +
                                     "<div " +
                                         "id='mCSB_"+d.idx+"_dragger_horizontal' " +
-                                        "class='mCSB_absolute mCSB_dragger' " +
-                                        "oncontextmenu='return false;'>" +
+                                        "class='mCSB_absolute mCSB_dragger mCSB_noContextMenu'>" +
                                             "<div class='mCSB_dragger_bar' /></div>" +
                                             "<div class='mCSB_draggerRail' /></div>" +
                                     "</div>"
@@ -949,10 +952,10 @@
                     mCSB_scrollTools=$(".mCSB_"+d.idx+"_scrollbar:first"),
                     tabindex=!_isNumeric(o.scrollButtons.tabindex) ? "" : "tabindex='"+o.scrollButtons.tabindex+"'",
                     btnHTML=[
-                        "<a href='#' class='"+classes[13]+"' oncontextmenu='return false;' "+tabindex+" />",
-                        "<a href='#' class='"+classes[14]+"' oncontextmenu='return false;' "+tabindex+" />",
-                        "<a href='#' class='"+classes[15]+"' oncontextmenu='return false;' "+tabindex+" />",
-                        "<a href='#' class='"+classes[16]+"' oncontextmenu='return false;' "+tabindex+" />"
+                        "<a href='#' class='mCSB_noContextMenu "+classes[13]+"' "+tabindex+" />",
+                        "<a href='#' class='mCSB_noContextMenu "+classes[14]+"' "+tabindex+" />",
+                        "<a href='#' class='mCSB_noContextMenu "+classes[15]+"' "+tabindex+" />",
+                        "<a href='#' class='mCSB_noContextMenu "+classes[16]+"' "+tabindex+" />"
                     ],
                     btn=[(o.axis==="x" ? btnHTML[2] : btnHTML[0]),(o.axis==="x" ? btnHTML[3] : btnHTML[1]),btnHTML[2],btnHTML[3]];
                 if(o.scrollButtons.enable){
