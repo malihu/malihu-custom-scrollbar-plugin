@@ -1248,7 +1248,8 @@ and dependencies (minified).
 					"touchstart."+namespace+" pointerdown."+namespace+" MSPointerDown."+namespace, //start
 					"touchmove."+namespace+" pointermove."+namespace+" MSPointerMove."+namespace, //move
 					"touchend."+namespace+" pointerup."+namespace+" MSPointerUp."+namespace //end
-				];
+				],
+				touchAction=document.body.style.touchAction!==undefined;
 			mCSB_container.bind(events[0],function(e){
 				_onTouchstart(e);
 			}).bind(events[1],function(e){
@@ -1305,12 +1306,13 @@ and dependencies (minified).
 							preventX=((dragX-x)>0 && (x-dragX)>-(limitX*d.scrollRatio.x) && (touchIntent[2]*2<touchIntent[3] || o.axis==="yx"));
 					}
 					if(prevent || preventX){ /* prevent native document scrolling */
-						e.preventDefault(); 
+						if(!touchAction){e.preventDefault();} 
 						touchDrag=1;
 					}else{
 						docDrag=1;
 						$this.addClass("mCS_touch_action");
 					}
+					if(touchAction){e.preventDefault();} 
 					amount=o.axis==="yx" ? [(dragY-y),(dragX-x)] : o.axis==="x" ? [null,(dragX-x)] : [(dragY-y),null];
 					mCSB_container[0].idleTimer=250;
 					if(d.overflowed[0]){_drag(amount[0],durA,easing,"y","all",true);}
