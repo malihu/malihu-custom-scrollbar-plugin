@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.1.0 
+Version: 3.1.1 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -257,6 +257,10 @@ and dependencies (minified).
 			integer values define the axis-specific minimum amount required for scrolling momentum
 			*/
 			contentTouchScroll:25,
+			/*
+			enable/disable document (default) touch-swipe scrolling 
+			*/
+			documentTouchScroll:true,
 			/*
 			advanced option parameters
 			*/
@@ -1288,6 +1292,7 @@ and dependencies (minified).
 			}
 			function _onTouchmove(e){
 				if(!_pointerTouch(e) || touchActive || _coordinates(e)[2]){return;}
+				if(!o.documentTouchScroll){e.preventDefault();} 
 				e.stopImmediatePropagation();
 				if(docDrag && !touchDrag){return;}
 				if(draggable){
