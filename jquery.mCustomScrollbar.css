@@ -24,7 +24,7 @@ CONTENTS:
 ------------------------------------------------------------------------------------------------------------------------
 */
 
-	.mCustomScrollbar{ -ms-touch-action: none; touch-action: none; /* MSPointer events - direct all pointer events to js */ }
+	.mCustomScrollbar{ -ms-touch-action: pinch-zoom; touch-action: pinch-zoom; /* direct pointer events to js */ }
 	.mCustomScrollbar.mCS_no_scrollbar, .mCustomScrollbar.mCS_touch_action{ -ms-touch-action: auto; touch-action: auto; }
 	
 	.mCustomScrollBox{ /* contains plugin's markup */
@@ -237,6 +237,7 @@ yx-axis
 	.mCSB_container_wrapper > .mCSB_container{
 		padding-right: 30px;
 		padding-bottom: 30px;
+		-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
 	}
 	
 	.mCSB_vertical_horizontal > .mCSB_scrollTools.mCSB_scrollTools_vertical{ bottom: 20px; }
@@ -261,15 +262,9 @@ yx-axis
 		margin-left: 30px;
 	}
 	
-	.mCSB_container_wrapper.mCS_no_scrollbar_y.mCS_y_hidden > .mCSB_container{ 
-		padding-right: 0; 
-		-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
-	}
+	.mCSB_container_wrapper.mCS_no_scrollbar_y.mCS_y_hidden > .mCSB_container{ padding-right: 0; }
 	
-	.mCSB_container_wrapper.mCS_no_scrollbar_x.mCS_x_hidden > .mCSB_container{ 
-		padding-bottom: 0; 
-		-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
-	}
+	.mCSB_container_wrapper.mCS_no_scrollbar_x.mCS_x_hidden > .mCSB_container{ padding-bottom: 0; }
 	
 	.mCustomScrollBox.mCSB_vertical_horizontal.mCSB_inside > .mCSB_container_wrapper.mCS_no_scrollbar_y.mCS_y_hidden{
 		margin-right: 0; /* non-visible scrollbar */
