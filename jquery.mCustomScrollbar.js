@@ -1203,7 +1203,7 @@ and dependencies (minified).
 			$(document).bind("mousemove."+namespace+" pointermove."+namespace+" MSPointerMove."+namespace,function(e){
 				if(draggable){
 					var offset=draggable.offset(),y=_coordinates(e)[0]-offset.top,x=_coordinates(e)[1]-offset.left;
-					if(dragY===y){return;} /* has it really moved? */
+					if(dragY===y && dragX===x){return;} /* has it really moved? */
 					_drag(dragY,dragX,y,x);
 				}
 			}).add(rds).bind("mouseup."+namespace+" touchend."+namespace+" pointerup."+namespace+" MSPointerUp."+namespace,function(e){
@@ -1528,12 +1528,16 @@ and dependencies (minified).
 				namespace=pluginPfx+"_"+d.idx,
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
 				wrapper=mCSB_container.parent(),
-				mCSB_draggerContainer=$(".mCSB_"+d.idx+"_scrollbar ."+classes[12]);
-			mCSB_draggerContainer.bind("touchstart."+namespace+" pointerdown."+namespace+" MSPointerDown."+namespace,function(e){
+				mCSB_draggerContainer=$(".mCSB_"+d.idx+"_scrollbar ."+classes[12]),
+				clickable;
+			mCSB_draggerContainer.bind("mousedown."+namespace+" touchstart."+namespace+" pointerdown."+namespace+" MSPointerDown."+namespace,function(e){
 				touchActive=true;
+				if(!$(e.target).hasClass("mCSB_dragger")){clickable=1;}
 			}).bind("touchend."+namespace+" pointerup."+namespace+" MSPointerUp."+namespace,function(e){
 				touchActive=false;
 			}).bind("click."+namespace,function(e){
+				if(!clickable){return;}
+				clickable=0;
 				if($(e.target).hasClass(classes[12]) || $(e.target).hasClass("mCSB_draggerRail")){
 					_stop($this);
 					var el=$(this),mCSB_dragger=el.find(".mCSB_dragger");
