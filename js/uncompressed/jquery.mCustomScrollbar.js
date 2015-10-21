@@ -530,6 +530,7 @@ and dependencies (minified).
 						if($this.hasClass(classes[4])){$this.removeClass(classes[4]);}
 						
 						/* css flexbox fix, detect/set max-height */
+						mCustomScrollBox.css("max-height","none");
 						if(mCustomScrollBox.height()!==$this.height()){mCustomScrollBox.css("max-height",$this.height());}
 						
 						_expandContentHorizontally.call(this); /* expand content horizontally */
