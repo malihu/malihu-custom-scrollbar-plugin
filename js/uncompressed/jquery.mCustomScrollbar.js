@@ -8,7 +8,7 @@ License: MIT License (MIT)
 */
 
 /*
-Copyright 2010 Manos Malihutsakis (email: manos@malihu.gr)
+Copyright Manos Malihutsakis (email: manos@malihu.gr)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ and dependencies (minified).
 	var _rjs=typeof define==="function" && define.amd, /* RequireJS */
 		_njs=typeof module !== "undefined" && module.exports, /* NodeJS */
 		_dlp=("https:"==document.location.protocol) ? "https:" : "http:", /* location protocol */
-		_url="cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.12/jquery.mousewheel.min.js";
+		_url="cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js";
 	if(!_rjs){
 		if(_njs){
 			require("jquery-mousewheel")($);
@@ -1466,7 +1466,8 @@ and dependencies (minified).
 			function _onMousewheel(e,delta){
 				_stop($this);
 				if(_disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
-				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100;
+				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100,
+					dur=o.scrollInertia;
 				if(o.axis==="x" || o.mouseWheel.axis==="x"){
 					var dir="x",
 						px=[Math.round(deltaFactor*d.scrollRatio.x),parseInt(o.mouseWheel.scrollAmount)],
@@ -1491,7 +1492,11 @@ and dependencies (minified).
 					e.stopImmediatePropagation();
 					e.preventDefault();
 				}
-				_scrollTo($this,(contentPos-(dlt*amount)).toString(),{dir:dir});
+				if(e.deltaFactor<2 && !o.mouseWheel.normalizeDelta){
+					//very low deltaFactor values mean some kind of delta acceleration (e.g. osx trackpad), so adjusting scrolling accordingly
+					amount=e.deltaFactor; dur=17;
+				}
+				_scrollTo($this,(contentPos-(dlt*amount)).toString(),{dir:dir,dur:dur});
 			}
 		},
 		/* -------------------- */
