@@ -954,7 +954,9 @@ and dependencies (minified).
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
 				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
-				ratio=[mCustomScrollBox.height()/mCSB_container.outerHeight(false),mCustomScrollBox.width()/mCSB_container.outerWidth(false)],
+				ratioH=mCustomScrollBox.height()/mCSB_container.outerHeight(false),
+				ratioW=mCustomScrollBox.width()/mCSB_container.outerWidth(false)
+				ratio=[Math.min(ratioH,1),Math.min(ratioW,1)],
 				l=[
 					parseInt(mCSB_dragger[0].css("min-height")),Math.round(ratio[0]*mCSB_dragger[0].parent().height()),
 					parseInt(mCSB_dragger[1].css("min-width")),Math.round(ratio[1]*mCSB_dragger[1].parent().width())
