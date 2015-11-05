@@ -660,7 +660,7 @@ and dependencies (minified).
 							to[1]*=d.scrollRatio.x;
 						}
 						
-						methodOptions.dur=dur;
+						methodOptions.dur=_isTabHidden() ? 0 : dur; //skip animations if browser tab is hidden
 						
 						setTimeout(function(){ 
 							/* do the scrolling */
@@ -2324,6 +2324,24 @@ and dependencies (minified).
 		_childPos=function(el){
 			var p=el.parents(".mCSB_container");
 			return [el.offset().top-p.offset().top,el.offset().left-p.offset().left];
+		},
+		/* -------------------- */
+		
+		
+		/* checks if browser tab is hidden/inactive via Page Visibility API */
+		_isTabHidden=function(){
+			var prop=_getHiddenProp();
+			if(!prop) return false;
+			return document[prop];
+			function _getHiddenProp(){
+				var pfx=["webkit","moz","ms","o"];
+				if("hidden" in document) return "hidden"; //natively supported
+				for(var i=0; i<pfx.length; i++){ //prefixed
+				    if((pfx[i]+"Hidden") in document) 
+				        return pfx[i]+"Hidden";
+				}
+				return null; //not supported
+			}
 		};
 		/* -------------------- */
 		
