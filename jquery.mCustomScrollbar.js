@@ -1,6 +1,6 @@
 /*
 == malihu jquery custom scrollbar plugin == 
-Version: 3.1.2 
+Version: 3.1.3 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
 Author: malihu
 Author URI: http://manos.malihu.gr
@@ -1095,7 +1095,7 @@ and dependencies (minified).
 			if(o.advanced.extraDraggableSelectors){sel.add($(o.advanced.extraDraggableSelectors));}
 			if(d.bindEvents){ /* check if events are bound */
 				/* unbind namespaced events from document/selectors */
-				$(document).add($(top.document)).unbind("."+namespace);
+				$(document).add($(!_canAccessIFrame() || top.document)).unbind("."+namespace);
 				sel.each(function(){
 					$(this).unbind("."+namespace);
 				});
@@ -1158,7 +1158,7 @@ and dependencies (minified).
 		/* returns input coordinates of pointer, touch and mouse events (relative to document) */
 		_coordinates=function(e){
 			var t=e.type,o=e.target.ownerDocument!==document ? [$(frameElement).offset().top,$(frameElement).offset().left] : null,
-				io=e.target.ownerDocument!==top.document ? [$(e.view.frameElement).offset().top,$(e.view.frameElement).offset().left] : [0,0];
+				io=_canAccessIFrame() && e.target.ownerDocument!==top.document ? [$(e.view.frameElement).offset().top,$(e.view.frameElement).offset().left] : [0,0];
 			switch(t){
 				case "pointerdown": case "MSPointerDown": case "pointermove": case "MSPointerMove": case "pointerup": case "MSPointerUp":
 					return o ? [e.originalEvent.pageY-o[0]+io[0],e.originalEvent.pageX-o[1]+io[1],false] : [e.originalEvent.pageY,e.originalEvent.pageX,false];
@@ -1187,7 +1187,7 @@ and dependencies (minified).
 				mCSB_dragger=$("#"+draggerId[0]+",#"+draggerId[1]),
 				draggable,dragY,dragX,
 				rds=o.advanced.releaseDraggableSelectors ? mCSB_dragger.add($(o.advanced.releaseDraggableSelectors)) : mCSB_dragger,
-				eds=o.advanced.extraDraggableSelectors ? $(top.document).add($(o.advanced.extraDraggableSelectors)) : $(top.document);
+				eds=o.advanced.extraDraggableSelectors ? $(!_canAccessIFrame() || top.document).add($(o.advanced.extraDraggableSelectors)) : $(!_canAccessIFrame() || top.document);
 			mCSB_dragger.bind("mousedown."+namespace+" touchstart."+namespace+" pointerdown."+namespace+" MSPointerDown."+namespace,function(e){
 				e.stopImmediatePropagation();
 				e.preventDefault();
@@ -1514,11 +1514,19 @@ and dependencies (minified).
 		/* checks if iframe can be accessed */
 		_canAccessIFrame=function(iframe){
 			var html=null;
-			try{
-				var doc=iframe.contentDocument || iframe.contentWindow.document;
-				html=doc.body.innerHTML;
-			}catch(err){/* do nothing */}
-			return(html!==null);
+			if(!iframe){
+				try{
+					var doc=top.document;
+					html=doc.body.innerHTML;
+				}catch(err){/* do nothing */}
+				return(html!==null);
+			}else{
+				try{
+					var doc=iframe.contentDocument || iframe.contentWindow.document;
+					html=doc.body.innerHTML;
+				}catch(err){/* do nothing */}
+				return(html!==null);
+			}
 		},
 		/* -------------------- */
 		
