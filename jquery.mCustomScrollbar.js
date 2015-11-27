@@ -1157,20 +1157,23 @@ and dependencies (minified).
 		
 		/* returns input coordinates of pointer, touch and mouse events (relative to document) */
 		_coordinates=function(e){
-			var t=e.type,o=e.target.ownerDocument!==document ? [$(frameElement).offset().top,$(frameElement).offset().left] : null,
-				io=_canAccessIFrame() && e.target.ownerDocument!==top.document ? [$(e.view.frameElement).offset().top,$(e.view.frameElement).offset().left] : [0,0];
+			if (e.coords)
+				return e.coords;
+			var t=e.type,ret;
 			switch(t){
 				case "pointerdown": case "MSPointerDown": case "pointermove": case "MSPointerMove": case "pointerup": case "MSPointerUp":
-					return o ? [e.originalEvent.pageY-o[0]+io[0],e.originalEvent.pageX-o[1]+io[1],false] : [e.originalEvent.pageY,e.originalEvent.pageX,false];
+					ret = e.target.ownerDocument!==document ? [e.originalEvent.screenY,e.originalEvent.screenX,false] : [e.originalEvent.pageY,e.originalEvent.pageX,false];
 					break;
 				case "touchstart": case "touchmove": case "touchend":
 					var touch=e.originalEvent.touches[0] || e.originalEvent.changedTouches[0],
 						touches=e.originalEvent.touches.length || e.originalEvent.changedTouches.length;
-					return e.target.ownerDocument!==document ? [touch.screenY,touch.screenX,touches>1] : [touch.pageY,touch.pageX,touches>1];
+					ret = e.target.ownerDocument!==document ? [touch.screenY,touch.screenX,touches>1] : [touch.pageY,touch.pageX,touches>1];
 					break;
 				default:
-					return o ? [e.pageY-o[0]+io[0],e.pageX-o[1]+io[1],false] : [e.pageY,e.pageX,false];
+					ret = [e.pageY,e.pageX,false];
 			}
+			e.coords = ret;
+			return ret;
 		},
 		/* -------------------- */
 		
