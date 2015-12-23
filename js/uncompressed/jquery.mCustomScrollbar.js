@@ -869,7 +869,7 @@ and dependencies (minified).
 			if(o.setWidth){$this.css("width",o.setWidth);} /* set element width */
 			if(o.setHeight){$this.css("height",o.setHeight);} /* set element height */
 			o.setLeft=(o.axis!=="y" && d.langDir==="rtl") ? "989999px" : o.setLeft; /* adjust left position for rtl direction */
-			$this.addClass(pluginNS+" _"+pluginPfx+"_"+d.idx+autoHideClass+scrollbarDirClass).wrapInner("<div id='mCSB_"+d.idx+"' class='mCustomScrollBox mCS-"+o.theme+" "+wrapperClass+"'><div id='mCSB_"+d.idx+"_container' class='mCSB_container' style='position:relative; top:"+o.setTop+"; left:"+o.setLeft+";' dir="+d.langDir+" /></div>");
+			$this.addClass(pluginNS+" _"+pluginPfx+"_"+d.idx+autoHideClass+scrollbarDirClass).wrapInner("<div id='mCSB_"+d.idx+"' class='mCustomScrollBox mCS-"+o.theme+" "+wrapperClass+"'><div id='mCSB_"+d.idx+"_container' class='mCSB_container' style='position:relative; top:"+o.setTop+"; left:"+o.setLeft+";' dir='"+d.langDir+"' /></div>");
 			var mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container");
 			if(o.axis!=="y" && !o.advanced.autoExpandHorizontalScroll){
