@@ -1276,7 +1276,7 @@ and dependencies (minified).
 			});
 			if(iframe.length){
 				iframe.each(function(){
-					$(this).load(function(){
+					$(this).bind("load",function(){
 						/* bind events on accessible iframes */
 						if(_canAccessIFrame(this)){
 							$(this.contentDocument || this.contentWindow.document).bind(events[0],function(e){
@@ -1459,7 +1459,7 @@ and dependencies (minified).
 				iframe=$("#mCSB_"+d.idx+"_container").find("iframe");
 			if(iframe.length){
 				iframe.each(function(){
-					$(this).load(function(){
+					$(this).bind("load",function(){
 						/* bind events on accessible iframes */
 						if(_canAccessIFrame(this)){
 							$(this.contentDocument || this.contentWindow.document).bind("mousewheel."+namespace,function(e,delta){
@@ -1484,7 +1484,7 @@ and dependencies (minified).
 						contentPos=Math.abs($("#mCSB_"+d.idx+"_container")[0].offsetLeft),
 						draggerPos=mCSB_dragger[1][0].offsetLeft,
 						limit=mCSB_dragger[1].parent().width()-mCSB_dragger[1].width(),
-						dlt=e.deltaX || e.deltaY || delta;
+						dlt=o.mouseWheel.axis==="y" ? (e.deltaY || delta) : e.deltaX;
 				}else{
 					var dir="y",
 						px=[Math.round(deltaFactor*d.scrollRatio.y),parseInt(o.mouseWheel.scrollAmount)],
@@ -1501,7 +1501,7 @@ and dependencies (minified).
 					e.stopImmediatePropagation();
 					e.preventDefault();
 				}
-				if(e.deltaFactor<2 && !o.mouseWheel.normalizeDelta){
+				if(e.deltaFactor<5 && !o.mouseWheel.normalizeDelta){
 					//very low deltaFactor values mean some kind of delta acceleration (e.g. osx trackpad), so adjusting scrolling accordingly
 					amount=e.deltaFactor; dur=17;
 				}
@@ -1512,21 +1512,32 @@ and dependencies (minified).
 		
 		
 		/* checks if iframe can be accessed */
+		_canAccessIFrameCache=new Object(),
 		_canAccessIFrame=function(iframe){
-			var html=null;
+		    var result=false,cacheKey=false,html=null;
+		    if(iframe===undefined){
+				cacheKey="#empty";
+		    }else if($(iframe).attr("id")!==undefined){
+				cacheKey=$(iframe).attr("id");
+		    }
+			if(cacheKey!==false && _canAccessIFrameCache[cacheKey]!==undefined){
+				return _canAccessIFrameCache[cacheKey];
+			}
 			if(!iframe){
 				try{
 					var doc=top.document;
 					html=doc.body.innerHTML;
 				}catch(err){/* do nothing */}
-				return(html!==null);
+				result=(html!==null);
 			}else{
 				try{
 					var doc=iframe.contentDocument || iframe.contentWindow.document;
 					html=doc.body.innerHTML;
 				}catch(err){/* do nothing */}
-				return(html!==null);
+				result=(html!==null);
 			}
+			if(cacheKey!==false){_canAccessIFrameCache[cacheKey]=result;}
+			return result;
 		},
 		/* -------------------- */
 		
@@ -1690,7 +1701,7 @@ and dependencies (minified).
 				events=["blur."+namespace+" keydown."+namespace+" keyup."+namespace];
 			if(iframe.length){
 				iframe.each(function(){
-					$(this).load(function(){
+					$(this).bind("load",function(){
 						/* bind events on accessible iframes */
 						if(_canAccessIFrame(this)){
 							$(this.contentDocument || this.contentWindow.document).bind(events[0],function(e){
@@ -2397,7 +2408,7 @@ and dependencies (minified).
 	*/
 	window[pluginNS]=true;
 	
-	$(window).load(function(){
+	$(window).bind("load",function(){
 		
 		$(defaultSelector)[pluginNS](); /* add scrollbars automatically on default selector */
 		
@@ -2411,6 +2422,17 @@ and dependencies (minified).
 				cPos=[content[0].offsetTop,content[0].offsetLeft];
 				return 	cPos[0]+_childPos($el)[0]>=0 && cPos[0]+_childPos($el)[0]<wrapper.height()-$el.outerHeight(false) && 
 						cPos[1]+_childPos($el)[1]>=0 && cPos[1]+_childPos($el)[1]<wrapper.width()-$el.outerWidth(false);
+			},
+			/* checks if element or part of element is in view of scrollable viewport */
+			mcsInSight:$.expr[":"].mcsInSight || function(el){
+				var $el=$(el),elD,content=$el.parents(".mCSB_container"),wrapperView,pos,wrapperViewPct;
+				if(!content.length){return;}
+				elD=[$el.outerHeight(false),$el.outerWidth(false)];
+				pos=[content[0].offsetTop+_childPos($el)[0],content[0].offsetLeft+_childPos($el)[1]];
+				wrapperView=[content.parent()[0].offsetHeight,content.parent()[0].offsetWidth];
+				wrapperViewPct=[elD[0]<wrapperView[0] ? [0.9,0.1] : [0.6,0.4],elD[1]<wrapperView[1] ? [0.9,0.1] : [0.6,0.4]];
+				return 	pos[0]-(wrapperView[0]*wrapperViewPct[0][0])<0 && pos[0]+elD[0]-(wrapperView[0]*wrapperViewPct[0][1])>=0 && 
+						pos[1]-(wrapperView[1]*wrapperViewPct[1][0])<0 && pos[1]+elD[1]-(wrapperView[1]*wrapperViewPct[1][1])>=0;
 			},
 			/* checks if element is overflowed having visible scrollbar(s) */
 			mcsOverflow:$.expr[":"].mcsOverflow || function(el){
