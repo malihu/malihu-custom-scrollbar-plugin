@@ -18,9 +18,27 @@
 	
 	<!-- MaxCDN Bootstrap stylesheet -->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/css/bootstrap-select.min.css">
 	
 	<!-- custom scrollbar stylesheet -->
 	<link rel="stylesheet" href="../jquery.mCustomScrollbar.css">
+	
+	<style>
+		.dropdown-menu{ max-height: 240px; }
+		.dropdown-menu li a{
+			display: block;
+			padding: 3px 20px;
+			clear: both;
+			font-weight: 400;
+			line-height: 1.42857143;
+			color: #333;
+			white-space: nowrap;
+		}
+		.dropdown-menu li a:hover{ 
+			background-color: #eee; 
+			text-decoration: none;
+		}
+	</style>
 	
 </head>
 
@@ -32,6 +50,59 @@
 	
 	<div id="demo" class="bootstrap">
 		<section id="examples">
+		
+		<!-- dropdown -->
+		<div class="dropdown">
+		  <button class="btn" type="button" data-toggle="dropdown">
+		    Dropdown
+		   <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu dropdown-menu-scrollbar">
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 1</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 2</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 3</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 4</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 5</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 6</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 7</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 8</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 9</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 10</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 11</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 12</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 13</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 14</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 15</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 16</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 17</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 18</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 19</a></li>
+		    <li><a role="menuitem" tabindex="-1" href="#">Option 20</a></li>
+		  </ul>
+		</div>
+		
+		<p>&nbsp;</p>
+		
+		<!-- select plugin -->
+		<select class="selectpicker">
+		    <option>Option 1</option>
+		    <option>Option 2</option>
+			<option>Option 3</option>
+			<option>Option 4</option>
+		    <option>Option 5</option>
+			<option>Option 6</option>
+			<option>Option 7</option>
+		    <option>Option 8</option>
+			<option>Option 9</option>
+			<option>Option 10</option>
+		    <option>Option 11</option>
+			<option>Option 12</option>
+			<option>Option 13</option>
+		    <option>Option 14</option>
+			<option>Option 15</option>
+		</select>
+		
+		<p>&nbsp;</p>
 		
 		<!-- Button trigger modal -->
 		<button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Large modal</button> 
@@ -216,6 +287,7 @@
 	
 	<!-- MaxCDN Bootstrap plugins -->
 	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
 	
 	<!-- custom scrollbar plugin -->
 	<script src="../jquery.mCustomScrollbar.concat.min.js"></script>
@@ -223,6 +295,27 @@
 	<script>
 		(function($){
 			$(window).on("load",function(){
+				
+				$(".dropdown-menu-scrollbar").mCustomScrollbar({
+					theme:"minimal-dark",
+					mouseWheel:{ preventDefault:true }
+				});
+				
+				$(".selectpicker").selectpicker();
+				
+				$(".dropdown-menu .dropdown-menu").mCustomScrollbar({
+					setHeight:240,
+					theme:"inset-dark",
+					mouseWheel:{ preventDefault:true }
+				});
+				
+				$(".dropdown-menu, html").on("mouseup pointerup",function(e){
+					$(".dropdown-menu .mCSB_scrollTools").removeClass("mCSB_scrollTools_onDrag");
+				}).on("click",function(e){
+					if($(e.target).parents(".mCSB_scrollTools").length || $(".dropdown-menu .mCSB_scrollTools").hasClass("mCSB_scrollTools_onDrag")){ 
+						e.stopPropagation(); 
+					}
+				});
 				
 				$("#myModal .modal-body").mCustomScrollbar({
 					setHeight:340,
