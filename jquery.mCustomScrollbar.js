@@ -39,7 +39,7 @@ and dependencies (minified).
 (function(factory){
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
-	} if(typeof module!=="undefined" && module.exports){
+	} else if(typeof module!=="undefined" && module.exports){
 		module.exports=factory;
 	}else{
 		factory(jQuery,window,document);
