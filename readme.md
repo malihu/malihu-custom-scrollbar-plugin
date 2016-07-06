@@ -13,9 +13,7 @@ Highly customizable custom scrollbar jQuery plugin ([Demo](http://manos.malihu.g
 * User-defined callbacks 
 * Selectable/searchable content
 
-**[Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller/)** 
-
-[Changelog](http://manos.malihu.gr/jquery-custom-content-scroller/2/) 
+**[Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller/)** ([Changelog](http://manos.malihu.gr/jquery-custom-content-scroller/2/)) 
 
 #### Installation
 
