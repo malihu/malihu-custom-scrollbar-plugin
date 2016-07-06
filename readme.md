@@ -15,7 +15,7 @@ Highly customizable custom scrollbar jQuery plugin ([Demo](http://manos.malihu.g
 
 **[Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller/)** 
 
-**[Changelog](http://manos.malihu.gr/jquery-custom-content-scroller/2/)** 
+[Changelog](http://manos.malihu.gr/jquery-custom-content-scroller/2/) 
 
 #### Installation
 
