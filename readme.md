@@ -1,7 +1,7 @@
 malihu custom scrollbar plugin
 ================================
 
-Highly customizable custom scrollbar jQuery plugin. Features include: 
+Highly customizable custom scrollbar jQuery plugin ([Demo](http://manos.malihu.gr/repository/custom-scrollbar/demo/examples/complete_examples.html)). Features include: 
 
 * Vertical and/or horizontal scrollbar(s)  
 * Adjustable scrolling momentum 
@@ -12,6 +12,9 @@ Highly customizable custom scrollbar jQuery plugin. Features include:
 * Methods for triggering actions like scroll-to, update, destroy etc. 
 * User-defined callbacks 
 * Selectable/searchable content
+
+[Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller/) 
+[Changelog](http://manos.malihu.gr/jquery-custom-content-scroller/2/)  
 
 #### Installation
 
@@ -49,8 +52,6 @@ Manual: `$(selector).mCustomScrollbar();`
 	require("jquery-mousewheel")($);
     require('malihu-custom-scrollbar-plugin')($);
 
-
-#### [Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller) 
 
 Requirements
 -------------------------
