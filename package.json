@@ -20,7 +20,7 @@
   ],
   "files": [
     "jquery.mCustomScrollbar.js",
-	"jquery.mCustomScrollbar.concat.min.js",
+    "jquery.mCustomScrollbar.concat.min.js",
     "jquery.mCustomScrollbar.css",
     "mCSB_buttons.png",
     "readme.md"
