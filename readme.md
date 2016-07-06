@@ -15,23 +15,42 @@ Highly customizable custom scrollbar jQuery plugin. Features include:
 
 #### Installation
 
+npm: `npm install malihu-custom-scrollbar-plugin` 
+
 Bower: `bower install malihu-custom-scrollbar-plugin` 
 
-npm: `npm install malihu-custom-scrollbar-plugin` 
+[Manual](http://manos.malihu.gr/jquery-custom-content-scroller/#get-started-section) 
 
 #### Usage 
 
-`$(selector).mCustomScrollbar();` 
+Manual: `$(selector).mCustomScrollbar();` 
 
-###### Using with [Browserify](http://browserify.org/)
+[Browserify](http://browserify.org/): 
 
     var $ = require('jquery');
     require('malihu-custom-scrollbar-plugin')($);
 
+[webpack](https://webpack.github.io/): 
 
-#### For more information 
+    npm install imports-loader
+	npm install jquery-mousewheel
+	npm install malihu-custom-scrollbar-plugin
 
-* [Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller) 
+	module.exports = {
+		module: {
+			loaders: [
+				{ test: /jquery-mousewheel/, loader: "imports?define=>false&this=>window" },
+				{ test: /malihu-custom-scrollbar-plugin/, loader: "imports?define=>false&this=>window" }
+			]
+		}
+	};
+
+	var $ = require('jquery');
+	require("jquery-mousewheel")($);
+    require('malihu-custom-scrollbar-plugin')($);
+
+
+#### [Plugin homepage and documentation](http://manos.malihu.gr/jquery-custom-content-scroller) 
 
 Requirements
 -------------------------

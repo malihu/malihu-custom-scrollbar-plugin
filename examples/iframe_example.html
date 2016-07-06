@@ -60,6 +60,16 @@
 				$("#iframe-container").mCustomScrollbar({
 					axis:"yx",
 					theme:"light-thick"
+				}).on("mouseenter",function(){ //cross-domain iframe mousewheel hack
+					$(this).find("iframe").css("pointer-events","none");
+				}).on("mouseup",function(){
+					if(!$(this).find(".mCSB_scrollTools_onDrag").length) return;
+					setTimeout(function(){ $("#iframe-container").trigger("mouseenter"); },1);
+				});
+				$(window).on("blur",function(){
+					$("#iframe-container iframe").css("pointer-events","auto");
+				}).on("focus",function(){
+					$("#iframe-container").trigger("mouseenter");
 				});
 				
 			});
