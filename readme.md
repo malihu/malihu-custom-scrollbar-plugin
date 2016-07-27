@@ -29,28 +29,33 @@ Manual: `$(selector).mCustomScrollbar();`
 
 [Browserify](http://browserify.org/): 
 
-    var $ = require('jquery');
-    require('malihu-custom-scrollbar-plugin')($);
+```js
+var $ = require('jquery');
+require('malihu-custom-scrollbar-plugin')($);
+```
 
 [webpack](https://webpack.github.io/): 
 
-    npm install imports-loader
-	npm install jquery-mousewheel
-	npm install malihu-custom-scrollbar-plugin
+```shell
+npm install imports-loader
+npm install jquery-mousewheel
+npm install malihu-custom-scrollbar-plugin
+```
 
-	module.exports = {
-		module: {
-			loaders: [
-				{ test: /jquery-mousewheel/, loader: "imports?define=>false&this=>window" },
-				{ test: /malihu-custom-scrollbar-plugin/, loader: "imports?define=>false&this=>window" }
-			]
-		}
-	};
+```js
+module.exports = {
+	module: {
+		loaders: [
+			{ test: /jquery-mousewheel/, loader: "imports?define=>false&this=>window" },
+			{ test: /malihu-custom-scrollbar-plugin/, loader: "imports?define=>false&this=>window" }
+		]
+	}
+};
 
-	var $ = require('jquery');
-	require("jquery-mousewheel")($);
-    require('malihu-custom-scrollbar-plugin')($);
-
+var $ = require('jquery');
+require("jquery-mousewheel")($);
+require('malihu-custom-scrollbar-plugin')($);
+```
 
 Requirements
 -------------------------
