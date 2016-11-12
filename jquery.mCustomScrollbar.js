@@ -1477,7 +1477,7 @@ and dependencies (minified).
 					dur=o.scrollInertia;
 				if(o.axis==="x" || o.mouseWheel.axis==="x"){
 					var dir="x",
-						px=[Math.round(deltaFactor*d.scrollRatio.x),parseInt(o.mouseWheel.scrollAmount)],
+						px=[Math.ceil(deltaFactor*d.scrollRatio.x),parseInt(o.mouseWheel.scrollAmount)],
 						amount=o.mouseWheel.scrollAmount!=="auto" ? px[1] : px[0]>=mCustomScrollBox.width() ? mCustomScrollBox.width()*0.9 : px[0],
 						contentPos=Math.abs($("#mCSB_"+d.idx+"_container")[0].offsetLeft),
 						draggerPos=mCSB_dragger[1][0].offsetLeft,
@@ -1485,7 +1485,7 @@ and dependencies (minified).
 						dlt=o.mouseWheel.axis==="y" ? (e.deltaY || delta) : e.deltaX;
 				}else{
 					var dir="y",
-						px=[Math.round(deltaFactor*d.scrollRatio.y),parseInt(o.mouseWheel.scrollAmount)],
+						px=[Math.ceil(deltaFactor*d.scrollRatio.y),parseInt(o.mouseWheel.scrollAmount)],
 						amount=o.mouseWheel.scrollAmount!=="auto" ? px[1] : px[0]>=mCustomScrollBox.height() ? mCustomScrollBox.height()*0.9 : px[0],
 						contentPos=Math.abs($("#mCSB_"+d.idx+"_container")[0].offsetTop),
 						draggerPos=mCSB_dragger[0][0].offsetTop,
