@@ -962,17 +962,19 @@ and dependencies (minified).
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
 				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
-				ratio=[mCustomScrollBox.height()/mCSB_container.outerHeight(false),mCustomScrollBox.width()/mCSB_container.outerWidth(false)],
+				ratioH=mCustomScrollBox.height()/mCSB_container.outerHeight(false),
+				ratioW=mCustomScrollBox.width()/mCSB_container.outerWidth(false)
+				ratio=[Math.min(ratioH,1),Math.min(ratioW,1)],
 				l=[
 					parseInt(mCSB_dragger[0].css("min-height")),Math.round(ratio[0]*mCSB_dragger[0].parent().height()),
 					parseInt(mCSB_dragger[1].css("min-width")),Math.round(ratio[1]*mCSB_dragger[1].parent().width())
 				],
 				h=oldIE && (l[1]<l[0]) ? l[0] : l[1],w=oldIE && (l[3]<l[2]) ? l[2] : l[3];
 			mCSB_dragger[0].css({
-				"height":h,"max-height":(mCSB_dragger[0].parent().height()-10)
+				"height":h,"max-height":(mCSB_dragger[0].parent().height()-(ratio[0]!=1?10:0))
 			}).find(".mCSB_dragger_bar").css({"line-height":l[0]+"px"});
 			mCSB_dragger[1].css({
-				"width":w,"max-width":(mCSB_dragger[1].parent().width()-10)
+				"width":w,"max-width":(mCSB_dragger[1].parent().width()-(ratio[1]!=1?10:0))
 			});
 		},
 		/* -------------------- */
