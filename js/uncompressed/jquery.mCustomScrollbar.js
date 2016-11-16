@@ -769,9 +769,9 @@ and dependencies (minified).
 					if($this.data(pluginPfx)){ /* check if plugin has initialized */
 					
 						var d=$this.data(pluginPfx),o=d.opt,
-							mCustomScrollBox=$("#mCSB_"+d.idx),
-							mCSB_container=$("#mCSB_"+d.idx+"_container"),
-							scrollbar=$(".mCSB_"+d.idx+"_scrollbar");
+							mCustomScrollBox=$this.find("#mCSB_"+d.idx),
+							mCSB_container=$this.find("#mCSB_"+d.idx+"_container"),
+							scrollbar=$this.find(".mCSB_"+d.idx+"_scrollbar");
 					
 						if(o.live){removeLiveTimers(o.liveSelector || $(selector).selector);} /* remove live timers */
 						
