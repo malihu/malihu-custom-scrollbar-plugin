@@ -1041,7 +1041,7 @@ and dependencies (minified).
 				_scrollTo($this,"_resetY");
 			}
 			if((o.axis!=="y" && !d.overflowed[1]) || (o.axis==="x" && d.overflowed[1])){ /* reset x */
-				var cx=dx=0;
+				var cx=0; var dx=0;
 				if(d.langDir==="rtl"){ /* adjust left position for rtl direction */
 					cx=mCustomScrollBox.width()-mCSB_container.outerWidth(false);
 					dx=Math.abs(cx/d.scrollRatio.x);
