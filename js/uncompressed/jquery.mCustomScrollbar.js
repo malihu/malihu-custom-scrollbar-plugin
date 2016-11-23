@@ -1623,7 +1623,7 @@ and dependencies (minified).
 						contentPos=[mCSB_container[0].offsetTop,mCSB_container[0].offsetLeft],
 						isVisible=[
 							(contentPos[0]+to[0]>=0 && contentPos[0]+to[0]<wrapper.height()-el.outerHeight(false)),
-							(contentPos[1]+to[1]>=0 && contentPos[0]+to[1]<wrapper.width()-el.outerWidth(false))
+							(contentPos[1]+to[1]>=0 && contentPos[1]+to[1]<wrapper.width()-el.outerWidth(false))
 						],
 						overwrite=(o.axis==="yx" && !isVisible[0] && !isVisible[1]) ? "none" : "all";
 					if(o.axis!=="x" && !isVisible[0]){
