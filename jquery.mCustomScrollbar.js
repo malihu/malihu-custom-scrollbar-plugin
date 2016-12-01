@@ -1472,6 +1472,7 @@ and dependencies (minified).
 			});
 			function _onMousewheel(e,delta){
 				_stop($this);
+				if(!o.mouseWheel || !o.mouseWheel.enable){return;}
 				if(_disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
 				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100,
 					dur=o.scrollInertia;
@@ -1482,7 +1483,7 @@ and dependencies (minified).
 						contentPos=Math.abs($("#mCSB_"+d.idx+"_container")[0].offsetLeft),
 						draggerPos=mCSB_dragger[1][0].offsetLeft,
 						limit=mCSB_dragger[1].parent().width()-mCSB_dragger[1].width(),
-						dlt=o.mouseWheel.axis==="y" ? (e.deltaY || delta) : e.deltaX;
+						dlt=e.deltaY || delta;
 				}else{
 					var dir="y",
 						px=[Math.round(deltaFactor*d.scrollRatio.y),parseInt(o.mouseWheel.scrollAmount)],
