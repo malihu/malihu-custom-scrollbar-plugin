@@ -1568,8 +1568,8 @@ and dependencies (minified).
                     } else {
                         return true;
                     }
-                } else { //scroll down
-                    if (target.scrollTop == (target.scrollHeight - target.offsetHeight)) {
+                } else { //scroll down                	
+                    if ((target.scrollHeight - target.scrollTop) <= target.offsetHeight) {
                         return false;
                     } else {
                         return true;
