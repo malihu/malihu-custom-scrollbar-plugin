@@ -1448,6 +1448,7 @@ and dependencies (minified).
 		scrolls content via mouse-wheel 
 		via mouse-wheel plugin (https://github.com/brandonaaron/jquery-mousewheel)
 		*/
+		isBusy = false,
 		_mousewheel=function(){
 			if(!$(this).data(pluginPfx)){return;} /* Check if the scrollbar is ready to use mousewheel events (issue: #185) */
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1472,7 +1473,10 @@ and dependencies (minified).
 			});
 			function _onMousewheel(e,delta){
 				_stop($this);
-				if(_disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
+				if (isBusy) { return; }
+				isBusy = true;
+				if(_disableMousewheel($this,e.target, e.originalEvent.wheelDelta)){isBusy = false; return;} /* disables mouse-wheel when hovering specific elements */
+				isBusy = false;
 				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100,
 					dur=o.scrollInertia;
 				if(o.axis==="x" || o.mouseWheel.axis==="x"){
@@ -1551,12 +1555,30 @@ and dependencies (minified).
 		
 		
 		/* disables mouse-wheel when hovering specific elements like select, datalist etc. */
-		_disableMousewheel=function(el,target){
-			var tag=target.nodeName.toLowerCase(),
-				tags=el.data(pluginPfx).opt.mouseWheel.disableOver,
-				/* elements that require focus */
-				focusTags=["select","textarea"];
-			return $.inArray(tag,tags) > -1 && !($.inArray(tag,focusTags) > -1 && !$(target).is(":focus"));
+		_disableMousewheel=function(el,target, wheelDelta){
+			if (target === null || $(target).parents("#mCSB_" + el.data(pluginPfx).idx + "_container").length == 0) {
+                return false;
+            }
+            var tags = el.data(pluginPfx).opt.mouseWheel.disableOver;
+
+            if ($.inArray(target.nodeName.toLowerCase(), tags) > -1 && target.scrollHeight > target.clientHeight + 10) {
+                if (wheelDelta >= 0) { //scroll up
+                    if (target.scrollTop == 0) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else { //scroll down
+                    if (target.scrollTop == (target.scrollHeight - target.offsetHeight)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                
+            } else {
+                return _disableMousewheel(el, $(target).parent()[0].closest(tags), wheelDelta);
+            }
 		},
 		/* -------------------- */
 		
