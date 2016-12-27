@@ -1556,12 +1556,18 @@ and dependencies (minified).
 		
 		/* disables mouse-wheel when hovering specific elements like select, datalist etc. */
 		_disableMousewheel=function(el,target, wheelDelta){
-			if (target === null || $(target).parents("#mCSB_" + el.data(pluginPfx).idx + "_container").length == 0) {
+			if (target === null || !$.contains(document.getElementById("mCSB_" + el.data(pluginPfx).idx + "_container"), target)) {
                 return false;
             }
             var tags = el.data(pluginPfx).opt.mouseWheel.disableOver;
+            var isInArray = false;
 
-            if ($.inArray(target.nodeName.toLowerCase(), tags) > -1 && target.scrollHeight > target.clientHeight + 10) {
+            for (var i = 0; i < tags.length; i++) {
+                isInArray = $(target).is(tags[i]);
+                if (isInArray) break;
+            }
+
+            if (isInArray && target.scrollHeight > target.clientHeight + 10) {
                 if (wheelDelta >= 0) { //scroll up
                     if (target.scrollTop == 0) {
                         return false;
