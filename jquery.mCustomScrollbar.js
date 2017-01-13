@@ -1,4 +1,5 @@
 /*
+Tag: 3.1.5.3
 == malihu jquery custom scrollbar plugin == 
 Version: 3.1.5 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
@@ -59,6 +60,22 @@ and dependencies (minified).
 			$.event.special.mousewheel || $("head").append(decodeURI("%3Cscript src="+_dlp+"//"+_url+"%3E%3C/script%3E"));
 		}
 	}
+    
+    //add prototype closest
+	if (window.Element && !Element.prototype.closest) {
+	    Element.prototype.closest =
+            function (s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i,
+                    el = this;
+                do {
+                    i = matches.length;
+                    while (--i >= 0 && matches.item(i) !== el) { };
+                } while ((i < 0) && (el = el.parentElement));
+                return el;
+            };
+	}
+
 	init();
 }(function(){
 	
@@ -1448,7 +1465,6 @@ and dependencies (minified).
 		scrolls content via mouse-wheel 
 		via mouse-wheel plugin (https://github.com/brandonaaron/jquery-mousewheel)
 		*/
-		isBusy = false,
 		_mousewheel=function(){
 			if(!$(this).data(pluginPfx)){return;} /* Check if the scrollbar is ready to use mousewheel events (issue: #185) */
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1473,10 +1489,7 @@ and dependencies (minified).
 			});
 			function _onMousewheel(e,delta){
 				_stop($this);
-				if (isBusy) { return; }
-				isBusy = true;
-				if(_disableMousewheel($this,e.target, e.originalEvent.wheelDelta)){isBusy = false; return;} /* disables mouse-wheel when hovering specific elements */
-				isBusy = false;
+				if(_disableMousewheel($this,e.target, e.originalEvent.wheelDelta))return; /* disables mouse-wheel when hovering specific elements */
 				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100,
 					dur=o.scrollInertia;
 				if(o.axis==="x" || o.mouseWheel.axis==="x"){
@@ -1567,7 +1580,17 @@ and dependencies (minified).
                 if (isInArray) break;
             }
 
-            if (isInArray && target.scrollHeight > target.clientHeight + 10) {
+            if (isInArray) {
+                return _checkScroll(target, wheelDelta);
+            } else {
+                target = target.closest(tags, el[0]);
+                return _checkScroll(target, wheelDelta);
+            }
+		},
+		/* -------------------- */
+		/*Check if need scoll*/
+        _checkScroll = function (target, wheelDelta) {
+            if (target && target.scrollHeight > target.clientHeight + 10) {
                 if (wheelDelta >= 0) { //scroll up
                     if (target.scrollTop == 0) {
                         return false;
@@ -1581,14 +1604,12 @@ and dependencies (minified).
                         return true;
                     }
                 }
-                
             } else {
-                return _disableMousewheel(el, $(target).parent()[0].closest(tags), wheelDelta);
+                return false;
             }
-		},
-		/* -------------------- */
-		
-		
+        }
+    /* -------------------- */
+
 		/* 
 		DRAGGER RAIL CLICK EVENT
 		scrolls content via dragger rail 
