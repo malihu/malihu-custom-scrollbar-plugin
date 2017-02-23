@@ -1660,7 +1660,7 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,seq=d.sequential,
 				namespace=pluginPfx+"_"+d.idx,
 				sel=".mCSB_"+d.idx+"_scrollbar",
-				btn=$(sel+">a");
+				btn=$(sel+">button");
 			btn.bind("contextmenu."+namespace,function(e){
 				e.preventDefault(); //prevent right click
 			}).bind("mousedown."+namespace+" touchstart."+namespace+" pointerdown."+namespace+" MSPointerDown."+namespace+" mouseup."+namespace+" touchend."+namespace+" pointerup."+namespace+" MSPointerUp."+namespace+" mouseout."+namespace+" pointerout."+namespace+" MSPointerOut."+namespace+" click."+namespace,function(e){
