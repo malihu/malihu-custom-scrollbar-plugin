@@ -525,7 +525,7 @@ and dependencies (minified).
 						var d=$this.data(pluginPfx),o=d.opt,
 							mCSB_container=$("#mCSB_"+d.idx+"_container"),
 							mCustomScrollBox=$("#mCSB_"+d.idx),
-							mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")];
+							mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate")];
 						
 						if(!mCSB_container.length){return;}
 						
@@ -863,8 +863,13 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				expandClass=o.autoExpandScrollbar ? " "+classes[1]+"_expand" : "",
 				scrollbar=["<div id='mCSB_"+d.idx+"_scrollbar_vertical' class='mCSB_scrollTools mCSB_"+d.idx+"_scrollbar mCS-"+o.theme+" mCSB_scrollTools_vertical"+expandClass+"'><div class='"+classes[12]+"'><div id='mCSB_"+d.idx+"_dragger_vertical' class='mCSB_dragger' style='position:absolute;'><div class='mCSB_dragger_bar' /></div><div class='mCSB_draggerRail' /></div></div>","<div id='mCSB_"+d.idx+"_scrollbar_horizontal' class='mCSB_scrollTools mCSB_"+d.idx+"_scrollbar mCS-"+o.theme+" mCSB_scrollTools_horizontal"+expandClass+"'><div class='"+classes[12]+"'><div id='mCSB_"+d.idx+"_dragger_horizontal' class='mCSB_dragger' style='position:absolute;'><div class='mCSB_dragger_bar' /></div><div class='mCSB_draggerRail' /></div></div>"],
+				scrollbar_double=["<div id='mCSB_"+d.idx+"_scrollbar_vertical' class='mCSB_scrollTools mCSB_"+d.idx+"_scrollbar mCS-"+o.theme+" mCSB_scrollTools_vertical"+expandClass+"'><div class='"+classes[12]+"'><div id='mCSB_"+d.idx+"_dragger_vertical' class='mCSB_dragger' style='position:absolute;'><div class='mCSB_dragger_bar' /></div><div class='mCSB_draggerRail' /></div></div>","<div id='mCSB_"+d.idx+"_scrollbar_horizontal_duplicate' class='mCSB_scrollTools mCSB_"+d.idx+"_scrollbar mCS-"+o.theme+" mCSB_scrollTools_horizontal horizontalTopScroll"+expandClass+"'><div class='"+classes[12]+"'><div id='mCSB_"+d.idx+"_dragger_horizontal_duplicate' class='mCSB_dragger' style='position:absolute;'><div class='mCSB_dragger_bar' /></div><div class='mCSB_draggerRail' /></div></div>"],
 				wrapperClass=o.axis==="yx" ? "mCSB_vertical_horizontal" : o.axis==="x" ? "mCSB_horizontal" : "mCSB_vertical",
-				scrollbars=o.axis==="yx" ? scrollbar[0]+scrollbar[1] : o.axis==="x" ? scrollbar[1] : scrollbar[0],
+				scrollbars=o.axis==="yx" ? scrollbar[0]+scrollbar[1] : o.axis==="x" ? scrollbar[1] : scrollbar[0];
+				if(o.axis==="x"&&o.doubleScroll)
+				{
+				scrollbars=scrollbars+scrollbar_double[1];
+				};
 				contentWrapper=o.axis==="yx" ? "<div id='mCSB_"+d.idx+"_container_wrapper' class='mCSB_container_wrapper' />" : "",
 				autoHideClass=o.autoHideScrollbar ? " "+classes[6] : "",
 				scrollbarDirClass=(o.axis!=="x" && d.langDir==="rtl") ? " "+classes[7] : "";
@@ -889,7 +894,7 @@ and dependencies (minified).
 			}
 			_scrollButtons.call(this); /* add scrollbar buttons */
 			/* minimum dragger length */
-			var mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")];
+			var mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate")];
 			mCSB_dragger[0].css("min-height",mCSB_dragger[0].height());
 			mCSB_dragger[1].css("min-width",mCSB_dragger[1].width());
 		},
@@ -961,7 +966,7 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
-				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
+				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate")],
 				ratio=[mCustomScrollBox.height()/mCSB_container.outerHeight(false),mCustomScrollBox.width()/mCSB_container.outerWidth(false)],
 				l=[
 					parseInt(mCSB_dragger[0].css("min-height")),Math.round(ratio[0]*mCSB_dragger[0].parent().height()),
@@ -983,7 +988,7 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
-				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
+				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate")],
 				scrollAmount=[mCSB_container.outerHeight(false)-mCustomScrollBox.height(),mCSB_container.outerWidth(false)-mCustomScrollBox.width()],
 				ratio=[
 					scrollAmount[0]/(mCSB_dragger[0].parent().height()-mCSB_dragger[0].height()),
@@ -1034,7 +1039,7 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
-				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")];
+				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate")];
 			_stop($this); /* stop any current scrolling before resetting */
 			if((o.axis!=="x" && !d.overflowed[0]) || (o.axis==="y" && d.overflowed[0])){ /* reset y */
 				mCSB_dragger[0].add(mCSB_container).css("top",0);
@@ -1091,7 +1096,7 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				namespace=pluginPfx+"_"+d.idx,
 				sb=".mCSB_"+d.idx+"_scrollbar",
-				sel=$("#mCSB_"+d.idx+",#mCSB_"+d.idx+"_container,#mCSB_"+d.idx+"_container_wrapper,"+sb+" ."+classes[12]+",#mCSB_"+d.idx+"_dragger_vertical,#mCSB_"+d.idx+"_dragger_horizontal,"+sb+">a"),
+				sel=$("#mCSB_"+d.idx+",#mCSB_"+d.idx+"_container,#mCSB_"+d.idx+"_container_wrapper,"+sb+" ."+classes[12]+",#mCSB_"+d.idx+"_dragger_vertical,#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate,"+sb+">a"),
 				mCSB_container=$("#mCSB_"+d.idx+"_container");
 			if(o.advanced.releaseDraggableSelectors){sel.add($(o.advanced.releaseDraggableSelectors));}
 			if(o.advanced.extraDraggableSelectors){sel.add($(o.advanced.extraDraggableSelectors));}
@@ -1116,8 +1121,8 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				contentWrapper=$("#mCSB_"+d.idx+"_container_wrapper"),
 				content=contentWrapper.length ? contentWrapper : $("#mCSB_"+d.idx+"_container"),
-				scrollbar=[$("#mCSB_"+d.idx+"_scrollbar_vertical"),$("#mCSB_"+d.idx+"_scrollbar_horizontal")],
-				mCSB_dragger=[scrollbar[0].find(".mCSB_dragger"),scrollbar[1].find(".mCSB_dragger")];
+				scrollbar=[$("#mCSB_"+d.idx+"_scrollbar_vertical"),$("#mCSB_"+d.idx+"_scrollbar_horizontal"),$("#mCSB_"+d.idx+"_scrollbar_horizontal_duplicate")],
+				mCSB_dragger=[scrollbar[0].find(".mCSB_dragger"),scrollbar[1].find(".mCSB_dragger"),scrollbar[2].find(".mCSB_dragger")];
 			if(o.axis!=="x"){
 				if(d.overflowed[0] && !disabled){
 					scrollbar[0].add(mCSB_dragger[0]).add(scrollbar[0].children("a")).css("display","block");
@@ -1136,13 +1141,15 @@ and dependencies (minified).
 			if(o.axis!=="y"){
 				if(d.overflowed[1] && !disabled){
 					scrollbar[1].add(mCSB_dragger[1]).add(scrollbar[1].children("a")).css("display","block");
+					scrollbar[2].add(mCSB_dragger[2]).add(scrollbar[2].children("a")).css("display","block");
 					content.removeClass(classes[9]+" "+classes[11]);
 				}else{
 					if(o.alwaysShowScrollbar){
-						if(o.alwaysShowScrollbar!==2){mCSB_dragger[1].css("display","none");}
+						if(o.alwaysShowScrollbar!==2){mCSB_dragger[1].css("display","none");mCSB_dragger[2].css("display","none");}
 						content.removeClass(classes[11]);
 					}else{
 						scrollbar[1].css("display","none");
+						scrollbar[2].css("display","none");
 						content.addClass(classes[11]);
 					}
 					content.addClass(classes[9]);
@@ -1184,9 +1191,9 @@ and dependencies (minified).
 		_draggable=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				namespace=pluginPfx+"_"+d.idx,
-				draggerId=["mCSB_"+d.idx+"_dragger_vertical","mCSB_"+d.idx+"_dragger_horizontal"],
+				draggerId=["mCSB_"+d.idx+"_dragger_vertical","mCSB_"+d.idx+"_dragger_horizontal","mCSB_"+d.idx+"_dragger_horizontal_duplicate"],
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
-				mCSB_dragger=$("#"+draggerId[0]+",#"+draggerId[1]),
+				mCSB_dragger=$("#"+draggerId[0]+",#"+draggerId[1]+",#"+draggerId[2]),
 				draggable,dragY,dragX,
 				rds=o.advanced.releaseDraggableSelectors ? mCSB_dragger.add($(o.advanced.releaseDraggableSelectors)) : mCSB_dragger,
 				eds=o.advanced.extraDraggableSelectors ? $(!_canAccessIFrame() || top.document).add($(o.advanced.extraDraggableSelectors)) : $(!_canAccessIFrame() || top.document);
@@ -1231,7 +1238,7 @@ and dependencies (minified).
 			});
 			function _drag(dragY,dragX,y,x){
 				mCSB_container[0].idleTimer=o.scrollInertia<233 ? 250 : 0;
-				if(draggable.attr("id")===draggerId[1]){
+				if(draggable.attr("id")===draggerId[1]||draggable.attr("id")===draggerId[2]){
 					var dir="x",to=((draggable[0].offsetLeft-dragX)+x)*d.scrollRatio.x;
 				}else{
 					var dir="y",to=((draggable[0].offsetTop-dragY)+y)*d.scrollRatio.y;
@@ -1252,7 +1259,7 @@ and dependencies (minified).
 				namespace=pluginPfx+"_"+d.idx,
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
-				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
+				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate")],
 				draggable,dragY,dragX,touchStartY,touchStartX,touchMoveY=[],touchMoveX=[],startTime,runningTime,endTime,distance,speed,amount,
 				durA=0,durB,overwrite=o.axis==="yx" ? "none" : "all",touchIntent=[],touchDrag,docDrag,
 				iframe=mCSB_container.find("iframe"),
@@ -1453,7 +1460,7 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				namespace=pluginPfx+"_"+d.idx,
 				mCustomScrollBox=$("#mCSB_"+d.idx),
-				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal")],
+				mCSB_dragger=[$("#mCSB_"+d.idx+"_dragger_vertical"),$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate")],
 				iframe=$("#mCSB_"+d.idx+"_container").find("iframe");
 			if(iframe.length){
 				iframe.each(function(){
@@ -2021,7 +2028,7 @@ and dependencies (minified).
 		/* stops content and scrollbar animations */
 		_stop=function(el){
 			var d=el.data(pluginPfx),
-				sel=$("#mCSB_"+d.idx+"_container,#mCSB_"+d.idx+"_container_wrapper,#mCSB_"+d.idx+"_dragger_vertical,#mCSB_"+d.idx+"_dragger_horizontal");
+				sel=$("#mCSB_"+d.idx+"_container,#mCSB_"+d.idx+"_container_wrapper,#mCSB_"+d.idx+"_dragger_vertical,#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate");
 			sel.each(function(){
 				_stopTween.call(this);
 			});
@@ -2086,7 +2093,7 @@ and dependencies (minified).
 			}
 			switch(options.dir){
 				case "x":
-					var mCSB_dragger=$("#mCSB_"+d.idx+"_dragger_horizontal"),
+					var mCSB_dragger=$("#mCSB_"+d.idx+"_dragger_horizontal,#mCSB_"+d.idx+"_dragger_horizontal_duplicate"),
 						property="left",
 						contentPos=mCSB_container[0].offsetLeft,
 						limit=[
@@ -2126,7 +2133,9 @@ and dependencies (minified).
 				if(_cb("onInit")){o.callbacks.onInit.call(el[0]);} /* callbacks: onInit */
 			}
 			clearTimeout(mCSB_container[0].onCompleteTimeout);
-			_tweenTo(mCSB_dragger[0],property,Math.round(scrollTo[1]),dur[1],options.scrollEasing);
+			mCSB_dragger.each(function(){
+				_tweenTo(this,property,Math.round(scrollTo[1]),dur[1],options.scrollEasing);
+			});
 			if(!d.tweenRunning && ((contentPos===0 && scrollTo[0]>=0) || (contentPos===limit[0] && scrollTo[0]<=limit[0]))){return;}
 			_tweenTo(mCSB_container[0],property,Math.round(scrollTo[0]),dur[0],options.scrollEasing,options.overwrite,{
 				onStart:function(){
