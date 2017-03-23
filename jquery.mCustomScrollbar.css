@@ -161,6 +161,12 @@ x-axis
 		bottom: 0;
 		left: 0;
 	}
+	
+	.mCSB_scrollTools.mCSB_scrollTools_horizontal.horizontalTopScroll
+	{
+		top: 0;
+		bottom: auto;
+	}
 
 	.mCustomScrollBox + .mCSB_scrollTools.mCSB_scrollTools_horizontal,
 	.mCustomScrollBox + .mCSB_scrollTools + .mCSB_scrollTools.mCSB_scrollTools_horizontal{ bottom: -26px; } /* scrollbar position: outside */
