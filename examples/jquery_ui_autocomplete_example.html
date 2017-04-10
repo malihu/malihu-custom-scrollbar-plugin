@@ -59,7 +59,7 @@
 	
 	<script>
 		(function($){
-			$(window).load(function(){
+			$(window).on("load",function(){
 				
 				$("#autocomplete").autocomplete({
 					open:function(e,ui){
@@ -73,6 +73,18 @@
 					response:function(e,ui){
 						/* destroy the scrollbar after each search completes, before the menu is shown */
 						$(".ui-autocomplete").mCustomScrollbar("destroy");
+					},
+					focus:function(e,ui){
+						/* scroll via keyboard */
+						if(!ui.item){
+							var first=$(".ui-autocomplete li:first");
+							first.trigger("mouseenter");
+							$(this).val(first.data("uiAutocompleteItem").label);
+						}
+						var el=$(".ui-state-focus").parent();
+						if(!el.is(":mcsInView") && !el.is(":hover")){
+							$(".ui-autocomplete").mCustomScrollbar("scrollTo",el,{scrollInertia:0,timeout:0});
+						}
 					},
 					close:function(e,ui){
 						/* destroy the scrollbar each time autocomplete menu closes */

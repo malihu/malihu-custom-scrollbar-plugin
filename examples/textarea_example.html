@@ -62,7 +62,7 @@
 	
 	<script>
 		(function($){
-			$(window).load(function(){
+			$(window).on("load",function(){
 				
 				var textareaLineHeight=parseInt($(".textarea-wrapper textarea").css("line-height"));
 				
@@ -70,6 +70,7 @@
 					scrollInertia:0,
 					theme:"dark-3",
 					advanced:{autoScrollOnFocus:false},
+					mouseWheel:{disableOver:["select","option","keygen","datalist",""]},
 					keyboard:{enable:false},
 					snapAmount:textareaLineHeight
 				});
