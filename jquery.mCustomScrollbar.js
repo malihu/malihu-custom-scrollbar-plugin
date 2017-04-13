@@ -2141,7 +2141,7 @@ and dependencies (minified).
 				},onUpdate:function(){
 					if(options.callbacks && options.onUpdate){
 						/* callbacks: whileScrolling */
-						if(_cb("whileScrolling")){_mcs(); o.callbacks.whileScrolling.call(el[0]);}
+						if(_cb("whileScrolling")){_mcs(); o.callbacks.whileScrolling.apply(el[0],[{options:options,delta:contentPos-scrollTo[0]}]);}
 					}
 				},onComplete:function(){
 					if(options.callbacks && options.onComplete){
