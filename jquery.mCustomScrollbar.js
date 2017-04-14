@@ -1471,6 +1471,7 @@ and dependencies (minified).
 				_onMousewheel(e,delta);
 			});
 			function _onMousewheel(e,delta){
+				$(e.target).closest('.mCustomScrollbar').trigger('mcswheel',delta);
 				_stop($this);
 				if(_disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
 				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100,
@@ -2140,7 +2141,7 @@ and dependencies (minified).
 				},onUpdate:function(){
 					if(options.callbacks && options.onUpdate){
 						/* callbacks: whileScrolling */
-						if(_cb("whileScrolling")){_mcs(); o.callbacks.whileScrolling.call(el[0]);}
+						if(_cb("whileScrolling")){_mcs(); o.callbacks.whileScrolling.apply(el[0],[{options:options,delta:contentPos-scrollTo[0]}]);}
 					}
 				},onComplete:function(){
 					if(options.callbacks && options.onComplete){
