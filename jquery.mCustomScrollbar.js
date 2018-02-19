@@ -1589,25 +1589,17 @@ and dependencies (minified).
 		},
 		/* -------------------- */
 		/*Check if need scoll*/
-        _checkScroll = function (target, wheelDelta) {
-            if (target && target.scrollHeight > target.clientHeight + 10) {
-                if (wheelDelta >= 0) { //scroll up
-                    if (target.scrollTop == 0) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                } else { //scroll down                	
-                    if ((target.scrollHeight - target.scrollTop) <= target.offsetHeight) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-            } else {
-                return false;
-            }
-        }
+      _checkScroll = function (target, wheelDelta) {
+        if (!target) return false;
+        var targetJquery = $(target);
+        if (targetJquery.is("path") || targetJquery.hasClass("chart-container")) return true;
+
+        if (target.scrollHeight <= target.clientHeight + 10) return false;
+
+        if ((wheelDelta >= 0 && target.scrollTop == 0) || (wheelDelta < 0 && (target.scrollHeight - target.scrollTop) <= target.offsetHeight)) return false;
+
+        return true;	  
+      }
     /* -------------------- */
 
 		/* 
