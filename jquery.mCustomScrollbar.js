@@ -1591,6 +1591,7 @@ and dependencies (minified).
 		/*Check if need scoll*/
       _checkScroll = function (target, wheelDelta) {
         if (!target) return false;
+		
         var targetJquery = $(target);
         if (targetJquery.is("path") || targetJquery.hasClass("chart-container")) return true;
 
