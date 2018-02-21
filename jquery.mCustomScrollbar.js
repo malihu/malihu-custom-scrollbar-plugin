@@ -1566,42 +1566,21 @@ and dependencies (minified).
 		},
 		/* -------------------- */
 		
-		
 		/* disables mouse-wheel when hovering specific elements like select, datalist etc. */
 		_disableMousewheel=function(el,target, wheelDelta){
-			if (target === null || !$.contains(document.getElementById("mCSB_" + el.data(pluginPfx).idx + "_container"), target)) {
-                return false;
-            }
-            var tags = el.data(pluginPfx).opt.mouseWheel.disableOver;
-            var isInArray = false;
-
-            for (var i = 0; i < tags.length; i++) {
-                isInArray = $(target).is(tags[i]);
-                if (isInArray) break;
-            }
-
-            if (isInArray) {
-                return _checkScroll(target, wheelDelta);
-            } else {
-                target = target.closest(tags, el[0]);
-                return _checkScroll(target, wheelDelta);
-            }
+			if (target == null) return false;      
+			 var closestElement = target.closest(el.data(pluginPfx).opt.mouseWheel.disableOver, el[0]);
+	      	 if (closestElement) {
+		        if (closestElement.hasAttribute("noscroll") || closestElement.tagName.toUpperCase() == "PATH") return true;
+				if (closestElement.scrollHeight <= closestElement.clientHeight + 10 || wheelDelta >= 0 && closestElement.scrollTop == 0 ||
+				      (wheelDelta < 0 && (closestElement.scrollHeight - closestElement.scrollTop) <= closestElement.offsetHeight)) 
+					return false;
+				return true;
+			  } else {
+			    return false;
+			  }
 		},
 		/* -------------------- */
-		/*Check if need scoll*/
-      _checkScroll = function (target, wheelDelta) {
-        if (!target) return false;
-		
-        var targetJquery = $(target);
-        if (targetJquery.is("path") || targetJquery.hasClass("chart-container")) return true;
-
-        if (target.scrollHeight <= target.clientHeight + 10) return false;
-
-        if ((wheelDelta >= 0 && target.scrollTop == 0) || (wheelDelta < 0 && (target.scrollHeight - target.scrollTop) <= target.offsetHeight)) return false;
-
-        return true;	  
-      }
-    /* -------------------- */
 
 		/* 
 		DRAGGER RAIL CLICK EVENT
