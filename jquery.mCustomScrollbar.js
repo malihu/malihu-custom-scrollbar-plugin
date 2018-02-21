@@ -1,4 +1,5 @@
 /*
+Tag: 3.1.5.3
 == malihu jquery custom scrollbar plugin == 
 Version: 3.1.5 
 Plugin URI: http://manos.malihu.gr/jquery-custom-content-scroller 
@@ -59,6 +60,22 @@ and dependencies (minified).
 			$.event.special.mousewheel || $("head").append(decodeURI("%3Cscript src="+_dlp+"//"+_url+"%3E%3C/script%3E"));
 		}
 	}
+    
+    //add prototype closest
+	if (window.Element && !Element.prototype.closest) {
+	    Element.prototype.closest =
+            function (s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i,
+                    el = this;
+                do {
+                    i = matches.length;
+                    while (--i >= 0 && matches.item(i) !== el) { };
+                } while ((i < 0) && (el = el.parentElement));
+                return el;
+            };
+	}
+
 	init();
 }(function(){
 	
@@ -1472,7 +1489,7 @@ and dependencies (minified).
 			});
 			function _onMousewheel(e,delta){
 				_stop($this);
-				if(_disableMousewheel($this,e.target)){return;} /* disables mouse-wheel when hovering specific elements */
+				if(_disableMousewheel($this,e.target, e.originalEvent.wheelDelta))return; /* disables mouse-wheel when hovering specific elements */
 				var deltaFactor=o.mouseWheel.deltaFactor!=="auto" ? parseInt(o.mouseWheel.deltaFactor) : (oldIE && e.deltaFactor<100) ? 100 : e.deltaFactor || 100,
 					dur=o.scrollInertia;
 				if(o.axis==="x" || o.mouseWheel.axis==="x"){
@@ -1549,18 +1566,22 @@ and dependencies (minified).
 		},
 		/* -------------------- */
 		
-		
 		/* disables mouse-wheel when hovering specific elements like select, datalist etc. */
-		_disableMousewheel=function(el,target){
-			var tag=target.nodeName.toLowerCase(),
-				tags=el.data(pluginPfx).opt.mouseWheel.disableOver,
-				/* elements that require focus */
-				focusTags=["select","textarea"];
-			return $.inArray(tag,tags) > -1 && !($.inArray(tag,focusTags) > -1 && !$(target).is(":focus"));
+		_disableMousewheel=function(el,target, wheelDelta){
+			if (target == null) return false;      
+			 var closestElement = target.closest(el.data(pluginPfx).opt.mouseWheel.disableOver, el[0]);
+	      	 if (closestElement) {
+		        if (closestElement.hasAttribute("noscroll") || closestElement.tagName.toUpperCase() == "PATH") return true;
+				if (closestElement.scrollHeight <= closestElement.clientHeight + 10 || wheelDelta >= 0 && closestElement.scrollTop == 0 ||
+				      (wheelDelta < 0 && (closestElement.scrollHeight - closestElement.scrollTop) <= closestElement.offsetHeight)) 
+					return false;
+				return true;
+			  } else {
+			    return false;
+			  }
 		},
 		/* -------------------- */
-		
-		
+
 		/* 
 		DRAGGER RAIL CLICK EVENT
 		scrolls content via dragger rail 
