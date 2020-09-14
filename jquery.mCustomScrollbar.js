@@ -1019,12 +1019,12 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),
 				mCustomScrollBox=$("#mCSB_"+d.idx),
 				mCSB_container=$("#mCSB_"+d.idx+"_container"),
-				contentHeight=d.overflowed==null ? mCSB_container.height() : mCSB_container.outerHeight(false),
-				contentWidth=d.overflowed==null ? mCSB_container.width() : mCSB_container.outerWidth(false),
+				contentHeight=mCSB_container[0].clientHeight,
+				contentWidth=mCSB_container[0].clientWidth,
 				h=mCSB_container[0].scrollHeight,w=mCSB_container[0].scrollWidth;
 			if(h>contentHeight){contentHeight=h;}
 			if(w>contentWidth){contentWidth=w;}
-			return [contentHeight>mCustomScrollBox.height(),contentWidth>mCustomScrollBox.width()];
+			return [contentHeight>mCustomScrollBox[0].clientHeight,contentWidth>mCustomScrollBox[0].clientWidth];
 		},
 		/* -------------------- */
 		
