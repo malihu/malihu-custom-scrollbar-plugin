@@ -909,29 +909,27 @@ and dependencies (minified).
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				mCSB_container=$("#mCSB_"+d.idx+"_container");
 			if(o.advanced.autoExpandHorizontalScroll && o.axis!=="y"){
-				/* calculate scrollWidth */
-				mCSB_container.css({"width":"auto","min-width":0,"overflow-x":"scroll"});
-				var w=Math.ceil(mCSB_container[0].scrollWidth);
-				if(o.advanced.autoExpandHorizontalScroll===3 || (o.advanced.autoExpandHorizontalScroll!==2 && w>mCSB_container.parent().width())){
-					mCSB_container.css({"width":w,"min-width":"100%","overflow-x":"inherit"});
-				}else{
-					/* 
-					wrap content with an infinite width div and set its position to absolute and width to auto. 
-					Setting width to auto before calculating the actual width is important! 
-					We must let the browser set the width as browser zoom values are impossible to calculate.
-					*/
-					mCSB_container.css({"overflow-x":"inherit","position":"absolute"})
-						.wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />")
-						.css({ /* set actual width, original position and un-wrap */
-							/* 
-							get the exact width (with decimals) and then round-up. 
-							Using jquery outerWidth() will round the width value which will mess up with inner elements that have non-integer width
-							*/
-							"width":(Math.ceil(mCSB_container[0].getBoundingClientRect().right+0.4)-Math.floor(mCSB_container[0].getBoundingClientRect().left)),
-							"min-width":"100%",
-							"position":"relative"
-						}).unwrap();
-				}
+				//fix lost focus element
+				var afterFocus = $('textarea:focus,input:focus');
+
+				/* 
+				wrap content with an infinite width div and set its position to absolute and width to auto. 
+				Setting width to auto before calculating the actual width is important! 
+				We must let the browser set the width as browser zoom values are impossible to calculate.
+				*/
+				mCSB_container.css({"position":"absolute","width":"auto"})
+					.wrap("<div class='mCSB_h_wrapper' style='position:relative; left:0; width:999999px;' />")
+					.css({ /* set actual width, original position and un-wrap */
+						/* 
+						get the exact width (with decimals) and then round-up. 
+						Using jquery outerWidth() will round the width value which will mess up with inner elements that have non-integer width
+						*/
+						"width":(Math.ceil(mCSB_container[0].getBoundingClientRect().right+0.4)-Math.floor(mCSB_container[0].getBoundingClientRect().left)),
+						"position":"relative"
+					}).unwrap();
+
+
+				afterFocus.focus();
 			}
 		},
 		/* -------------------- */
@@ -1068,6 +1066,11 @@ and dependencies (minified).
 								_mwt();
 							}else{
 								clearTimeout(mousewheelTimeout);
+								/* check scroller in dom tree */
+								if($this.parents('html').length===0){
+									$this = null;
+									return;
+								}
 								_mousewheel.call($this[0]);
 							}
 						},100);
@@ -1084,8 +1087,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* unbinds scrollbar events */
 		_unbindEvents=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1109,8 +1112,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* toggles scrollbar visibility */
 		_scrollbarVisibility=function(disabled){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1155,8 +1158,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* returns input coordinates of pointer, touch and mouse events (relative to document) */
 		_coordinates=function(e){
 			var t=e.type,o=e.target.ownerDocument!==document && frameElement!==null ? [$(frameElement).offset().top,$(frameElement).offset().left] : null,
@@ -1175,11 +1178,11 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		SCROLLBAR DRAG EVENTS
-		scrolls content via scrollbar dragging 
+		scrolls content via scrollbar dragging
 		*/
 		_draggable=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1204,10 +1207,10 @@ and dependencies (minified).
 				var offset=draggable.offset(),y=_coordinates(e)[0]-offset.top,x=_coordinates(e)[1]-offset.left,
 					h=draggable.height()+offset.top,w=draggable.width()+offset.left;
 				if(y<h && y>0 && x<w && x>0){
-					dragY=y; 
+					dragY=y;
 					dragX=x;
 				}
-				_onDragClasses(draggable,"active",o.autoExpandScrollbar); 
+				_onDragClasses(draggable,"active",o.autoExpandScrollbar);
 			}).bind("touchmove."+namespace,function(e){
 				e.stopImmediatePropagation();
 				e.preventDefault();
@@ -1222,7 +1225,7 @@ and dependencies (minified).
 				}
 			}).add(rds).bind("mouseup."+namespace+" touchend."+namespace+" pointerup."+namespace+" MSPointerUp."+namespace,function(e){
 				if(draggable){
-					_onDragClasses(draggable,"active",o.autoExpandScrollbar); 
+					_onDragClasses(draggable,"active",o.autoExpandScrollbar);
 					draggable=null;
 				}
 				touchActive=false;
@@ -1240,12 +1243,12 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		TOUCH SWIPE EVENTS
-		scrolls content via touch swipe 
-		Emulates the native touch-swipe scrolling with momentum found in iOS, Android and WP devices 
+		scrolls content via touch swipe
+		Emulates the native touch-swipe scrolling with momentum found in iOS, Android and WP devices
 		*/
 		_contentDraggable=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
@@ -1387,11 +1390,11 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
-		SELECT TEXT EVENTS 
-		scrolls content when text is selected 
+
+
+		/*
+		SELECT TEXT EVENTS
+		scrolls content when text is selected
 		*/
 		_selectable=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,seq=d.sequential,
@@ -1401,6 +1404,7 @@ and dependencies (minified).
 				action;
 			mCSB_container.bind("mousedown."+namespace,function(e){
 				if(touchable){return;}
+				if(e.button!==0){return;}
 				if(!action){action=1; touchActive=true;}
 			}).add(document).bind("mousemove."+namespace,function(e){
 				if(!touchable && action && _sel()){
@@ -1431,7 +1435,7 @@ and dependencies (minified).
 				touchActive=false;
 			});
 			function _sel(){
-				return 	window.getSelection ? window.getSelection().toString() : 
+				return 	window.getSelection ? window.getSelection().toString() :
 						document.selection && document.selection.type!="Control" ? document.selection.createRange().text : 0;
 			}
 			function _seq(a,c,s){
@@ -1441,11 +1445,11 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		MOUSE WHEEL EVENT
-		scrolls content via mouse-wheel 
+		scrolls content via mouse-wheel
 		via mouse-wheel plugin (https://github.com/brandonaaron/jquery-mousewheel)
 		*/
 		_mousewheel=function(){
@@ -1493,8 +1497,12 @@ and dependencies (minified).
 						dlt=e.deltaY || delta;
 				}
 				if((dir==="y" && !d.overflowed[0]) || (dir==="x" && !d.overflowed[1])){return;}
-				if(o.mouseWheel.invert || e.webkitDirectionInvertedFromDevice){dlt=-dlt;}
+				if(o.mouseWheel.invert || e.webkitDirectionInvertedFromDevice || (o.horizontalScroll && e.deltaX !== -0)){dlt=-dlt;}
+
 				if(o.mouseWheel.normalizeDelta){dlt=dlt<0 ? -1 : 1;}
+				if(!$this.data('mCS').opt.horizontalScroll && ( e.deltaX < -8 || e.deltaX > 8 ) ){
+					return;
+				}
 				if((dlt>0 && draggerPos!==0) || (dlt<0 && draggerPos!==limit) || o.mouseWheel.preventDefault){
 					e.stopImmediatePropagation();
 					e.preventDefault();
@@ -1507,8 +1515,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* checks if iframe can be accessed */
 		_canAccessIFrameCache=new Object(),
 		_canAccessIFrame=function(iframe){
@@ -1548,8 +1556,8 @@ and dependencies (minified).
 			el.css("pointer-events",val); /* for IE11, iframe's display property should not be "block" */
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* disables mouse-wheel when hovering specific elements like select, datalist etc. */
 		_disableMousewheel=function(el,target){
 			var tag=target.nodeName.toLowerCase(),
@@ -1559,11 +1567,11 @@ and dependencies (minified).
 			return $.inArray(tag,tags) > -1 && !($.inArray(tag,focusTags) > -1 && !$(target).is(":focus"));
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		DRAGGER RAIL CLICK EVENT
-		scrolls content via dragger rail 
+		scrolls content via dragger rail
 		*/
 		_draggerRail=function(){
 			var $this=$(this),d=$this.data(pluginPfx),
@@ -1599,9 +1607,9 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		FOCUS EVENT
 		scrolls content via element focus (e.g. clicking an input, pressing TAB key etc.)
 		*/
@@ -1636,8 +1644,8 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* sets content wrapper scrollTop/scrollLeft always to 0 */
 		_wrapperScroll=function(){
 			var $this=$(this),d=$this.data(pluginPfx),
@@ -1650,11 +1658,11 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		BUTTONS EVENTS
-		scrolls content via up, down, left and right buttons 
+		scrolls content via up, down, left and right buttons
 		*/
 		_buttons=function(){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,seq=d.sequential,
@@ -1693,11 +1701,11 @@ and dependencies (minified).
 			});
 		},
 		/* -------------------- */
-		
-		
-		/* 
+
+
+		/*
 		KEYBOARD EVENTS
-		scrolls content via keyboard 
+		scrolls content via keyboard
 		Keys: up arrow, down arrow, left arrow, right arrow, PgUp, PgDn, Home, End
 		*/
 		_keyboard=function(){
@@ -1784,8 +1792,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* scrolls content sequentially (used when scrolling via buttons, keyboard arrows etc.) */
 		_sequentialScroll=function(el,action,trigger,e,s){
 			var d=el.data(pluginPfx),o=d.opt,seq=d.sequential,
@@ -1845,8 +1853,8 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* returns a yx array from value */
 		_arr=function(val){
 			var o=$(this).data(pluginPfx).opt,vals=[];
@@ -1864,8 +1872,8 @@ and dependencies (minified).
 			return vals;
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* translates values (e.g. "top", 100, "100px", "#id") to actual scroll-to positions */
 		_to=function(val,dir){
 			if(val==null || typeof val=="undefined"){return;}
@@ -1922,15 +1930,15 @@ and dependencies (minified).
 			}
 		},
 		/* -------------------- */
-		
-		
+
+
 		/* calls the update method automatically */
 		_autoUpdate=function(rem){
 			var $this=$(this),d=$this.data(pluginPfx),o=d.opt,
 				mCSB_container=$("#mCSB_"+d.idx+"_container");
 			if(rem){
-				/* 
-				removes autoUpdate timer 
+				/*
+				removes autoUpdate timer
 				usage: _autoUpdate.call(this,"remove");
 				*/
 				clearTimeout(mCSB_container[0].autoUpdate);
